@@ -405,36 +405,43 @@ function buildTimelines() {
 const BG = (() => {
   // high-res stills extracted from the source videos (see v2/bg)
   const pick = [
-    { src: "bg/bg-hero.webp", title: "Vietnam Airlines" },
-    { src: "bg/bg-about.webp", title: "Team Project 0225" },
-    { src: "bg/bg-services.webp", title: "Team Project 1–4" },
-    { src: "bg/bg-process.webp", title: "Ghidora Tank" },
-    { src: "bg/bg-work.webp", title: "YOBEVE — Flavour" },
-    { src: "bg/bg-shorts.webp", title: "Choco" },
-    { src: "bg/bg-tools.webp", title: "YOBEVE" },
-    { src: "bg/bg-contact.webp", title: "Showreel" }
+    { src: "bg/bg-hero.webp", vid: "bg/bg-hero.mp4", title: "Vietnam Airlines" },
+    { src: "bg/bg-about.webp", vid: "bg/bg-about.mp4", title: "Team Project 0225" },
+    { src: "bg/bg-services.webp", vid: "bg/bg-services.mp4", title: "Team Project 1–4" },
+    { src: "bg/bg-process.webp", vid: "bg/bg-process.mp4", title: "Ghidora Tank" },
+    { src: "bg/bg-work.webp", vid: "bg/bg-work.mp4", title: "YOBEVE — Flavour" },
+    { src: "bg/bg-shorts.webp", vid: "bg/bg-shorts.mp4", title: "Choco" },
+    { src: "bg/bg-tools.webp", vid: "bg/bg-tools.mp4", title: "YOBEVE" },
+    { src: "bg/bg-contact.webp", vid: "bg/bg-contact.mp4", title: "Showreel" }
   ];
   const host = $("#bgshow");
+  const useVideo = !reduce && !(navigator.connection && navigator.connection.saveData);
   const slides = pick.map((p) => {
     const d = document.createElement("div");
     d.className = "bgs";
-    d.innerHTML = `<img alt="" decoding="async" src="${p.src}" onerror="this.remove()" /><span class="bgs__tag">▶ ${p.title}</span>`;
+    d.innerHTML = (useVideo
+      ? `<video class="bgm" muted loop playsinline preload="none" poster="${p.src}" src="${p.vid}"></video>`
+      : `<img class="bgm" alt="" decoding="async" src="${p.src}" />`) + `<span class="bgs__tag">▶ ${p.title}</span>`;
     host.appendChild(d);
     return d;
   });
   let cur = -1, z = 1;
-  const kb = slides.map((d) => gsap.to(d.querySelector("img"), { scale: 1.04, xPercent: gsap.utils.random(-1.2, 1.2), duration: 16, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true }));
+  const kb = slides.map((d) => gsap.to(d.querySelector(".bgm"), { scale: 1.04, xPercent: gsap.utils.random(-1.2, 1.2), duration: 16, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true }));
   function show(i, dir = 1) {
     if (i === cur) return;
     const n = slides[i], o = slides[cur];
     n.style.zIndex = ++z;
     gsap.fromTo(n, { clipPath: dir > 0 ? "inset(100% 0% 0% 0%)" : "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: reduce ? 0.01 : 1.1, ease: "power4.inOut" });
-    gsap.fromTo(n.querySelector("img"), { yPercent: 6 * dir }, { yPercent: 0, duration: 1.4, ease: "power3.out" });
+    gsap.fromTo(n.querySelector(".bgm"), { yPercent: 6 * dir }, { yPercent: 0, duration: 1.4, ease: "power3.out" });
     kb[i].play();
+    const v = n.querySelector("video");
+    if (v) { v.preload = "auto"; v.currentTime = 0; v.play().catch(() => {}); }
+    const nx = slides[i + 1] && slides[i + 1].querySelector("video");
+    if (nx) nx.preload = "auto";
     if (o) {
-      gsap.to(o.querySelector("img"), { yPercent: -6 * dir, duration: 1.1, ease: "power4.inOut" });
+      gsap.to(o.querySelector(".bgm"), { yPercent: -6 * dir, duration: 1.1, ease: "power4.inOut" });
       const k = kb[cur];
-      gsap.delayedCall(1.2, () => { k.pause(); o.style.clipPath = "inset(0 0 100% 0)"; });
+      gsap.delayedCall(1.2, () => { k.pause(); o.style.clipPath = "inset(0 0 100% 0)"; const ov = o.querySelector("video"); ov && ov.pause(); });
     }
     cur = i;
   }
