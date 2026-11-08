@@ -135,7 +135,7 @@ function initBalls() {
       c.fillStyle = it.fg;
       c.textAlign = "center"; c.textBaseline = "middle";
       const fs = it.text.length > 8 ? 26 : it.text.length > 4 ? 32 : 44;
-      c.font = `800 ${fs}px Syne, sans-serif`;
+      c.font = `700 ${fs}px "Space Grotesk", sans-serif`;
       c.fillText(it.text, 128, 128);
     }
     const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: tex, roughness: 0.32, metalness: 0.05 }));
