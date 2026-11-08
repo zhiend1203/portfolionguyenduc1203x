@@ -165,8 +165,8 @@ section { position: relative; padding: 18vh var(--pad); }
 .wcard__tag { font: 400 11px var(--mono); color: var(--mut); text-transform: uppercase; letter-spacing: 0.1em; }
 
 /* ---------- shorts ---------- */
-.shorts { background: var(--bg); text-align: center; min-height: 160vh; }
-.fan { position: relative; height: 70vh; margin-top: 8vh; }
+.shorts { background: var(--bg); text-align: center; height: 100vh; padding-top: 12vh; padding-bottom: 0; overflow: hidden; }
+.fan { position: relative; height: 62vh; margin-top: 5vh; }
 .phone {
   position: absolute; left: 50%; top: 0; width: clamp(180px, 20vw, 280px); aspect-ratio: 9 / 16;
   margin-left: calc(clamp(180px, 20vw, 280px) / -2); border-radius: 26px; overflow: hidden;

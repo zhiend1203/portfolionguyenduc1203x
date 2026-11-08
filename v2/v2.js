@@ -406,16 +406,24 @@ function initScroll() {
     });
   });
 
-  // shorts: phones fan out from a stack
+  // shorts: pinned; phones fly in one by one (squash on landing), stack, then fan out
   const phones = $$(".phone");
   const mid = (phones.length - 1) / 2;
-  phones.forEach((ph, i) => {
-    const o = i - mid;
-    gsap.fromTo(ph, { x: 0, y: 120, rotate: o * 3, scale: 0.8 }, {
-      x: () => o * ph.offsetWidth * 1.05, y: Math.abs(o) * 40, rotate: o * 9, scale: 1, ease: "none",
-      scrollTrigger: { trigger: ".fan", start: "top 85%", end: "center 55%", scrub: true, invalidateOnRefresh: true }
-    });
+  const stl = gsap.timeline({
+    scrollTrigger: { trigger: ".shorts", start: "top top", end: "+=" + (phones.length * 60 + 80) + "%", pin: true, scrub: 0.8, invalidateOnRefresh: true }
   });
+  gsap.set(phones, { y: () => innerHeight, rotate: () => gsap.utils.random(-25, 25), scale: 0.7, opacity: 0 });
+  phones.forEach((ph, i) => {
+    stl.to(ph, { y: -i * 8, rotate: (i - mid) * 3, scale: 1, opacity: 1, duration: 1, ease: "power2.in" })
+      .to(ph, { scaleY: 0.86, scaleX: 1.1, duration: 0.15, ease: "power1.out" })
+      .to(ph, { scaleY: 1, scaleX: 1, duration: 0.35, ease: "back.out(3)" });
+  });
+  stl.to(phones, {
+    x: (i, el) => (i - mid) * el.offsetWidth * 1.08,
+    y: (i) => Math.abs(i - mid) * 40,
+    rotate: (i) => (i - mid) * 9,
+    duration: 1.4, ease: "back.out(1.6)", stagger: { each: 0.08, from: "center" }
+  }, "+=0.2").to({}, { duration: 0.6 });
 
   // contact: letters rise
   gsap.from(contactChars, {
