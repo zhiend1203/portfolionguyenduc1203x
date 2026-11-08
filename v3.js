@@ -528,6 +528,16 @@ function startLenis() {
   $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); lenis.scrollTo(a.getAttribute("href"), { duration: 1.6 }); }));
 }
 
+/* ---------- real visible height (some browsers report innerHeight taller than what is actually visible) */
+function fitViewport() {
+  const vv = window.visualViewport, visH = vv ? Math.round(vv.height) : innerHeight;
+  document.documentElement.style.setProperty("--vvh", visH + "px");
+  document.body.style.paddingBottom = Math.max(0, innerHeight - visH) + "px";
+}
+fitViewport();
+window.visualViewport && visualViewport.addEventListener("resize", () => { fitViewport(); setTimeout(() => { lenis && lenis.resize && lenis.resize(); ScrollTrigger.refresh(); }, 100); });
+addEventListener("resize", fitViewport);
+
 /* ---------- boot */
 setTimeout(() => { if (document.body.classList.contains("is-loading")) { document.body.classList.remove("is-loading"); const l = $(".loader"); l && l.remove(); if (!lenis) startLenis(); } }, 6000);
 const refreshAll = () => { lenis && lenis.resize && lenis.resize(); ScrollTrigger.refresh(); };

@@ -14,7 +14,7 @@ section { padding: 16vh var(--pad); }
 @media (max-width: 760px) { .nav__hire { display: none; } }
 
 /* HERO — copy left, framed showreel right */
-.hx { position: relative; min-height: 100vh; padding: 14vh var(--pad) 18vh; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr); gap: 4vw; align-items: center; overflow: hidden; }
+.hx { position: relative; min-height: var(--vvh, 100vh); padding: 14vh var(--pad) 18vh; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr); gap: 4vw; align-items: center; overflow: hidden; }
 .hx__copy { position: relative; z-index: 2; }
 .hx__title { font: 400 clamp(60px, 6.8vw, 190px)/.9 var(--head); letter-spacing: .005em; white-space: nowrap; }
 .hx__sub { margin-top: 24px; max-width: 560px; font-size: clamp(15px, 1.1vw, 20px); line-height: 1.55; color: #d0d0da; }
@@ -89,7 +89,7 @@ section { padding: 16vh var(--pad); }
 
 /* ABOUT + TOOLKIT */
 .abt { position: relative; }
-.abt__grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 6vw; align-items: center; min-height: 80vh; }
+.abt__grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 6vw; align-items: center; min-height: calc(var(--vvh, 100vh) * .8); }
 .abt__cardslot { min-height: 60vh; }
 .abt .stats { margin-top: 48px; }
 .svcx { margin-top: 42px; display: grid; gap: 0; border-top: 1px solid var(--line); }
@@ -97,7 +97,7 @@ section { padding: 16vh var(--pad); }
 .svcx div:hover { padding-left: 14px; background: linear-gradient(90deg, rgba(139,92,246,.12), transparent); }
 .svcx b { font: 600 clamp(18px, 1.5vw, 26px) var(--sub); }
 .svcx span { color: var(--mut); text-align: right; font-size: 14px; }
-.abt .tools { position: relative; height: 80vh; margin-top: 10vh; padding: 0; border-radius: 28px; overflow: hidden; background: radial-gradient(70% 70% at 50% 60%, rgba(139,92,246,.12), transparent), rgba(255,255,255,.015); border: 1px solid var(--line); display: block; }
+.abt .tools { position: relative; height: calc(var(--vvh, 100vh) * .8); margin-top: 10vh; padding: 0; border-radius: 28px; overflow: hidden; background: radial-gradient(70% 70% at 50% 60%, rgba(139,92,246,.12), transparent), rgba(255,255,255,.015); border: 1px solid var(--line); display: block; }
 .abt .tools__title { top: 7vh; }
 @media (max-width: 860px) {
   .abt__grid { grid-template-columns: 1fr; }
@@ -119,7 +119,7 @@ section { padding: 16vh var(--pad); }
 @media (max-width: 860px) { .proc__row { grid-template-columns: 1fr 1fr; row-gap: 50px; } .proc__line { display: none; } }
 
 /* CONTACT */
-.cx { position: relative; min-height: 100vh; height: auto; display: flex; flex-direction: column; justify-content: center; }
+.cx { position: relative; min-height: var(--vvh, 100vh); height: auto; display: flex; flex-direction: column; justify-content: center; }
 .cx .reel { width: min(40vw, 1100px); }
 
 /* card pointer only when visible */
