@@ -11,3 +11,13 @@
 .cx__link b { font: 600 clamp(15px, 1.1vw, 20px) var(--sub); }
 .cx__link i { font-style: normal; color: var(--vio2); }
 .cx__link:hover { border-color: var(--vio); background: rgba(139,92,246,.14); }
+/* page 1 quick contact */
+.hq { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; max-width: 720px; }
+.hq__main { padding: 13px 22px; border-radius: 99px; background: var(--fg); color: #000; font: 600 14px var(--sub); transition: background .3s; }
+.hq__main:hover { background: var(--vio2); }
+.hq__chip { padding: 11px 16px; border-radius: 99px; border: 1px solid rgba(255,255,255,.22); background: rgba(5,5,7,.5); font: 500 12px var(--mono); letter-spacing: .04em; color: #dcdce4; transition: .3s; }
+.hq__chip:hover { border-color: var(--vio2); color: var(--vio2); }
+.cx__links { grid-template-columns: 1fr 1fr; }
+.cx__link { grid-template-columns: 1fr auto; }
+.cx__link span { grid-column: 1 / -1; }
+@media (max-width: 760px) { .cx__links { grid-template-columns: 1fr; } }
