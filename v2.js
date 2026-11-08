@@ -102,11 +102,11 @@ function initBalls() {
   const pv = new THREE.PointLight(0x8b5cf6, 3, 0, 0); pv.position.set(400, -300, 300); sc.add(pv);
 
   const items = [
-    { img: "../assets/moho.png", bg: "#ffffff", r: 1.25 },
-    { img: "../assets/ae.png", bg: "#0b0b1a", r: 1.05 },
-    { img: "../assets/pr.png", bg: "#0b0b1a", r: 1.0 },
-    { img: "../assets/ps.png", bg: "#0b0b1a", r: 0.95 },
-    { img: "../assets/ai.png", bg: "#0b0b1a", r: 0.9 },
+    { img: "assets/moho.png", bg: "#ffffff", r: 1.25 },
+    { img: "assets/ae.png", bg: "#0b0b1a", r: 1.05 },
+    { img: "assets/pr.png", bg: "#0b0b1a", r: 1.0 },
+    { img: "assets/ps.png", bg: "#0b0b1a", r: 0.95 },
+    { img: "assets/ai.png", bg: "#0b0b1a", r: 0.9 },
     { text: "Rigging", bg: "#8b5cf6", fg: "#fff", r: 0.95 },
     { text: "Lip-sync", bg: "#f4f4f6", fg: "#0a0a0c", r: 0.85 },
     { text: "Blender", bg: "#16161c", fg: "#fff", r: 0.8 },

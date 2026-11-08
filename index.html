@@ -5,196 +5,193 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Nguyen Minh Duc — 2D Animator</title>
   <link rel="canonical" href="https://animation.gripe/" />
-  <meta name="description" content="Nguyen Minh Duc — Moho 2D animator for faceless YouTube, storytelling, stickman videos and TVC commercials." />
   <meta property="og:title" content="Nguyen Minh Duc — Moho 2D Animator" />
-  <meta property="og:image" content="https://animation.gripe/assets/avatar.jpg" />
+  <meta property="og:image" content="https://animation.gripe/assets/duc-card.jpg" />
+  <meta name="description" content="Nguyen Minh Duc — Moho 2D animator for faceless YouTube, storytelling, stickman videos and TVC commercials." />
   <link rel="icon" href="assets/avatar.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="v2.css?v=root1" />
 </head>
-<body class="is-intro">
-  <!-- INTRO -->
-  <div class="intro" aria-hidden="true">
-    <div class="intro__icons">
-      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-      <svg viewBox="0 0 24 24"><path d="M3 21l3.8-1 11-11-2.8-2.8-11 11L3 21zM16.5 4.5l2.8 2.8 1.4-1.4-2.8-2.8z" /></svg>
-      <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 8h16M4 16h16M8 4v4M16 4v4M8 16v4M16 16v4" fill="none" stroke-width="1.6" /></svg>
-    </div>
-    <h1 class="intro__title">
-      <span class="intro__line"><span class="w">Welcome</span> <span class="w">to</span> <span class="w">my</span></span>
-      <span class="intro__line"><span class="w">Animation</span> <span class="w">Portfolio</span></span>
-    </h1>
-    <p class="intro__url"><span>⊕</span> animation.gripe</p>
+<body class="is-loading">
+  <!-- LOADER -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader__count"><span id="loadNum">0</span>%</div>
+    <div class="loader__bar"><span id="loadBar"></span></div>
+    <p class="loader__hint">warming up the rig…</p>
   </div>
 
-  <!-- NAV -->
-  <header class="nav">
-    <div class="nav__bar">
-      <a href="#home" class="nav__logo">duc.anim</a>
-      <nav class="nav__links">
-        <a href="#home" class="is-active">Home</a>
-        <a href="#about">About</a>
-        <a href="#portfolio">Portfolio</a>
-        <a href="#contact">Contact</a>
-      </nav>
+  <div class="glow glow--a" aria-hidden="true"></div>
+  <div class="glow glow--b" aria-hidden="true"></div>
+  <div class="pc-wrap" aria-hidden="true">
+    <div class="ghost"></div><div class="ghost"></div><div class="ghost"></div>
+    <div class="pcard" id="pcard">
+      <div class="pcard__face pcard__front">
+        <img src="assets/duc-card.jpg" alt="" draggable="false" />
+        <span class="pc-corner tl"></span><span class="pc-corner tr"></span><span class="pc-corner bl"></span><span class="pc-corner br"></span>
+        <div class="pc-top"><span class="rec">● REC</span><span id="tc">00:00:00:00</span></div>
+        <div class="pc-bot"><b>NGUYEN MINH DUC</b><span>2D ANIMATOR · MOHO</span></div>
+        <div class="glare"></div>
+      </div>
+      <div class="pcard__face pcard__back">
+        <div class="pb-head"><span>ID // ANIMATOR</span><span>VN</span></div>
+        <div class="pb-name">DUC</div>
+        <div class="pb-rows">
+          <div><span>Role</span><b>2D Animator</b></div>
+          <div><span>Tool</span><b>Moho Pro</b></div>
+          <div><span>Base</span><b>Hai Phong · UTC+7</b></div>
+          <div><span>Status</span><b class="on">● Available</b></div>
+        </div>
+        <div class="pb-tl"><i></i><i></i><i></i><i></i><i></i><span class="pb-ph"></span></div>
+        <div class="pb-foot"><span>frame</span><b id="frameNo">001</b></div>
+        <div class="glare"></div>
+      </div>
     </div>
+  </div>
+  <div class="cursor" aria-hidden="true"><span></span></div>
+  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+  <header class="nav">
+    <a href="#home" class="nav__logo">DUC<span>.</span>ANIM</a>
+    <nav class="nav__links">
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+    </nav>
   </header>
+
+  <aside class="side side--left">
+    <a href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener" aria-label="Upwork" class="side__ico">Up</a>
+    <button class="side__ico" data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel" aria-label="Showreel">▶</button>
+    <span class="side__line"></span>
+  </aside>
+  <aside class="side side--right">
+    <button class="side__link" data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel">SHOWREEL ↗</button>
+  </aside>
 
   <main>
     <!-- HERO -->
     <section class="hero" id="home">
-      <div class="hero__content">
-        <p class="label fx"><span class="label__dot"></span> Available for work</p>
-        <h2 class="hero__title fx">
-          <span class="t-white">Moho 2D</span>
-          <span class="t-gray">Animator</span>
-        </h2>
-        <p class="hero__type fx"><span id="typed"></span><span class="caret">_</span></p>
-        <p class="hero__desc fx">I turn scripts and voiceovers into animated videos for faceless YouTube, storytelling, explainer &amp; stickman channels — plus TVC spots for brands.</p>
-        <div class="tags fx">
-          <span class="tag">Moho Pro</span><span class="tag">After Effects</span><span class="tag">Premiere</span>
+      <div class="hero__copy">
+        <p class="eyebrow" data-hero>Hi, I'm Nguyen Minh Duc — a</p>
+        <h1 class="hero__title">
+          <span class="line"><span class="split" data-hero-title>MOHO 2D</span></span>
+          <span class="line"><span class="split outline" data-hero-title>ANIMATOR</span></span>
+        </h1>
+        <p class="hero__sub" data-hero>Faceless YouTube · Storytelling · Stickman · TVC</p>
+      </div>
+    <div class="marquee" aria-hidden="true">
+        <div class="marquee__track" id="marquee">
+          <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
+          <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
         </div>
-        <ul class="hero__notes fx">
-          <li>↓ explore my work below</li>
-          <li>↗ open to full-time &amp; freelance projects</li>
-        </ul>
       </div>
 
-      <div class="badge" id="badge">
-        <canvas class="badge__strap" id="strap"></canvas>
-        <div class="badge__card" id="badgeCard">
-          <span class="badge__clip"></span>
-          <div class="badge__photo"><img src="assets/avatar.jpg" alt="Nguyen Minh Duc" draggable="false" /></div>
-          <div class="badge__meta">
-            <span>Nguyen Minh Duc</span>
-            <span>2D Animator</span>
-          </div>
-        </div>
-        <p class="badge__hint">drag me</p>
-      </div>
-
-      <a href="#about" class="hero__scroll">Scroll <span>↓</span></a>
+      <a href="#about" class="hero__scroll" data-hero><span class="mouse"><span></span></span> scroll</a>
     </section>
 
     <!-- ABOUT -->
     <section class="about" id="about">
-      <div class="about__grid">
-        <div>
-          <p class="label reveal">About me</p>
-          <h2 class="about__name reveal">Nguyen<br />Minh Duc</h2>
-          <p class="about__desc reveal">2D animator based in Hai Phong, Vietnam, with 3+ years in Moho. I build reusable character rigs so every new episode is faster and stays on-model — and I understand YouTube pacing: visuals that keep moving so viewers keep watching.</p>
-          <blockquote class="quote reveal">“Turning scripts into stories people actually watch to the end.”</blockquote>
-          <div class="btns reveal">
-            <a class="btn btn--solid" href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24"><path d="M4 4h10l6 6v10H4z M14 4v6h6" fill="none" stroke="currentColor" stroke-width="1.8" /></svg>
-              Hire me on Upwork
-            </a>
-            <button class="btn btn--ghost" data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel">
-              <span>↗</span> Watch Showreel
-            </button>
-          </div>
+      <div class="about__box">
+        <p class="kicker"><span>01</span> About me</p>
+        <p class="about__text scrub-words">2D animator based in Hai Phong, Vietnam, with 5+ years in Moho. I build reusable character rigs so every new episode is faster and stays on-model — and I understand YouTube pacing: visuals that keep moving so viewers keep watching.</p>
+        <div class="stats">
+          <div class="stat"><b data-count="1000" data-suffix="+">0</b><span>Videos made</span></div>
+          <div class="stat"><b data-count="500" data-suffix="+">0</b><span>YouTube animation projects</span></div>
+          <div class="stat"><b data-count="5" data-suffix="+">0</b><span>Years in Moho</span></div>
         </div>
-        <div class="about__photo reveal">
-          <div class="about__ring"><img src="assets/avatar.jpg" alt="Nguyen Minh Duc portrait" loading="lazy" /></div>
-        </div>
-      </div>
-
-      <div class="stats">
-        <a href="#portfolio" class="stat reveal">
-          <span class="stat__icon">&lt;/&gt;</span>
-          <span class="stat__num" data-count="22">0</span>
-          <span class="stat__label">Videos</span>
-          <span class="stat__arrow">↗</span>
-        </a>
-        <a href="#portfolio" class="stat reveal">
-          <span class="stat__icon">◎</span>
-          <span class="stat__num" data-count="3" data-suffix="+">0</span>
-          <span class="stat__label">Years animating</span>
-          <span class="stat__arrow">↗</span>
-        </a>
-        <a href="#contact" class="stat reveal">
-          <span class="stat__icon">◷</span>
-          <span class="stat__num" data-count="30" data-suffix="+">0</span>
-          <span class="stat__label">Hours / week</span>
-          <span class="stat__arrow">↗</span>
-        </a>
       </div>
     </section>
 
-    <!-- PORTFOLIO -->
-    <section class="portfolio" id="portfolio">
-      <h2 class="section-title reveal">Portfolio Showcase</h2>
-      <p class="section-sub reveal">Explore my work through commercials, YouTube series, shorts and the tools I animate with.</p>
-
-      <div class="tabs reveal" role="tablist">
-        <span class="tabs__pill" aria-hidden="true"></span>
-        <button class="tab is-active" data-tab="commercial" role="tab">Commercials</button>
-        <button class="tab" data-tab="series" role="tab">YouTube Series</button>
-        <button class="tab" data-tab="shorts" role="tab">Shorts</button>
-        <button class="tab" data-tab="tools" role="tab">Tools</button>
+    <!-- SERVICES (desk scene) -->
+    <section class="services" id="services">
+      <div class="services__head">
+        <p class="kicker"><span>02</span> Services</p>
+        <h2 class="big split-scrub">WHAT I DO</h2>
       </div>
+      <div class="services__list">
+        <article class="svc">
+          <span class="svc__n">A</span>
+          <h3>Character Animation</h3>
+          <p>Acting, walk cycles, lip-sync and camera moves — animated from your script and voiceover.</p>
+          <div class="svc__tags"><span>Moho Pro</span><span>Lip-sync</span><span>Acting</span></div>
+        </article>
+        <article class="svc">
+          <span class="svc__n">B</span>
+          <h3>Rigging</h3>
+          <p>Reusable Moho rigs with smart bones, so every new episode is faster and stays on-model.</p>
+          <div class="svc__tags"><span>Smart bones</span><span>Switch layers</span></div>
+        </article>
+        <article class="svc">
+          <span class="svc__n">C</span>
+          <h3>Edit &amp; Composite</h3>
+          <p>Motion graphics, compositing and final edit ready for YouTube, Shorts or TV.</p>
+          <div class="svc__tags"><span>After Effects</span><span>Premiere</span></div>
+        </article>
+      </div>
+    </section>
 
-      <div class="panel" id="panel"></div>
+    <!-- PROCESS -->
+    <section class="process" id="process">
+      <p class="kicker"><span>03</span> Process</p>
+      <h2 class="big split-scrub">HOW IT MOVES</h2>
+      <div class="timeline">
+        <svg class="timeline__svg" viewBox="0 0 4 100" preserveAspectRatio="none"><line x1="2" y1="0" x2="2" y2="100" /></svg>
+        <div class="step"><span class="step__dot"></span><span class="step__n">01</span><div><h3>Brief</h3><p>Send your script, voiceover and a reference style.</p></div></div>
+        <div class="step"><span class="step__dot"></span><span class="step__n">02</span><div><h3>Rig &amp; design</h3><p>Characters and scenes built as reusable Moho rigs.</p></div></div>
+        <div class="step"><span class="step__dot"></span><span class="step__n">03</span><div><h3>Animate</h3><p>Draft sent fast so you can give notes early.</p></div></div>
+        <div class="step"><span class="step__dot"></span><span class="step__n">04</span><div><h3>Deliver</h3><p>Revisions, then 1080p / 4K delivery.</p></div></div>
+      </div>
+    </section>
+
+    <!-- WORK (horizontal) -->
+    <section class="work" id="work">
+      <div class="work__pin">
+        <div class="work__head">
+          <p class="kicker"><span>04</span> Selected work</p>
+          <h2 class="big">MY WORK</h2>
+          <p class="work__hint">keep scrolling →</p>
+        </div>
+        <div class="work__track" id="workTrack"></div>
+      </div>
+    </section>
+
+    <!-- SHORTS -->
+    <section class="shorts" id="shorts">
+      <p class="kicker"><span>05</span> Vertical</p>
+      <h2 class="big split-scrub">SHORTS</h2>
+      <div class="fan" id="fan"></div>
+    </section>
+
+    <!-- TOOLS (physics balls) -->
+    <section class="tools" id="tools">
+      <h2 class="big tools__title split-scrub">MY TOOLKIT</h2>
+      <p class="tools__hint">move your mouse through them</p>
+      <canvas id="balls"></canvas>
     </section>
 
     <!-- CONTACT -->
     <section class="contact" id="contact">
-      <h2 class="section-title reveal">Contact Me</h2>
-      <p class="section-sub reveal">Have a script in mind? Send it over and let's make it move.</p>
-
-      <div class="contact__grid">
-        <div class="glass reveal">
-          <h3 class="glass__title">Work with me</h3>
-          <p class="glass__sub">Send your script, voiceover and a reference style — I'll reply with a plan and a quote. Happy to start with a short paid test.</p>
-          <ol class="flow">
-            <li><span>01</span> Brief — script, VO &amp; reference</li>
-            <li><span>02</span> Rig &amp; design scenes</li>
-            <li><span>03</span> Animate &amp; send draft</li>
-            <li><span>04</span> Revisions → 1080p / 4K delivery</li>
-          </ol>
-          <a class="btn btn--solid btn--wide" href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" /></svg>
-            Send a message on Upwork
-          </a>
-        </div>
-
-        <div class="glass reveal">
-          <h3 class="glass__title">Connect</h3>
-          <p class="glass__sub">Where to find me and how I work.</p>
-          <div class="links">
-            <a class="link" href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener">
-              <span class="link__icon">Up</span><span><b>Upwork</b><small>Nguyen Minh Duc</small></span><span class="link__arrow">↗</span>
-            </a>
-            <button class="link" data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel">
-              <span class="link__icon">▶</span><span><b>Showreel</b><small>Watch now</small></span><span class="link__arrow">↗</span>
-            </button>
-            <div class="link">
-              <span class="link__icon">◷</span><span><b>Timezone</b><small>UTC+7 · Hai Phong, VN</small></span>
-            </div>
-            <div class="link">
-              <span class="link__icon">⚡</span><span><b>Availability</b><small>Full-time · 30+ hrs/week</small></span>
-            </div>
-          </div>
-          <p class="glass__h4">What I animate</p>
-          <div class="chips">
-            <span>Stickman explainers</span><span>History &amp; storytelling</span><span>Faceless YouTube</span>
-            <span>Kids animation</span><span>TVC &amp; product spots</span><span>YouTube Shorts</span>
-            <span>Character rigs</span><span>Lip-sync</span>
-          </div>
-        </div>
+      <p class="kicker"><span>06</span> Contact</p>
+      <h2 class="contact__title">
+        <span class="line"><span class="split" data-contact>LET'S MAKE</span></span>
+        <span class="line"><span class="split outline" data-contact>IT MOVE</span></span>
+      </h2>
+      <p class="contact__sub">Have a script in mind? Send it over — I'll reply with a plan and a quote. Happy to start with a short paid test.</p>
+      <a class="cta magnetic" href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener"><span>Hire me on Upwork ↗</span></a>
+      <div class="contact__meta">
+        <span>UTC+7 · Hai Phong, VN</span><span>Full-time · 30+ hrs/week</span><span>© <span id="year"></span> Nguyen Minh Duc</span>
       </div>
     </section>
   </main>
 
-  <footer class="footer">© <span id="year"></span> Nguyen Minh Duc. All rights reserved.</footer>
 
-  <!-- VIDEO MODAL -->
-  <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Video player">
-    <div class="modal__backdrop" data-close></div>
+  <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal__bg" data-close></div>
     <div class="modal__box">
-      <button class="modal__close" data-close aria-label="Close">✕</button>
+      <button class="modal__x" data-close aria-label="Close">✕</button>
       <div class="modal__media" id="modalMedia"></div>
       <p class="modal__title" id="modalTitle"></p>
     </div>
@@ -203,8 +200,7 @@
   <script src="vendor/gsap.min.js"></script>
   <script src="vendor/ScrollTrigger.min.js"></script>
   <script src="vendor/lenis.min.js"></script>
-  <script src="projects.js"></script>
-  <script src="lanyard.js"></script>
-  <script src="main.js"></script>
+  <script src="projects.js?v=root1"></script>
+  <script type="module" src="v2.js?v=root1"></script>
 </body>
 </html>

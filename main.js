@@ -17,11 +17,11 @@
     shorts: "Vertical 9:16 short for YouTube Shorts, TikTok and Reels."
   };
   const TOOLS = [
-    { name: "Moho Pro", img: "assets/moho.png", light: true },
-    { name: "After Effects", img: "assets/ae.png" },
-    { name: "Premiere Pro", img: "assets/pr.png" },
-    { name: "Photoshop", img: "assets/ps.png" },
-    { name: "Illustrator", img: "assets/ai.png" },
+    { name: "Moho Pro", img: "../assets/moho.png", light: true },
+    { name: "After Effects", img: "../assets/ae.png" },
+    { name: "Premiere Pro", img: "../assets/pr.png" },
+    { name: "Photoshop", img: "../assets/ps.png" },
+    { name: "Illustrator", img: "../assets/ai.png" },
     { name: "Blender", text: "B" }
   ];
   const DATA = {
