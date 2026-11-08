@@ -529,6 +529,11 @@ function startLenis() {
 }
 
 /* ---------- boot */
+setTimeout(() => { if (document.body.classList.contains("is-loading")) { document.body.classList.remove("is-loading"); const l = $(".loader"); l && l.remove(); if (!lenis) startLenis(); } }, 6000);
+const refreshAll = () => { lenis && lenis.resize && lenis.resize(); ScrollTrigger.refresh(); };
+addEventListener("load", () => setTimeout(refreshAll, 300));
+document.fonts && document.fonts.ready.then(() => setTimeout(refreshAll, 300));
+new ResizeObserver(() => { clearTimeout(window.__rz); window.__rz = setTimeout(refreshAll, 200); }).observe(document.querySelector("main"));
 let balls = initBalls();
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 window.scrollTo(0, 0);
@@ -540,7 +545,7 @@ Object.assign(cur, C); trail.forEach((g) => Object.assign(g, C));
 gsap.timeline()
   .to(load, { v: 100, duration: 1.3, ease: "power2.inOut", onUpdate: () => { $("#loadNum").textContent = Math.round(load.v); $("#loadBar").style.width = load.v + "%"; } })
   .to(".loader", { yPercent: -100, duration: 0.9, ease: "power4.inOut" })
-  .add(() => { document.body.classList.remove("is-loading"); $(".loader").remove(); startLenis(); }, "-=0.3")
+  .add(() => { document.body.classList.remove("is-loading"); const l = $(".loader"); l && l.remove(); if (!lenis) startLenis(); }, "-=0.3")
   .to(C, { y: P.hero().y, rz: P.hero().rz, duration: 0.55, ease: "power2.in" }, "-=0.2")
   .to(C, { sx: 1.22, sy: 0.74, duration: 0.09, ease: "power1.out" })
   .to(C, { sx: 1, sy: 1, duration: 0.9, ease: "elastic.out(1.1, 0.35)" })
