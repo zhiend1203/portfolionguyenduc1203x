@@ -407,17 +407,17 @@ function buildTimelines() {
 const BG = (() => {
   // high-res stills extracted from the source videos (see v2/bg)
   const pick = [
-    { src: "bg/bg-hero.webp", vid: "bg/bg-hero.mp4", title: "Vietnam Airlines" },
-    { src: "bg/bg-about.webp", vid: "bg/bg-about.mp4", title: "Team Project 0225" },
-    { src: "bg/bg-services.webp", vid: "bg/bg-services.mp4", title: "Team Project 1–4" },
-    { src: "bg/bg-process.webp", vid: "bg/bg-process.mp4", title: "Ghidora Tank" },
-    { dim: true, src: "bg/bg-work.webp", vid: "bg/bg-work.mp4", title: "YOBEVE — Flavour" },
-    { src: "bg/bg-shorts.webp", vid: "bg/bg-shorts.mp4", title: "Choco" },
-    { src: "bg/bg-tools.webp", vid: "bg/bg-tools.mp4", title: "YOBEVE" },
-    { src: "bg/bg-contact.webp", vid: "bg/bg-contact.mp4", title: "Showreel" }
+    { src: "bg/bg-hero.webp", title: "Vietnam Airlines" },
+    { src: "bg/bg-about.webp", title: "Team Project 0225" },
+    { src: "bg/bg-services.webp", title: "Team Project 1–4" },
+    { src: "bg/bg-process.webp", title: "Ghidora Tank" },
+    { dim: true, src: "bg/bg-work.webp", title: "YOBEVE — Flavour" },
+    { src: "bg/bg-shorts.webp", title: "Choco" },
+    { src: "bg/bg-tools.webp", title: "YOBEVE" },
+    { src: "bg/bg-contact.webp", title: "Showreel" }
   ];
   const host = $("#bgshow");
-  const useVideo = !reduce && !(navigator.connection && navigator.connection.saveData);
+  const useVideo = false; // background videos removed — still images only
   const slides = pick.map((p) => {
     const d = document.createElement("div");
     d.className = "bgs" + (p.dim ? " bgs--dim" : "");
