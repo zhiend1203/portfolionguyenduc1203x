@@ -446,6 +446,11 @@ const BG = (() => {
     }
     cur = i;
   }
+  // keep the active clip playing if the browser pauses it (power saving, tab switch)
+  const resume = () => { const v = slides[cur] && slides[cur].querySelector("video"); if (v && v.paused && !document.hidden) v.play().catch(() => {}); };
+  document.addEventListener("visibilitychange", resume);
+  setInterval(resume, 1500);
+  addEventListener("pointerdown", resume, { passive: true });
   return { show };
 })();
 
