@@ -53,11 +53,11 @@ const faces = $$(".glare");
 const C = { x: -0.24, y: 0, s: 1, ry: 0, rz: -4, o: 1, sx: 1, sy: 1 };
 const isWide = () => innerWidth > 760;
 const P = {
-  hero: () => isWide() ? { x: -0.24, y: 0, s: 1, ry: 0, rz: -4, o: 1 } : { x: 0, y: -0.16, s: 0.75, ry: 0, rz: -3, o: 1 },
+  hero: () => isWide() ? { x: -0.24, y: 0, s: 1, ry: 0, rz: -4, o: 1 } : { x: 0.2, y: -0.28, s: 0.5, ry: 0, rz: 5, o: 1 },
   about: () => isWide() ? { x: -0.27, y: 0.02, s: 1, ry: 180, rz: 3, o: 1 } : { x: 0, y: -0.2, s: 0.6, ry: 180, rz: 3, o: 0.25 },
-  services: () => isWide() ? { x: -0.25, y: 0.13, s: 0.9, ry: 360, rz: -6, o: 1 } : { x: 0.25, y: 0.3, s: 0.4, ry: 360, rz: -8, o: 0.3 },
+  services: () => isWide() ? { x: -0.25, y: 0.13, s: 0.9, ry: 360, rz: -6, o: 1 } : { x: 0.3, y: 0.36, s: 0.3, ry: 360, rz: -8, o: 0 },
   process: () => isWide() ? { x: -0.34, y: 0.14, s: 0.8, ry: 540, rz: 5, o: 1 } : { x: 0.3, y: 0.3, s: 0.4, ry: 540, rz: 5, o: 0 },
-  out: () => isWide() ? { x: 0.39, y: 0.12, s: 0.52, ry: 540, rz: -4, o: 1 } : { x: 0.28, y: 0.3, s: 0.38, ry: 540, rz: -4, o: 1 }
+  out: () => isWide() ? { x: 0.39, y: 0.12, s: 0.52, ry: 540, rz: -4, o: 1 } : { x: 0.34, y: -0.33, s: 0.3, ry: 540, rz: -4, o: 1 }
 };
 const cur = { x: 0, y: 0, s: 1, ry: 0, rz: 0 };
 const trail = ghosts.map(() => ({ x: 0, y: 0, s: 1, ry: 0, rz: 0 }));
@@ -82,10 +82,17 @@ card.addEventListener("pointermove", (e) => {
   D.x = drag.dx + mx / innerWidth; D.y = drag.dy + my / VH();
 });
 const endDrag = () => { drag = null; card.classList.remove("is-drag"); };
+// touch: tap the card to open / close its info (no hover on phones)
+card.addEventListener("click", (e) => {
+  if (!isTouch || e.target.closest("a") || dragMoved) return;
+  const on = !card.classList.contains("is-hover");
+  card.classList.toggle("is-hover", on); hovT = on ? 1 : 0;
+});
+document.addEventListener("click", (e) => { if (isTouch && !card.contains(e.target)) { card.classList.remove("is-hover"); hovT = 0; } });
 card.addEventListener("pointerup", endDrag); card.addEventListener("pointercancel", endDrag);
 ["touchstart", "touchmove", "touchend", "wheel"].forEach((t) => card.addEventListener(t, (e) => { if (docked()) e.stopPropagation(); }, { passive: true }));
-card.addEventListener("pointerenter", () => { hovT = 1; card.classList.add("is-hover"); });
-card.addEventListener("pointerleave", () => { hovT = 0; card.classList.remove("is-hover"); });
+card.addEventListener("pointerenter", () => { if (isTouch) return; hovT = 1; card.classList.add("is-hover"); });
+card.addEventListener("pointerleave", () => { if (isTouch) return; hovT = 0; card.classList.remove("is-hover"); });
 function renderCard() {
   mouse.sx = lerp(mouse.sx, mouse.x, 0.08);
   mouse.sy = lerp(mouse.sy, mouse.y, 0.08);
@@ -95,8 +102,9 @@ function renderCard() {
   hov = lerp(hov, hovT, 0.12);
   const now = performance.now() / 1000;
   if (!docked()) { D.x = lerp(D.x, 0, 0.12); D.y = lerp(D.y, 0, 0.12); }
-  const hs = cur.s < 0.75 ? lerp(cur.s, 0.9, hov) : cur.s * (1 + 0.3 * hov);
-  const idle = { ...cur, x: cur.x + D.x, y: cur.y + D.y + Math.sin(now * 1.3) * 0.008 * (1 - hov), rz: cur.rz * (1 - hov) + Math.sin(now * 0.9) * 1.6 * (1 - hov), s: hs };
+  const hs = cur.s < 0.75 ? lerp(cur.s, isWide() ? 0.9 : 1.3, hov) : cur.s * (1 + 0.3 * hov);
+  const pull = !isWide() && docked() ? hov : 0; // on phones the opened card moves to the centre
+  const idle = { ...cur, x: lerp(cur.x + D.x, 0, pull), y: lerp(cur.y + D.y, 0, pull) + Math.sin(now * 1.3) * 0.008 * (1 - hov), rz: cur.rz * (1 - hov) + Math.sin(now * 0.9) * 1.6 * (1 - hov), s: hs };
   const rx = mouse.sy * 9 * (1 - hov * 0.6), ty = mouse.sx * 14 * (1 - hov * 0.6);
   card.style.transform = tf(idle, rx, ty) + ` scale(${C.sx}, ${C.sy})`;
   card.style.opacity = C.o;
