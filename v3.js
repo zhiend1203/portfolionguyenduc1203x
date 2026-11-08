@@ -63,8 +63,8 @@ function tf(t, rx = 0, extraY = 0) {
   return `translate3d(${t.x * innerWidth}px, ${t.y * innerHeight}px, 0) perspective(1200px) rotateX(${rx}deg) rotateY(${t.ry + extraY}deg) rotateZ(${t.rz}deg) scale(${t.s})`;
 }
 let hov = 0, hovT = 0;
-card.addEventListener("pointerenter", () => { hovT = 1; card.classList.add("is-hover"); });
-card.addEventListener("pointerleave", () => { hovT = 0; card.classList.remove("is-hover"); });
+card.addEventListener("pointerenter", () => { hovT = 1; card.classList.add("is-hover"); gsap.to(card, { scale: 1.15, rotation: 0, duration: 0.5, ease: "back.out(2)" }); });
+card.addEventListener("pointerleave", () => { hovT = 0; card.classList.remove("is-hover"); gsap.to(card, { scale: 1, rotation: -4, duration: 0.6, ease: "power3.out" }); });
 function renderCard() {
   mouse.sx = lerp(mouse.sx, mouse.x, 0.08);
   mouse.sy = lerp(mouse.sy, mouse.y, 0.08);
@@ -91,7 +91,7 @@ function renderCard() {
     $("#tc").textContent = `00:00:${String(Math.floor(fr / 24) % 60).padStart(2, "0")}:${String(fr % 24).padStart(2, "0")}`;
   }
 }
-gsap.ticker.add(renderCard);
+// floating card renderer removed — cards live in the layout now
 
 /* ============================================================
    PHYSICS BALLS (toolkit)
@@ -460,24 +460,15 @@ function buildStops() {
   }
   stops = [[0, P.hero()], [vh * 0.75, P.heroOut()], [a - vh * 0.9, P.aboutIn()], [a - vh * 0.05, P.about()], [a + ah - vh * 0.75, P.about()], [a + ah - vh * 0.1, P.out()]];
 }
+// card back: playhead + frame follow page scroll
 gsap.ticker.add(() => {
-  if (!ready) return;
-  const y = scrollY;
-  let i = 0;
-  while (i < stops.length - 2 && y > stops[i + 1][0]) i++;
-  const [a, A] = stops[i], [b, B] = stops[i + 1];
-  const t = gsap.parseEase("power2.inOut")(clamp((y - a) / Math.max(1, b - a)));
-  for (const k of ["x", "y", "s", "ry", "rz", "o"]) C[k] = lerp(A[k], B[k], t);
-  card.classList.toggle("is-off", C.o < 0.3);
-  const p = y / Math.max(1, document.documentElement.scrollHeight - innerHeight);
+  const p = scrollY / Math.max(1, document.documentElement.scrollHeight - innerHeight);
   card.style.setProperty("--p", p.toFixed(3));
   $("#frameNo").textContent = String(Math.round(p * 240) + 1).padStart(3, "0");
 });
 
 /* ---------- scroll reveals */
 function initScroll() {
-  buildStops(); ready = true;
-  ScrollTrigger.addEventListener("refresh", buildStops);
 
   // hero parallax out
   gsap.to(".hx__screen", { yPercent: 12, rotate: -2, scale: 0.94, ease: "none", scrollTrigger: { trigger: ".hx", start: "top top", end: "bottom top", scrub: true } });
@@ -504,6 +495,8 @@ function initScroll() {
   });
   // archive cards
   ScrollTrigger.batch(".ac", { start: "top 95%", onEnter: (els) => gsap.fromTo(els, { y: 50, opacity: 0, rotate: 3 }, { y: 0, opacity: 1, rotate: 0, duration: 0.7, stagger: 0.05, ease: "back.out(1.5)" }) });
+  // about card flips from its photo side to the ID side as it enters
+  gsap.fromTo(card, { rotationY: -90, rotation: 10, y: 120, transformPerspective: 1200 }, { rotationY: 0, rotation: -4, y: 0, duration: 1.4, ease: "back.out(1.4)", scrollTrigger: { trigger: ".abt__cardslot", start: "top 80%" } });
   // about words + counters + services rows
   const words = splitWords($(".scrub-words"));
   gsap.fromTo(words, { opacity: 0.12 }, { opacity: 1, stagger: 0.1, ease: "none", scrollTrigger: { trigger: ".about__text", start: "top 80%", end: "bottom 45%", scrub: true } });
@@ -564,16 +557,11 @@ window.scrollTo(0, 0);
 const load = { v: 0 };
 gsap.set(heroChars, { yPercent: 110 });
 gsap.set("[data-hero]", { opacity: 0, y: 20 });
-buildStops();
-Object.assign(C, P.hero(), { y: -1.2, rz: 14, sx: 0.8, sy: 1.3 });
-Object.assign(cur, C); trail.forEach((g) => Object.assign(g, C));
 gsap.timeline()
   .to(load, { v: 100, duration: 1.3, ease: "power2.inOut", onUpdate: () => { $("#loadNum").textContent = Math.round(load.v); $("#loadBar").style.width = load.v + "%"; } })
   .to(".loader", { yPercent: -100, duration: 0.9, ease: "power4.inOut" })
   .add(() => { document.body.classList.remove("is-loading"); const l = $(".loader"); l && l.remove(); if (!lenis) startLenis(); }, "-=0.3")
-  .to(C, { y: P.hero().y, rz: P.hero().rz, duration: 0.55, ease: "power2.in" }, "-=0.2")
-  .to(C, { sx: 1.22, sy: 0.74, duration: 0.09, ease: "power1.out" })
-  .to(C, { sx: 1, sy: 1, duration: 0.9, ease: "elastic.out(1.1, 0.35)" })
-  .to(heroChars, { yPercent: 0, duration: 1.1, ease: "power4.out", stagger: 0.035 }, "-=1.1")
+  .fromTo(".hcard", { y: -400, rotate: 30, scaleY: 1.2, scaleX: 0.85, opacity: 0 }, { y: 0, rotate: 8, scaleY: 1, scaleX: 1, opacity: 1, duration: 1.1, ease: "bounce.out" }, "-=0.2")
+  .to(heroChars, { yPercent: 0, duration: 1.1, ease: "power4.out", stagger: 0.035 }, "<")
   .to("[data-hero]", { opacity: 1, y: 0, duration: 0.8, stagger: 0.1 }, "<0.3")
   .add(initScroll);
