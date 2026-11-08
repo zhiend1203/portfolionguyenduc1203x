@@ -407,7 +407,7 @@ const BG = (() => {
   const pick = [
     { src: "bg/bg-hero.webp", title: "Vietnam Airlines" },
     { src: "bg/bg-about.webp", title: "Team Project 0225" },
-    { src: "bg/bg-services.webp", title: "Techcombank" },
+    { src: "bg/bg-services.webp", title: "Team Project 1–4" },
     { src: "bg/bg-process.webp", title: "Ghidora Tank" },
     { src: "bg/bg-work.webp", title: "YOBEVE — Flavour" },
     { src: "bg/bg-shorts.webp", title: "Choco" },
