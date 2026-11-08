@@ -50,7 +50,7 @@ const faces = $$(".glare");
 const C = { x: -0.24, y: 0, s: 1, ry: 0, rz: -4, o: 1, sx: 1, sy: 1 };
 const isWide = () => innerWidth > 760;
 const P = {
-  hero: () => isWide() ? { x: 0.3, y: 0.0, s: 1, ry: 0, rz: 5, o: 1 } : { x: 0.18, y: -0.24, s: 0.55, ry: 0, rz: 5, o: 1 },
+  hero: () => isWide() ? { x: 0.39, y: -0.28, s: 0.58, ry: 0, rz: 9, o: 1 } : { x: 0.3, y: -0.3, s: 0.4, ry: 0, rz: 9, o: 1 },
   heroOut: () => ({ x: 0.3, y: -1.0, s: 0.8, ry: 90, rz: 20, o: 0 }),
   aboutIn: () => ({ x: -0.3, y: 1.0, s: 0.8, ry: 90, rz: -20, o: 0 }),
   about: () => isWide() ? { x: -0.24, y: 0.0, s: 1.1, ry: 180, rz: -4, o: 1 } : { x: 0, y: 0, s: 0.6, ry: 180, rz: -4, o: 0 },
@@ -238,14 +238,17 @@ const FEATURED = [
   { id: "14KowU4q7yDaDcYJJr0K9TenHLvE0dxbW", t: "Techcombank", m: "Commercial · motion + 2D", chips: ["After Effects", "Compositing"], v: "media/p-techcombank", pos: "8 / 13", row: "1 / 5", tall: true },
   { id: "1XbeNOH6H1rD17PHiLUhVLBW8-GIDWm6O", t: "Ghidora Tank", m: "YouTube · tank animation", chips: ["Moho rig", "FX", "Action"], v: "media/p-ghidora", pos: "1 / 8", row: "3 / 5" },
   { id: "1DxgHaNpg3jPo_-2VAzueRckdbaf8rinR", t: "YOBEVE", m: "TVC · product animation", chips: ["After Effects", "Product"], v: "media/p-yobeve", pos: "1 / 6", row: "5 / 9", tall: true },
-  { id: "1tyuo4lyjJrjMoJ6Oq0GFwYqOLu04mwQu", t: "Story Series 1–4", m: "YouTube · storytelling", chips: ["Moho", "Lip-sync", "Acting"], v: "media/p-team14", pos: "6 / 13", row: "5 / 7" },
+  { local: "media/h-1209.mp4", t: "Mech Battle 1209", m: "YouTube · mech / tank action", chips: ["Moho", "Rigging", "FX"], v: "media/p-1209", pos: "6 / 13", row: "5 / 7" },
   { id: "1KyuHOGzq-BxrHkb9ZgZx6OU465SgZZp8", t: "Boss 2 — Rig", m: "Moho rig preview", chips: ["Smart bones", "Rigging"], v: "media/p-boss2", pos: "6 / 13", row: "7 / 9" },
-  { id: "1QOR2BNpA0f_xIs5vciOwFhdB2eXqiswy", t: "Stickman Ep. 1", m: "YouTube · stickman series", chips: ["Moho", "Reusable rigs"], v: null, pos: "1 / 8", row: "9 / 11" },
-  { id: "1l5wa7Gk-jXt6weyRFiguFhA5hlL3QZi6", t: "Short #60", m: "YouTube Shorts · 9:16", chips: ["Shorts", "Character"], v: "media/p-short60", pos: "8 / 13", row: "9 / 13", tall: true, short: true },
-  { id: "1w5vckbquhzRmI1s8xl2kfmPQJSYA7dPZ", t: "Story Ep. 0225", m: "YouTube · storytelling", chips: ["Moho", "Acting"], v: "reel/team0225", pos: "1 / 8", row: "11 / 13" }
+  { local: "media/h-tap6.mp4", t: "Episode 6", m: "YouTube series · kids animation", chips: ["Moho", "Lip-sync", "Acting"], v: "media/p-tap6", pos: "1 / 8", row: "9 / 11" },
+  { local: "media/h-72.mp4", t: "Rescue Pups Ep. 72", m: "YouTube series · kids animation", chips: ["Moho", "Character"], v: "media/p-72", pos: "8 / 13", row: "9 / 11" },
+  { local: "media/h-among.mp4", t: "Among Crew", m: "YouTube · trend animation", chips: ["Moho", "Comedy timing"], v: "media/p-among", pos: "1 / 7", row: "11 / 13" },
+  { local: "media/h-73.mp4", t: "Rescue Pups Ep. 73", m: "YouTube series · kids animation", chips: ["Moho", "Character"], v: "media/p-73", pos: "7 / 13", row: "11 / 13" },
+  { local: "media/h-tap5.mp4", t: "Poppy Trend Ep. 5", m: "YouTube · trend animation", chips: ["Moho", "Acting"], v: "media/p-tap5", pos: "1 / 7", row: "13 / 15" },
+  { local: "media/h-79.mp4", t: "Rescue Pups Ep. 79", m: "YouTube series · kids animation", chips: ["Moho", "Character"], v: "media/p-79", pos: "7 / 13", row: "13 / 15" }
 ];
 $("#selGrid").innerHTML = FEATURED.map((p, i) => `
-  <article class="fw${p.tall ? " fw--tall" : ""}" style="grid-column:${p.pos};grid-row:${p.row}" data-video="${p.id}" data-title="${p.t}"${p.short ? ' data-short="1"' : ""}>
+  <article class="fw${p.tall ? " fw--tall" : ""}" style="grid-column:${p.pos};grid-row:${p.row}" ${p.local ? `data-local="${p.local}"` : `data-video="${p.id}"`} data-title="${p.t}"${p.short ? ' data-short="1"' : ""}>
     <div class="fw__media">
       <img alt="${p.t}" loading="lazy" src="${p.v ? p.v + ".jpg" : TH(p.id)}" />
       ${p.v ? `<video muted loop playsinline preload="none" src="${p.v}.mp4"></video>` : ""}
@@ -283,8 +286,9 @@ $$("#tabs button").forEach((b) => b.addEventListener("click", () => {
 
 const modal = $("#modal"), media = $("#modalMedia"), mTitle = $("#modalTitle"), mBox = $(".modal__box");
 let lenis;
-function openModal(id, title, short) {
-  media.innerHTML = `<iframe src="${preview(id)}" allow="autoplay; fullscreen" allowfullscreen title="${title}"></iframe>`;
+function openModal(id, title, short, local) {
+  media.innerHTML = local ? `<video src="${local}" controls autoplay playsinline style="width:100%;height:100%;background:#000"></video>`
+    : `<iframe src="${preview(id)}" allow="autoplay; fullscreen" allowfullscreen title="${title}"></iframe>`;
   mTitle.textContent = title;
   mBox.classList.toggle("is-short", !!short);
   modal.classList.add("is-open");
@@ -298,8 +302,8 @@ function closeModal() {
   lenis && lenis.start();
 }
 document.addEventListener("click", (e) => {
-  const v = e.target.closest("[data-video]");
-  if (v) { e.preventDefault(); openModal(v.dataset.video, v.dataset.title, v.dataset.short); return; }
+  const v = e.target.closest("[data-video], [data-local]");
+  if (v) { e.preventDefault(); openModal(v.dataset.video, v.dataset.title, v.dataset.short, v.dataset.local); return; }
   if (e.target.closest("[data-close]")) closeModal();
 });
 addEventListener("keydown", (e) => e.key === "Escape" && closeModal());
@@ -314,7 +318,7 @@ addEventListener("pointermove", (e) => {
   if (!isTouch) gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.25, ease: "power3.out", overwrite: true });
 });
 document.addEventListener("pointerover", (e) => {
-  cursor.classList.toggle("is-hover", !!e.target.closest("a, button, [data-video]"));
+  cursor.classList.toggle("is-hover", !!e.target.closest("a, button, [data-video], [data-local]"));
 });
 $$(".magnetic").forEach((el) => {
   el.addEventListener("pointermove", (e) => {
@@ -429,6 +433,7 @@ $$(".fw").forEach((el) => {
 const heroVid = $("#heroVid");
 gsap.ticker.add(() => {
   const t = heroVid.currentTime || 0;
+  $("#heroBar").style.transform = `scaleX(${heroVid.duration ? t / heroVid.duration : 0})`;
   $("#heroTc").textContent = `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(Math.floor(t % 60)).padStart(2, "0")}:${String(Math.floor((t % 1) * 24)).padStart(2, "0")}`;
 });
 heroVid.play().catch(() => {});
@@ -461,7 +466,7 @@ function initScroll() {
   ScrollTrigger.addEventListener("refresh", buildStops);
 
   // hero parallax out
-  gsap.to(".hx__media video", { yPercent: 18, scale: 1.15, ease: "none", scrollTrigger: { trigger: ".hx", start: "top top", end: "bottom top", scrub: true } });
+  gsap.to(".hx__screen", { yPercent: 12, rotate: -2, scale: 0.94, ease: "none", scrollTrigger: { trigger: ".hx", start: "top top", end: "bottom top", scrub: true } });
   gsap.to(".hx__copy", { y: -120, opacity: 0, ease: "none", scrollTrigger: { trigger: ".hx", start: "30% top", end: "90% top", scrub: true } });
 
   // marquee speed from scroll velocity

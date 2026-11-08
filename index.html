@@ -12,8 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="v2.css?v=v3b" />
-  <link rel="stylesheet" href="v3.css?v=v3b" />
+  <link rel="stylesheet" href="v2.css?v=v3d" />
+  <link rel="stylesheet" href="v3.css?v=v3d" />
 </head>
 <body class="is-loading">
   <div class="loader" aria-hidden="true">
@@ -76,10 +76,6 @@
   <main>
     <!-- HERO: showreel first -->
     <section class="hx" id="home">
-      <div class="hx__media">
-        <video id="heroVid" muted loop playsinline autoplay preload="auto" poster="media/hero.jpg?v=2" src="media/hero.mp4?v=2"></video>
-      </div>
-      <div class="hx__shade"></div>
       <div class="hx__copy">
         <p class="eyebrow" data-hero>Nguyen Minh Duc — Hai Phong, Vietnam</p>
         <h1 class="hx__title">
@@ -92,7 +88,13 @@
           <button class="btnx btnx--ghost" data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel">▶ Watch full showreel</button>
         </div>
       </div>
-      <div class="hx__tc" data-hero><span class="rec">● REC</span> SHOWREEL <span id="heroTc">00:00</span></div>
+      <div class="hx__screen" data-hero data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel">
+        <div class="hx__media"><video id="heroVid" muted loop playsinline autoplay preload="auto" poster="media/hero.jpg?v=3" src="media/hero.mp4?v=3"></video></div>
+        <div class="hx__tc"><span class="rec">● REC</span> SHOWREEL 2026 <span id="heroTc">00:00</span></div>
+        <span class="hx__corner tl"></span><span class="hx__corner tr"></span><span class="hx__corner bl"></span><span class="hx__corner br"></span>
+        <span class="hx__bar"><i id="heroBar"></i></span>
+        <span class="hx__open">▶ Full showreel</span>
+      </div>
       <div class="marquee" aria-hidden="true">
         <div class="marquee__track" id="marquee">
           <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
@@ -206,7 +208,7 @@
   <script src="vendor/gsap.min.js"></script>
   <script src="vendor/ScrollTrigger.min.js"></script>
   <script src="vendor/lenis.min.js"></script>
-  <script src="projects.js?v=v3b"></script>
-  <script type="module" src="v3.js?v=v3b"></script>
+  <script src="projects.js?v=v3d"></script>
+  <script type="module" src="v3.js?v=v3d"></script>
 </body>
 </html>
