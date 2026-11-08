@@ -52,8 +52,8 @@ const isWide = () => innerWidth > 760;
 const P = {
   hero: () => isWide() ? { x: -0.24, y: 0, s: 1, ry: 0, rz: -4, o: 1 } : { x: 0, y: -0.16, s: 0.75, ry: 0, rz: -3, o: 1 },
   about: () => isWide() ? { x: -0.27, y: 0.02, s: 1, ry: 180, rz: 3, o: 1 } : { x: 0, y: -0.2, s: 0.6, ry: 180, rz: 3, o: 0.25 },
-  services: () => isWide() ? { x: -0.3, y: 0.2, s: 0.62, ry: 360, rz: -8, o: 1 } : { x: 0.25, y: 0.3, s: 0.4, ry: 360, rz: -8, o: 0.3 },
-  process: () => isWide() ? { x: -0.32, y: 0.2, s: 0.55, ry: 540, rz: 5, o: 1 } : { x: 0.3, y: 0.3, s: 0.4, ry: 540, rz: 5, o: 0 },
+  services: () => isWide() ? { x: -0.25, y: 0.13, s: 0.9, ry: 360, rz: -6, o: 1 } : { x: 0.25, y: 0.3, s: 0.4, ry: 360, rz: -8, o: 0.3 },
+  process: () => isWide() ? { x: -0.25, y: 0.13, s: 0.9, ry: 540, rz: 5, o: 1 } : { x: 0.3, y: 0.3, s: 0.4, ry: 540, rz: 5, o: 0 },
   out: () => ({ x: -0.3, y: -0.9, s: 0.7, ry: 600, rz: -20, o: 0 })
 };
 const cur = { x: 0, y: 0, s: 1, ry: 0, rz: 0 };
