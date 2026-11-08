@@ -403,57 +403,8 @@ function buildTimelines() {
   Object.values(T).forEach((tl) => tl.progress(0).pause());
 }
 
-// ---- background slideshow: one product still per page, wipes in the scroll direction
-const BG = (() => {
-  // high-res stills extracted from the source videos (see v2/bg)
-  const pick = [
-    { src: "bg/bg-hero.webp", title: "Vietnam Airlines" },
-    { src: "bg/bg-about.webp", title: "Team Project 0225" },
-    { src: "bg/bg-services.webp", title: "Team Project 1–4" },
-    { src: "bg/bg-process.webp", title: "Ghidora Tank" },
-    { dim: true, src: "bg/bg-work.webp", title: "YOBEVE — Flavour" },
-    { src: "bg/bg-shorts.webp", title: "Choco" },
-    { src: "bg/bg-tools.webp", title: "YOBEVE" },
-    { src: "bg/bg-contact.webp", title: "Showreel" }
-  ];
-  const host = $("#bgshow");
-  const useVideo = false; // background videos removed — still images only
-  const slides = pick.map((p) => {
-    const d = document.createElement("div");
-    d.className = "bgs" + (p.dim ? " bgs--dim" : "");
-    d.innerHTML = (useVideo
-      ? `<video class="bgm" muted loop playsinline preload="none" poster="${p.src}" src="${p.vid}"></video>`
-      : `<img class="bgm" alt="" decoding="async" src="${p.src}" />`) + `<span class="bgs__tag">▶ ${p.title}</span>`;
-    host.appendChild(d);
-    return d;
-  });
-  let cur = -1, z = 1;
-  const kb = slides.map((d) => gsap.to(d.querySelector(".bgm"), { scale: 1.04, xPercent: gsap.utils.random(-1.2, 1.2), duration: 16, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true }));
-  function show(i, dir = 1) {
-    if (i === cur) return;
-    const n = slides[i], o = slides[cur];
-    n.style.zIndex = ++z;
-    gsap.fromTo(n, { clipPath: dir > 0 ? "inset(100% 0% 0% 0%)" : "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: reduce ? 0.01 : 1.1, ease: "power4.inOut" });
-    gsap.fromTo(n.querySelector(".bgm"), { yPercent: 6 * dir }, { yPercent: 0, duration: 1.4, ease: "power3.out" });
-    kb[i].play();
-    const v = n.querySelector("video");
-    if (v) { v.muted = true; v.preload = "auto"; v.currentTime = 0; v.play().catch(() => {}); }
-    const nx = slides[i + 1] && slides[i + 1].querySelector("video");
-    if (nx) nx.preload = "auto";
-    if (o) {
-      gsap.to(o.querySelector(".bgm"), { yPercent: -6 * dir, duration: 1.1, ease: "power4.inOut" });
-      const k = kb[cur];
-      gsap.delayedCall(1.2, () => { k.pause(); o.style.clipPath = "inset(0 0 100% 0)"; const ov = o.querySelector("video"); ov && ov.pause(); });
-    }
-    cur = i;
-  }
-  // keep the active clip playing if the browser pauses it (power saving, tab switch)
-  const resume = () => { const v = slides[cur] && slides[cur].querySelector("video"); if (v && v.paused && !document.hidden) v.play().catch(() => {}); };
-  document.addEventListener("visibilitychange", resume);
-  setInterval(resume, 1500);
-  addEventListener("pointerdown", resume, { passive: true });
-  return { show };
-})();
+// background slideshow removed — pages sit on the plain dark background
+const BG = { show() {} };
 
 // ---- horizontal work paging
 const workMax = () => Math.max(0, $("#workTrack").scrollWidth + $(".work__head").offsetWidth - innerWidth);

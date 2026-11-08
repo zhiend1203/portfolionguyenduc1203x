@@ -262,13 +262,6 @@ html.pager { overflow: hidden; }
 .work, .shorts, .tools { background: var(--bg); }
 @media (max-width: 760px) { .work__pin { flex-direction: column; align-items: flex-start; justify-content: center; gap: 4vh; } .work__head { width: auto; } .work__head .big { font-size: 56px; } .work__track { padding-left: var(--pad); grid-auto-columns: 62vw; } }
 
-/* ---------- background slideshow ---------- */
-.bgshow { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; background: var(--bg); }
-.bgs { position: absolute; inset: 0; overflow: hidden; clip-path: inset(0 0 100% 0); }
-.bgs .bgm { position: absolute; inset: -3%; width: 106%; height: 106%; object-fit: cover; opacity: 0.62; filter: saturate(1.05) contrast(1.05); will-change: transform; }
-.bgs::after { content: ""; position: absolute; inset: 0;
-  background: linear-gradient(0deg, rgba(5,5,7,.7), transparent 35%), linear-gradient(180deg, rgba(5,5,7,.55), transparent 22%), radial-gradient(140% 110% at 50% 50%, rgba(5,5,7,.15), rgba(5,5,7,.6) 80%), rgba(5,5,7,.34); }
-.bgs__tag { position: absolute; right: var(--pad); bottom: 90px; z-index: 2; font: 400 10px var(--mono); letter-spacing: .16em; color: rgba(255,255,255,.45); text-transform: uppercase; }
 .work, .shorts, .tools, .contact { background: transparent !important; }
 .wcard--img .wcard__media { background: radial-gradient(circle at 50% 40%, #2a2340, #111116 70%); }
 .wcard--img .wcard__media img { object-fit: contain; padding: 8%; }
@@ -279,5 +272,4 @@ html.pager { overflow: hidden; }
 .outline { text-shadow: none !important; }
 .svc { background: linear-gradient(160deg, rgba(14,12,22,.78), rgba(10,9,16,.62)); }
 .wcard__meta { background: rgba(5,5,7,.55); padding: 6px 8px; border-radius: 8px; }
-.bgs--dim .bgm { opacity: .32 !important; filter: blur(16px) saturate(.75) brightness(.8) !important; }
 .wcard__media { box-shadow: 0 18px 50px rgba(0,0,0,.55); }
