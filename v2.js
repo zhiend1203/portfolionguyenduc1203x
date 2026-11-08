@@ -660,9 +660,20 @@ function startPager() {
   });
   setUI();
   BG.show(0, 1);
+  // safety net: if anything moves the real scroll (anchor jump, focus, find-in-page) or page heights change, stay pinned to the current page
+  gsap.ticker.add(() => {
+    if (busy) return;
+    const want = top(SECS[page]);
+    if (Math.abs(window.scrollY - want) < 2) return;
+    scroller.y = want; window.scrollTo(0, want);
+    if (page === 4) setWork(workX, 0);
+  });
 }
 
 balls = initBalls();
+// a #hash in the URL makes the browser jump to that section before the pager is ready -> desync. Strip it, open that page after boot.
+const startHash = location.hash;
+if (startHash) history.replaceState(null, "", location.pathname + location.search);
 window.scrollTo(0, 0);
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
@@ -687,4 +698,8 @@ gsap.timeline()
   .to(C, { sx: 1, sy: 1, duration: 0.9, ease: "elastic.out(1.1, 0.35)" })
   .to(heroChars, { yPercent: 0, duration: 1.1, ease: "power4.out", stagger: 0.035 }, "-=0.9")
   .to("[data-hero]", { opacity: 1, y: 0, duration: 0.8, stagger: 0.1 }, "<0.3")
-  .add(() => { startPager(); T[0].progress(1); });
+  .add(() => {
+    startPager(); T[0].progress(1);
+    const hi = startHash ? SECS.indexOf($(startHash)) : -1;
+    if (hi > 0) goTo(hi, 1);
+  });
