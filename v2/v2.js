@@ -219,10 +219,11 @@ function initBalls() {
 const { commercial, series } = window.PROJECTS;
 const works = [
   ...commercial.map((p) => ({ ...p })),
+  ...(window.PROJECTS.tank || []).map((p) => ({ ...p })),
   ...series.filter((p) => p.cat !== "shorts").map((p) => ({ ...p, tag: p.cat === "stickman" ? "Stickman series" : "Storytelling" }))
 ];
 $("#workTrack").innerHTML = works.map((p, i) => `
-  <article class="wcard">
+  <article class="wcard${p.image ? " wcard--img" : ""}">
     <div class="wcard__media" data-video="${p.id}" data-title="${p.title}">
       <span class="wcard__fb">${p.title}</span>
       <img alt="${p.title}" loading="lazy" src="${thumb(p.id)}" onerror="this.remove()" />
@@ -403,7 +404,8 @@ function buildTimelines() {
 // ---- background slideshow: one product still per page, wipes in the scroll direction
 const BG = (() => {
   const c = window.PROJECTS.commercial, sr = window.PROJECTS.series;
-  const pick = [c[0], sr[0], c[1], sr[6], c[3], sr.find((p) => p.cat === "shorts") || sr[1], c[2], c[4]];
+  const tk = window.PROJECTS.tank || [];
+  const pick = [c[0], sr[0], c[1], tk[0] || sr[6], c[3], sr.find((p) => p.cat === "shorts") || sr[1], tk[3] || c[2], c[4]];
   const host = $("#bgshow");
   const slides = pick.map((p) => {
     const d = document.createElement("div");

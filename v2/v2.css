@@ -274,3 +274,6 @@ html.pager { overflow: hidden; }
   background: radial-gradient(120% 90% at 50% 50%, rgba(5,5,7,.35), rgba(5,5,7,.92) 75%), linear-gradient(90deg, rgba(5,5,7,.85), rgba(5,5,7,.2) 50%, rgba(5,5,7,.85)); }
 .bgs__tag { position: absolute; right: var(--pad); bottom: 90px; z-index: 2; font: 400 10px var(--mono); letter-spacing: .16em; color: rgba(255,255,255,.45); text-transform: uppercase; }
 .work, .shorts, .tools, .contact { background: transparent !important; }
+.wcard--img .wcard__media { background: radial-gradient(circle at 50% 40%, #2a2340, #111116 70%); }
+.wcard--img .wcard__media img { object-fit: contain; padding: 8%; }
+.wcard--img .wcard__play { font-size: 0; } .wcard--img .wcard__play::after { content: "⤢"; font-size: 16px; }
