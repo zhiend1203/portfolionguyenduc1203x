@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="v2.css?v=root1" />
+  <link rel="stylesheet" href="v2.css?v=live1" />
 </head>
 <body class="is-loading">
   <!-- LOADER -->
@@ -22,6 +22,7 @@
     <p class="loader__hint">warming up the rig…</p>
   </div>
 
+  <canvas id="fx" aria-hidden="true"></canvas>
   <div class="glow glow--a" aria-hidden="true"></div>
   <div class="glow glow--b" aria-hidden="true"></div>
   <div class="pc-wrap" aria-hidden="true">
@@ -31,7 +32,9 @@
         <img src="assets/duc-card.jpg" alt="" draggable="false" />
         <span class="pc-corner tl"></span><span class="pc-corner tr"></span><span class="pc-corner bl"></span><span class="pc-corner br"></span>
         <div class="pc-top"><span class="rec">● REC</span><span id="tc">00:00:00:00</span></div>
-        <div class="pc-bot"><b>NGUYEN MINH DUC</b><span>2D ANIMATOR · MOHO</span></div>
+        <div class="pc-bot"><b>NGUYEN MINH DUC</b><span>2D ANIMATOR · MOHO</span>
+          <div class="pc-tags"><em>Character animation</em><em>Rigging</em><em>Lip-sync</em><em>TVC</em><em>Stickman</em></div>
+        </div>
         <div class="glare"></div>
       </div>
       <div class="pcard__face pcard__back">
@@ -42,6 +45,13 @@
           <div><span>Tool</span><b>Moho Pro</b></div>
           <div><span>Base</span><b>Hai Phong · UTC+7</b></div>
           <div><span>Status</span><b class="on">● Available</b></div>
+        </div>
+        <div class="pb-more">
+          <div><span>Experience</span><b>5+ years</b></div>
+          <div><span>Projects</span><b>500+ YouTube</b></div>
+          <div><span>Focus</span><b>Character · Rig · Lip-sync</b></div>
+          <div><span>Hours</span><b>30+ / week</b></div>
+          <a class="pb-cta" href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener">Hire on Upwork ↗</a>
         </div>
         <div class="pb-tl"><i></i><i></i><i></i><i></i><i></i><span class="pb-ph"></span></div>
         <div class="pb-foot"><span>frame</span><b id="frameNo">001</b></div>
@@ -74,6 +84,7 @@
   <main>
     <!-- HERO -->
     <section class="hero" id="home">
+      <div class="ghost-word" aria-hidden="true"><span>ANIMATION&nbsp;·&nbsp;ANIMATION&nbsp;·&nbsp;</span><span>ANIMATION&nbsp;·&nbsp;ANIMATION&nbsp;·&nbsp;</span></div>
       <div class="hero__copy">
         <p class="eyebrow" data-hero>Hi, I'm Nguyen Minh Duc — a</p>
         <h1 class="hero__title">
@@ -94,6 +105,7 @@
 
     <!-- ABOUT -->
     <section class="about" id="about">
+      <div class="ghost-word" aria-hidden="true"><span>ABOUT&nbsp;·&nbsp;ABOUT&nbsp;·&nbsp;</span><span>ABOUT&nbsp;·&nbsp;ABOUT&nbsp;·&nbsp;</span></div>
       <div class="about__box">
         <p class="kicker"><span>01</span> About me</p>
         <p class="about__text scrub-words">2D animator based in Hai Phong, Vietnam, with 5+ years in Moho. I build reusable character rigs so every new episode is faster and stays on-model — and I understand YouTube pacing: visuals that keep moving so viewers keep watching.</p>
@@ -107,6 +119,7 @@
 
     <!-- SERVICES (desk scene) -->
     <section class="services" id="services">
+      <div class="ghost-word" aria-hidden="true"><span>SERVICES&nbsp;·&nbsp;SERVICES&nbsp;·&nbsp;</span><span>SERVICES&nbsp;·&nbsp;SERVICES&nbsp;·&nbsp;</span></div>
       <div class="services__head">
         <p class="kicker"><span>02</span> Services</p>
         <h2 class="big split-scrub">WHAT I DO</h2>
@@ -135,6 +148,7 @@
 
     <!-- PROCESS -->
     <section class="process" id="process">
+      <div class="ghost-word" aria-hidden="true"><span>PROCESS&nbsp;·&nbsp;PROCESS&nbsp;·&nbsp;</span><span>PROCESS&nbsp;·&nbsp;PROCESS&nbsp;·&nbsp;</span></div>
       <p class="kicker"><span>03</span> Process</p>
       <h2 class="big split-scrub">HOW IT MOVES</h2>
       <div class="timeline">
@@ -148,6 +162,7 @@
 
     <!-- WORK (horizontal) -->
     <section class="work" id="work">
+      <div class="ghost-word" aria-hidden="true"><span>WORK&nbsp;·&nbsp;WORK&nbsp;·&nbsp;</span><span>WORK&nbsp;·&nbsp;WORK&nbsp;·&nbsp;</span></div>
       <div class="work__pin">
         <div class="work__head">
           <p class="kicker"><span>04</span> Selected work</p>
@@ -160,6 +175,7 @@
 
     <!-- SHORTS -->
     <section class="shorts" id="shorts">
+      <div class="ghost-word" aria-hidden="true"><span>SHORTS&nbsp;·&nbsp;SHORTS&nbsp;·&nbsp;</span><span>SHORTS&nbsp;·&nbsp;SHORTS&nbsp;·&nbsp;</span></div>
       <p class="kicker"><span>05</span> Vertical</p>
       <h2 class="big split-scrub">SHORTS</h2>
       <div class="fan" id="fan"></div>
@@ -167,6 +183,7 @@
 
     <!-- TOOLS (physics balls) -->
     <section class="tools" id="tools">
+      <div class="ghost-word" aria-hidden="true"><span>TOOLKIT&nbsp;·&nbsp;TOOLKIT&nbsp;·&nbsp;</span><span>TOOLKIT&nbsp;·&nbsp;TOOLKIT&nbsp;·&nbsp;</span></div>
       <h2 class="big tools__title split-scrub">MY TOOLKIT</h2>
       <p class="tools__hint">move your mouse through them</p>
       <canvas id="balls"></canvas>
@@ -174,6 +191,7 @@
 
     <!-- CONTACT -->
     <section class="contact" id="contact">
+      <div class="ghost-word" aria-hidden="true"><span>CONTACT&nbsp;·&nbsp;CONTACT&nbsp;·&nbsp;</span><span>CONTACT&nbsp;·&nbsp;CONTACT&nbsp;·&nbsp;</span></div>
       <p class="kicker"><span>06</span> Contact</p>
       <h2 class="contact__title">
         <span class="line"><span class="split" data-contact>LET'S MAKE</span></span>
@@ -200,7 +218,7 @@
   <script src="vendor/gsap.min.js"></script>
   <script src="vendor/ScrollTrigger.min.js"></script>
   <script src="vendor/lenis.min.js"></script>
-  <script src="projects.js?v=root1"></script>
-  <script type="module" src="v2.js?v=root1"></script>
+  <script src="projects.js?v=live1"></script>
+  <script type="module" src="v2.js?v=live1"></script>
 </body>
 </html>

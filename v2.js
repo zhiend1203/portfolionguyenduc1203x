@@ -62,14 +62,20 @@ let frame = 0;
 function tf(t, rx = 0, extraY = 0) {
   return `translate3d(${t.x * innerWidth}px, ${t.y * innerHeight}px, 0) perspective(1200px) rotateX(${rx}deg) rotateY(${t.ry + extraY}deg) rotateZ(${t.rz}deg) scale(${t.s})`;
 }
+let hov = 0, hovT = 0;
+card.addEventListener("pointerenter", () => { hovT = 1; card.classList.add("is-hover"); });
+card.addEventListener("pointerleave", () => { hovT = 0; card.classList.remove("is-hover"); });
 function renderCard() {
   mouse.sx = lerp(mouse.sx, mouse.x, 0.08);
   mouse.sy = lerp(mouse.sy, mouse.y, 0.08);
   const prev = { ...cur };
   for (const k of ["x", "y", "s", "ry", "rz"]) cur[k] = lerp(cur[k], C[k], 0.14);
   const speed = Math.abs(cur.x - prev.x) * 40 + Math.abs(cur.y - prev.y) * 40 + Math.abs(cur.ry - prev.ry) * 0.06;
-  const rx = mouse.sy * 9, ty = mouse.sx * 14;
-  card.style.transform = tf(cur, rx, ty) + ` scale(${C.sx}, ${C.sy})`;
+  hov = lerp(hov, hovT, 0.12);
+  const now = performance.now() / 1000;
+  const idle = { ...cur, y: cur.y + Math.sin(now * 1.3) * 0.008 * (1 - hov), rz: cur.rz * (1 - hov) + Math.sin(now * 0.9) * 1.6 * (1 - hov), s: cur.s * (1 + 0.3 * hov) };
+  const rx = mouse.sy * 9 * (1 - hov * 0.6), ty = mouse.sx * 14 * (1 - hov * 0.6);
+  card.style.transform = tf(idle, rx, ty) + ` scale(${C.sx}, ${C.sy})`;
   card.style.opacity = C.o;
   trail.forEach((g, i) => {
     const f = 0.22 - i * 0.06;
@@ -405,6 +411,38 @@ function buildTimelines() {
 
 // background slideshow removed — pages sit on the plain dark background
 const BG = { show() {} };
+
+// ---- ambient particles: keyframe diamonds, dots and crosses drifting; dodge cursor; surge on page change
+(() => {
+  const cv = $("#fx"), cx = cv.getContext("2d");
+  let W, H, dpr;
+  const P = [];
+  const size = () => { dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  size(); addEventListener("resize", size);
+  const N = Math.round(Math.min(110, (innerWidth * innerHeight) / 26000));
+  for (let i = 0; i < N; i++) P.push({ x: Math.random() * W, y: Math.random() * H, z: 0.3 + Math.random() * 0.9, k: i % 3, r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.02, vx: 0, vy: 0 });
+  let lastY = 0;
+  gsap.ticker.add(() => {
+    const surge = (scroller.y - lastY); lastY = scroller.y;
+    const mx = (mouse.x * 0.5 + 0.5) * W, my = (-mouse.y * 0.5 + 0.5) * H;
+    cx.clearRect(0, 0, W, H);
+    for (const p of P) {
+      p.vy += (-0.12 * p.z - p.vy) * 0.05 - surge * 0.02 * p.z;
+      p.vx += (Math.sin((p.y + p.r * 50) * 0.004) * 0.15 - p.vx) * 0.05;
+      const dx = p.x - mx, dy = p.y - my, d = Math.hypot(dx, dy);
+      if (d < 140) { p.vx += (dx / d) * 0.6; p.vy += (dy / d) * 0.6; }
+      p.x += p.vx; p.y += p.vy; p.r += p.vr + p.vx * 0.01;
+      if (p.y < -20) { p.y = H + 20; p.x = Math.random() * W; } if (p.y > H + 20) { p.y = -20; p.x = Math.random() * W; }
+      if (p.x < -20) p.x = W + 20; if (p.x > W + 20) p.x = -20;
+      const a = 0.15 + 0.35 * p.z, s = 2 + p.z * 4;
+      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.globalAlpha = a;
+      if (p.k === 0) { cx.fillStyle = "#c084fc"; cx.fillRect(-s / 2, -s / 2, s, s); }
+      else if (p.k === 1) { cx.fillStyle = "#ffffff"; cx.beginPath(); cx.arc(0, 0, s * 0.35, 0, 7); cx.fill(); }
+      else { cx.strokeStyle = "#8b5cf6"; cx.lineWidth = 1.2; cx.beginPath(); cx.moveTo(-s, 0); cx.lineTo(s, 0); cx.moveTo(0, -s); cx.lineTo(0, s); cx.stroke(); }
+      cx.restore();
+    }
+  });
+})();
 
 // ---- horizontal work paging
 const workMax = () => Math.max(0, $("#workTrack").scrollWidth + $(".work__head").offsetWidth - innerWidth);
