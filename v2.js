@@ -55,7 +55,7 @@ const isWide = () => innerWidth > 760;
 const P = {
   hero: () => isWide() ? { x: -0.24, y: 0, s: 1, ry: 0, rz: -4, o: 1 } : { x: 0.2, y: -0.28, s: 0.5, ry: 0, rz: 5, o: 1 },
   about: () => isWide() ? { x: -0.27, y: 0.02, s: 1, ry: 180, rz: 3, o: 1 } : { x: 0.36, y: -0.36, s: 0.27, ry: 180, rz: 3, o: 1 },
-  services: () => isWide() ? { x: -0.25, y: 0.13, s: 0.9, ry: 360, rz: -6, o: 1 } : { x: 0.36, y: -0.36, s: 0.27, ry: 360, rz: -4, o: 1 },
+  services: () => isWide() ? { x: -0.25, y: 0.2, s: 0.9, ry: 360, rz: -6, o: 1 } : { x: 0.36, y: -0.36, s: 0.27, ry: 360, rz: -4, o: 1 },
   process: () => isWide() ? { x: -0.34, y: 0.14, s: 0.8, ry: 540, rz: 5, o: 1 } : { x: 0.36, y: -0.36, s: 0.27, ry: 540, rz: 4, o: 1 },
   out: () => isWide() ? { x: 0.4, y: 0.33, s: 0.48, ry: 540, rz: -4, o: 1 } : { x: 0.36, y: -0.36, s: 0.27, ry: 540, rz: -4, o: 1 }
 };
@@ -426,7 +426,17 @@ function buildTimelines() {
   // 2 services
   const sT = mk(2);
   flipIn(sT, SECS[2]);
-  $$(".svc").forEach((el, i) => squashDrop(sT, el, 0.25 + i * 0.22, i % 2 ? -7 : 7));
+  // smooth, even cadence: each card swings in on one long ease-out, its content cascades right behind, a light sweep passes over
+  $$(".svc").forEach((el, i) => {
+    const at = 0.18 + i * 0.13;
+    if (!el.querySelector(".svc__sweep")) el.insertAdjacentHTML("beforeend", '<i class="svc__sweep"></i>');
+    sT.fromTo(el, { x: 140, rotationY: -28, opacity: 0, clipPath: "inset(0% 100% 0% 0% round 18px)", transformPerspective: 1100, transformOrigin: "0% 50%" },
+        { x: 0, rotationY: 0, opacity: 1, clipPath: "inset(0% 0% 0% 0% round 18px)", duration: 1.15, ease: "expo.out" }, at)
+      .fromTo(el.querySelector(".svc__sweep"), { left: "-50%" }, { left: "115%", duration: 1.1, ease: "power2.inOut" }, at + 0.1)
+      .fromTo(el.querySelector(".svc__n"), { scale: 0, rotate: -90 }, { scale: 1, rotate: 0, duration: 0.8, ease: "back.out(2.4)" }, at + 0.2)
+      .fromTo(el.querySelectorAll("h3, p"), { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, stagger: 0.07, ease: "expo.out" }, at + 0.24)
+      .fromTo(el.querySelectorAll(".svc__tags span"), { y: 14, opacity: 0, scale: 0.8 }, { y: 0, opacity: 1, scale: 1, duration: 0.7, stagger: 0.05, ease: "back.out(2)" }, at + 0.36);
+  });
   // 3 process
   const pT = mk(3), steps = $$(".step");
   flipIn(pT, SECS[3]);

@@ -111,3 +111,14 @@
 
 /* TEMP: Upwork links disabled — delete this block to bring them back */
 a[href*="upwork.com"] { display: none !important; }
+
+/* services: light sweep + living border */
+.svc { position: relative; overflow: hidden; }
+.svc__sweep { position: absolute; top: 0; bottom: 0; width: 45%; pointer-events: none; z-index: 2;
+  background: linear-gradient(100deg, transparent, rgba(192,132,252,.22) 45%, rgba(255,255,255,.18) 50%, rgba(192,132,252,.22) 55%, transparent); left: -50%; }
+.svc::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%, rgba(192,132,252,.9) 50%, transparent 100%) 0 0 / 300% 100%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: svcEdge 4.5s linear infinite; opacity: .7; }
+.svc:nth-child(2)::before { animation-delay: -1.5s; } .svc:nth-child(3)::before { animation-delay: -3s; }
+@keyframes svcEdge { to { background-position: -300% 0; } }
