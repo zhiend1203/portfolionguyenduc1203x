@@ -271,12 +271,15 @@ const NEWW = [
   { local: "media/h-tap5.mp4", v: "media/p-tap5", title: "Poppy Trend Ep. 5", tag: "Trend" },
   { local: "media/h-79.mp4", v: "media/p-79", title: "Rescue Pups Ep. 79", tag: "YouTube series" }
 ];
+const NW = Object.fromEntries(NEWW.map((p) => [p.title, p]));
+const TK = Object.fromEntries((window.PROJECTS.tank || []).map((p) => [p.title, p]));
+// Moho character / action animation first (VNA, Rescue Pups, tank, Poppy), then the rest
+const TOP = [commercial[0], NW["Rescue Pups Ep. 72"], NW["Mech Battle 1209"], NW["Poppy Trend Ep. 5"], TK["Ghidora Tank"], NW["Rescue Pups Ep. 73"], TK["Boss 2 — Rig preview"], NW["Rescue Pups Ep. 79"], NW["Episode 6"]];
 const works = [
-  ...commercial.slice(0, 1),
-  ...NEWW.slice(0, 2),
-  ...commercial.slice(1).map((p) => ({ ...p })),
-  ...(window.PROJECTS.tank || []).map((p) => ({ ...p })),
-  ...NEWW.slice(2),
+  ...TOP,
+  NW["Among Crew"],
+  ...(window.PROJECTS.tank || []).filter((p) => !TOP.includes(p)),
+  ...commercial.slice(1),
   ...series.filter((p) => p.cat !== "shorts").map((p) => ({ ...p, tag: p.cat === "stickman" ? "Stickman series" : "Storytelling" }))
 ];
 const workCard = (p, i) => `
