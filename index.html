@@ -12,8 +12,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="v2.css?v=v3i" />
-  <link rel="stylesheet" href="v3.css?v=v3i" />
+  <link rel="stylesheet" href="v2.css?v=v4a" />
+  <link rel="stylesheet" href="v3.css?v=v4a" />
+  <link rel="stylesheet" href="v4.css?v=v4a" />
 </head>
 <body class="is-loading">
   <div class="loader" aria-hidden="true">
@@ -22,9 +23,7 @@
     <p class="loader__hint">warming up the rig…</p>
   </div>
 
-  <canvas id="fx" aria-hidden="true"></canvas>
-  <div class="glow glow--a" aria-hidden="true"></div>
-  <div class="glow glow--b" aria-hidden="true"></div>
+  <canvas id="fx" aria-hidden="true" hidden></canvas>
 
   <div class="cursor" aria-hidden="true"><span></span></div>
   <div class="progress" aria-hidden="true"><span id="progress"></span></div>
@@ -69,21 +68,21 @@
         <span class="hx__open">▶ Full showreel</span>
       </div>
       </div>
-      <div class="marquee" aria-hidden="true">
-        <div class="marquee__track" id="marquee">
-          <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
-          <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
-        </div>
-      </div>
     </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marquee">
+        <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
+        <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
+      </div>
+    </div>
 
     <!-- SELECTED WORK -->
     <section class="sel" id="work">
-      <div class="ghost-word" aria-hidden="true"><span>WORK&nbsp;·&nbsp;WORK&nbsp;·&nbsp;</span><span>WORK&nbsp;·&nbsp;WORK&nbsp;·&nbsp;</span></div>
       <div class="sec-head">
         <p class="kicker"><span>01</span> Selected work</p>
         <h2 class="big split-scrub">SELECTED WORK</h2>
-        <p class="sec-note" data-reveal>Hover a piece to see it move — click to watch.</p>
+        <p class="sec-note" data-reveal>Commercials, YouTube series and rig work — click any piece to watch.</p>
       </div>
       <div class="sel__grid" id="selGrid"></div>
     </section>
@@ -108,7 +107,6 @@
 
     <!-- ABOUT + TOOLKIT -->
     <section class="abt" id="about">
-      <div class="ghost-word" aria-hidden="true"><span>ABOUT&nbsp;·&nbsp;ABOUT&nbsp;·&nbsp;</span><span>ABOUT&nbsp;·&nbsp;ABOUT&nbsp;·&nbsp;</span></div>
       <div class="abt__grid">
         <div class="abt__cardslot">
     <div class="pcard" id="pcard">
@@ -167,7 +165,6 @@
 
     <!-- PROCESS -->
     <section class="proc" id="process">
-      <div class="ghost-word" aria-hidden="true"><span>PROCESS&nbsp;·&nbsp;PROCESS&nbsp;·&nbsp;</span><span>PROCESS&nbsp;·&nbsp;PROCESS&nbsp;·&nbsp;</span></div>
       <div class="sec-head">
         <p class="kicker"><span>04</span> Process</p>
         <h2 class="big split-scrub">HOW IT MOVES</h2>
@@ -183,7 +180,6 @@
 
     <!-- CONTACT -->
     <section class="contact cx" id="contact">
-      <div class="ghost-word" aria-hidden="true"><span>CONTACT&nbsp;·&nbsp;CONTACT&nbsp;·&nbsp;</span><span>CONTACT&nbsp;·&nbsp;CONTACT&nbsp;·&nbsp;</span></div>
       <div class="reel" id="reel">
         <div class="reel__stage" id="reelStage"></div>
         <div class="reel__ui"><span class="reel__n" id="reelN">01 / 08</span><span class="reel__t" id="reelT"></span><span class="reel__play">▶ watch</span></div>
@@ -220,7 +216,7 @@
   <script src="vendor/gsap.min.js"></script>
   <script src="vendor/ScrollTrigger.min.js"></script>
   <script src="vendor/lenis.min.js"></script>
-  <script src="projects.js?v=v3i"></script>
-  <script type="module" src="v3.js?v=v3i"></script>
+  <script src="projects.js?v=v4a"></script>
+  <script type="module" src="v3.js?v=v4a"></script>
 </body>
 </html>
