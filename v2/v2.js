@@ -233,8 +233,11 @@ $("#workTrack").innerHTML = works.map((p, i) => `
 const shorts = series.filter((p) => p.cat === "shorts");
 $("#fan").innerHTML = shorts.map((p) => `
   <div class="phone" data-video="${p.id}" data-title="${p.title}" data-short="1">
-    <img alt="${p.title}" loading="lazy" src="${thumb(p.id, 600)}" onerror="this.remove()" />
-    <span>${p.title}</span>
+    <div class="phone__in">
+      <img alt="${p.title}" loading="lazy" src="${thumb(p.id, 600)}" onerror="this.remove()" />
+      <i class="phone__play">▶</i>
+      <span>${p.title}</span>
+    </div>
   </div>`).join("");
 
 const modal = $("#modal"), media = $("#modalMedia"), mTitle = $("#modalTitle"), mBox = $(".modal__box");
@@ -359,16 +362,32 @@ function buildTimelines() {
   wT.fromTo(".work__head > *", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: "power3.out" })
     .fromTo(".wcard__media", { clipPath: "inset(50% 50% 50% 50% round 16px)", scale: 0.85 }, { clipPath: "inset(0% 0% 0% 0% round 16px)", scale: 1, duration: 0.7, stagger: { each: 0.04, grid: "auto", from: "start" }, ease: "power3.inOut" }, 0.15)
     .fromTo(".wcard__meta", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.04 }, 0.4);
-  // 5 shorts
+  // 5 shorts — deal like cards: stack (squash) → anticipation → arc out, overshoot → follow-through → idle float
   const hT = mk(5), phones = $$(".phone"), mid = (phones.length - 1) / 2;
+  const fx = (i, el) => (i - mid) * el.offsetWidth * 1.05;
+  let floatTw;
   flipIn(hT, SECS[5]);
+  hT.add(() => { floatTw && floatTw.kill(); }, 0);
   phones.forEach((ph, i) => {
-    hT.fromTo(ph, { x: 0, y: () => innerHeight, rotate: gsap.utils.random(-25, 25), scale: 0.75, opacity: 0, scaleX: 1, scaleY: 1 },
-      { y: -i * 8, rotate: (i - mid) * 3, scale: 1, opacity: 1, duration: 0.45, ease: "power2.in" }, 0.2 + i * 0.25)
-      .to(ph, { scaleY: 0.86, scaleX: 1.1, duration: 0.08 })
-      .to(ph, { scaleY: 1, scaleX: 1, duration: 0.3, ease: "back.out(3)" });
+    const at = 0.15 + i * 0.16;
+    hT.fromTo(ph, { x: 0, y: () => -innerHeight, rotate: (i - mid) * -14, opacity: 1, scaleX: 0.9, scaleY: 1.15 },
+      { y: -i * 6, rotate: (i - mid) * 2.5, duration: 0.42, ease: "power2.in" }, at)
+      .to(ph, { scaleX: 1.12, scaleY: 0.85, transformOrigin: "50% 100%", duration: 0.07 }, ">")
+      .to(ph, { scaleX: 1, scaleY: 1, duration: 0.45, ease: "elastic.out(1.2, 0.45)" }, ">");
   });
-  hT.to(phones, { x: (i, el) => (i - mid) * el.offsetWidth * 1.08, y: (i) => Math.abs(i - mid) * 40, rotate: (i) => (i - mid) * 9, duration: 0.8, ease: "back.out(1.7)" }, ">0.05");
+  // anticipation: whole stack squashes and leans back
+  hT.to(phones, { scaleY: 0.9, scaleX: 1.06, y: 18, rotate: (i) => (i - mid) * -4, duration: 0.22, ease: "power2.out" }, ">-0.2")
+    // deal out along an arc (up then down), overshooting the final angle
+    .addLabel("deal", ">")
+    .to(phones, { x: (i, el) => fx(i, el) * 0.6, y: (i) => (i === mid ? -50 : -90), scaleY: 1, scaleX: 1, duration: 0.28, ease: "power2.out" }, "deal")
+    .to(phones, { x: fx, y: (i) => Math.abs(i - mid) * 36, duration: 0.3, ease: "power2.in" }, ">")
+    .to(phones, { rotate: (i) => (i - mid) * 15, duration: 0.58, ease: "power2.out" }, "deal")
+    // follow-through: settle the swing
+    .to(phones, { rotate: (i) => (i - mid) * 9, duration: 0.9, ease: "elastic.out(1.1, 0.35)" }, ">-0.05")
+    .add(() => {
+      floatTw = gsap.to(phones, { y: (i) => Math.abs(i - mid) * 36 - 10, duration: 1.8, ease: "sine.inOut", yoyo: true, repeat: -1, stagger: { each: 0.35 } });
+    });
+
   // 6 tools
   const tT = mk(6);
   flipIn(tT, SECS[6]);
