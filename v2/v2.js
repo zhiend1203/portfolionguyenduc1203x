@@ -400,6 +400,37 @@ function buildTimelines() {
   Object.values(T).forEach((tl) => tl.progress(0).pause());
 }
 
+// ---- background slideshow: one product still per page, wipes in the scroll direction
+const BG = (() => {
+  const c = window.PROJECTS.commercial, sr = window.PROJECTS.series;
+  const pick = [c[0], sr[0], c[1], sr[6], c[3], sr.find((p) => p.cat === "shorts") || sr[1], c[2], c[4]];
+  const host = $("#bgshow");
+  const slides = pick.map((p) => {
+    const d = document.createElement("div");
+    d.className = "bgs";
+    d.innerHTML = `<img alt="" src="${thumb(p.id, 1600)}" onerror="this.remove()" /><span class="bgs__tag">▶ ${p.title}</span>`;
+    host.appendChild(d);
+    return d;
+  });
+  let cur = -1, z = 1;
+  const kb = slides.map((d) => gsap.to(d.querySelector("img"), { scale: 1.12, xPercent: gsap.utils.random(-3, 3), duration: 14, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true }));
+  function show(i, dir = 1) {
+    if (i === cur) return;
+    const n = slides[i], o = slides[cur];
+    n.style.zIndex = ++z;
+    gsap.fromTo(n, { clipPath: dir > 0 ? "inset(100% 0% 0% 0%)" : "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: reduce ? 0.01 : 1.1, ease: "power4.inOut" });
+    gsap.fromTo(n.querySelector("img"), { yPercent: 18 * dir }, { yPercent: 0, duration: 1.4, ease: "power3.out" });
+    kb[i].play();
+    if (o) {
+      gsap.to(o.querySelector("img"), { yPercent: -14 * dir, duration: 1.1, ease: "power4.inOut" });
+      const k = kb[cur];
+      gsap.delayedCall(1.2, () => { k.pause(); o.style.clipPath = "inset(0 0 100% 0)"; });
+    }
+    cur = i;
+  }
+  return { show };
+})();
+
 // ---- horizontal work paging
 const workMax = () => Math.max(0, $("#workTrack").scrollWidth + $(".work__head").offsetWidth - innerWidth);
 const workStep = () => innerWidth * 0.85;
@@ -423,6 +454,7 @@ function goTo(i, dir = 1) {
   page = i;
   setUI();
   if (i === 4) setWork(dir > 0 ? 0 : workMax(), 0);
+  BG.show(i, dir);
   const dist = Math.abs(i - from);
   gsap.to(scroller, {
     y: top(SECS[i]), duration: reduce ? 0.01 : Math.min(1.6, 0.85 + 0.12 * (dist - 1)), ease: "power3.inOut",
@@ -501,6 +533,7 @@ function startPager() {
     track.style.transform = `translate3d(${mx}px,0,0)`;
   });
   setUI();
+  BG.show(0, 1);
 }
 
 balls = initBalls();
