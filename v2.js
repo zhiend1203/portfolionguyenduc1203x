@@ -105,7 +105,7 @@ function renderCard() {
   const now = performance.now() / 1000;
   if (!docked()) { D.x = lerp(D.x, 0, 0.12); D.y = lerp(D.y, 0, 0.12); }
   const hs = cur.s < 0.75 ? lerp(cur.s, isWide() ? 0.9 : 1.3, hov) : cur.s * (1 + 0.3 * hov);
-  const pull = !isWide() && docked() ? hov : 0; // on phones the opened card moves to the centre
+  const pull = !isWide() ? hov : 0; // on phones the opened card moves to the centre
   const idle = { ...cur, x: lerp(cur.x + D.x, 0, pull), y: lerp(cur.y + D.y, 0, pull) + Math.sin(now * 1.3) * 0.008 * (1 - hov), rz: cur.rz * (1 - hov) + Math.sin(now * 0.9) * 1.6 * (1 - hov), s: hs };
   const rx = mouse.sy * 9 * (1 - hov * 0.6), ty = mouse.sx * 14 * (1 - hov * 0.6);
   card.style.transform = tf(idle, rx, ty) + ` scale(${C.sx}, ${C.sy})`;
@@ -287,7 +287,7 @@ const workCard = (p, i) => `
     <div class="wcard__media" ${p.local ? `data-local="${p.local}"` : `data-video="${p.id}"`} data-title="${p.title}">
       <span class="wcard__fb">${p.title}</span>
       <img alt="${p.title}" loading="lazy" src="${p.v ? p.v + ".jpg" : thumb(p.id)}" onerror="this.remove()" />
-      ${p.v ? `<video muted loop playsinline autoplay preload="none" src="${p.v}.mp4"></video>` : ""}
+      ${p.v ? `<video muted loop playsinline preload="none" src="${p.v}.mp4"></video>` : ""}
       <span class="wcard__play">▶</span>
     </div>
     <div class="wcard__meta"><span class="wcard__n">${String(i + 1).padStart(2, "0")}</span><h3>${p.title}</h3><span class="wcard__tag">${p.tag || ""}</span></div>
@@ -306,7 +306,7 @@ let allOpen = false;
 const openAll = () => { allOpen = true; pagerPaused = true; allEl.classList.add("is-open"); allEl.scrollTop = 0;
   gsap.fromTo(".allp .wcard", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.025, ease: "power3.out" });
   $$(".allp video").forEach((v) => { v.preload = "auto"; v.play().catch(() => {}); }); };
-const closeAll = () => { allOpen = false; pagerPaused = false; allEl.classList.remove("is-open"); };
+const closeAll = () => { allOpen = false; pagerPaused = false; allEl.classList.remove("is-open"); $$(".allp video").forEach((v) => v.pause()); };
 document.addEventListener("click", (e) => { if (e.target.closest("#openAll")) openAll(); if (e.target.closest("#closeAll")) closeAll(); });
 addEventListener("keydown", (e) => { if (e.key === "Escape" && allOpen && !modal.classList.contains("is-open")) closeAll(); });
 const shorts = series.filter((p) => p.cat === "shorts");
@@ -596,6 +596,8 @@ function goTo(i, dir = 1) {
   page = i;
   setUI();
   if (i === 4) setWork(dir > 0 ? 0 : workMax(), 0);
+  card.classList.remove("is-hover"); hovT = 0;
+  $$("#workTrack video").forEach((v) => { if (i === 4) { v.preload = "auto"; v.play().catch(() => {}); } else v.pause(); });
   if (i === 7) gsap.delayedCall(0.5, REEL.start); else if (from === 7) REEL.stop();
   if (balls) { if (i === 6) balls.drop(); else if (from === 6) gsap.delayedCall(0.9, balls.hide); }
   BG.show(i, dir);
@@ -703,11 +705,11 @@ Object.assign(cur, C);
 trail.forEach((g) => Object.assign(g, C));
 gsap.set("[data-hero]", { opacity: 0, y: 20 });
 gsap.timeline()
-  .to(load, { v: 100, duration: reduce ? 0.1 : 1.6, ease: "power2.inOut", onUpdate: () => {
+  .to(load, { v: 100, duration: reduce ? 0.1 : 1.1, ease: "power2.inOut", onUpdate: () => {
     $("#loadNum").textContent = Math.round(load.v);
     $("#loadBar").style.width = load.v + "%";
   } })
-  .add(() => fontsReady)
+  .add(() => Promise.race([fontsReady, new Promise((r) => setTimeout(r, 2500))]))
   .to(".loader", { yPercent: -100, duration: 0.9, ease: "power4.inOut" })
   .add(() => { document.body.classList.remove("is-loading"); $(".loader").remove(); }, "-=0.3")
   // card drops in: stretch while falling, squash on impact, settle
