@@ -33,3 +33,10 @@
 .ico.ico--up, .hq__chip .ico--up, .cx__link b .ico--up { color: #14A800 !important; }
 .ico.ico--fb, .hq__chip .ico--fb, .cx__link b .ico--fb { color: #0866FF !important; }
 .ico.ico--dc, .hq__chip .ico--dc, .cx__link b .ico--dc { color: #5865F2 !important; }
+/* card back: contact buttons */
+.pcard.is-hover .pb-more { max-height: 320px; }
+.pb-more .pb-links { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; border: 0; padding: 0; margin-top: 2px; }
+.pb-links a { pointer-events: auto; display: grid; justify-items: center; gap: 4px; padding: 8px 4px; border-radius: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.04); transition: .25s; }
+.pb-links a:hover { border-color: var(--vio2); background: rgba(139,92,246,.18); transform: translateY(-2px); }
+.pb-links .ico { margin: 0; width: 18px; height: 18px; color: var(--vio2); }
+.pb-links span { font: 500 8px var(--mono) !important; letter-spacing: .08em; color: var(--mut); }
