@@ -51,7 +51,7 @@ const P = {
   hero: () => isWide() ? { x: -0.24, y: 0, s: 1, ry: 0, rz: -4, o: 1 } : { x: 0, y: -0.16, s: 0.75, ry: 0, rz: -3, o: 1 },
   about: () => isWide() ? { x: -0.27, y: 0.02, s: 1, ry: 180, rz: 3, o: 1 } : { x: 0, y: -0.2, s: 0.6, ry: 180, rz: 3, o: 0.25 },
   services: () => isWide() ? { x: -0.3, y: 0.2, s: 0.62, ry: 360, rz: -8, o: 1 } : { x: 0.25, y: 0.3, s: 0.4, ry: 360, rz: -8, o: 0.3 },
-  process: () => isWide() ? { x: -0.33, y: 0.02, s: 0.72, ry: 540, rz: 5, o: 1 } : { x: 0.3, y: 0.3, s: 0.4, ry: 540, rz: 5, o: 0 },
+  process: () => isWide() ? { x: -0.32, y: 0.2, s: 0.55, ry: 540, rz: 5, o: 1 } : { x: 0.3, y: 0.3, s: 0.4, ry: 540, rz: 5, o: 0 },
   out: () => ({ x: -0.3, y: -0.9, s: 0.7, ry: 600, rz: -20, o: 0 })
 };
 const cur = { x: 0, y: 0, s: 1, ry: 0, rz: 0 };
@@ -294,17 +294,18 @@ const contactChars = $$("[data-contact]").flatMap(splitChars);
 // card path: list of [scrollY, preset] keyframes, rebuilt on refresh
 let stops = [], scrollDriven = false;
 function buildStops() {
-  const vh = innerHeight, top = (sel) => $(sel).getBoundingClientRect().top + scrollY, h = (sel) => $(sel).offsetHeight;
-  const mid = (sel) => top(sel) + h(sel) / 2 - vh / 2;
+  const vh = innerHeight;
+  const box = (sel) => { const el = $(sel); return el.parentElement.classList.contains("pin-spacer") ? el.parentElement : el; };
+  const T = (sel) => box(sel).getBoundingClientRect().top + scrollY;
   stops = [
     [0, P.hero()],
-    [mid("#about"), P.about()],
-    [top("#services") - vh, P.about()],
-    [top("#services") - vh * 0.1, P.services()],
-    [top("#process") - vh, P.services()],
-    [mid("#process"), P.process()],
-    [top("#work") - vh, P.process()],
-    [top("#work") - vh * 0.2, P.out()]
+    [T("#about"), P.about()],
+    [T("#services") - vh, P.about()],
+    [T("#services"), P.services()],
+    [T("#process") - vh, P.services()],
+    [T("#process"), P.process()],
+    [T("#work") - vh, P.process()],
+    [T("#work") - vh * 0.2, P.out()]
   ];
 }
 function cardFromScroll() {
@@ -317,6 +318,11 @@ function cardFromScroll() {
   for (const k of ["x", "y", "s", "ry", "rz", "o"]) C[k] = lerp(A[k], B[k], t);
 }
 gsap.ticker.add(cardFromScroll, false, true);
+
+const SNAP = { snapTo: "labelsDirectional", duration: { min: 0.25, max: 0.7 }, delay: 0.08, ease: "power2.inOut" };
+function pinTL(sel, len) {
+  return gsap.timeline({ scrollTrigger: { trigger: sel, start: "top top", end: "+=" + len + "%", pin: true, scrub: 0.6, snap: SNAP } });
+}
 
 function initScroll() {
   // 3D camera path
@@ -346,40 +352,47 @@ function initScroll() {
     track.style.transform = `translate3d(${mx}px,0,0)`;
   });
 
-  // about: words light up one by one
-  const words = splitWords($(".scrub-words"));
-  gsap.to(words, { opacity: 1, ease: "none", stagger: 0.1, scrollTrigger: { trigger: ".about__text", start: "top 80%", end: "bottom 45%", scrub: true } });
-  $$("[data-count]").forEach((el) => {
-    const n = { v: 0 }, end = +el.dataset.count, suf = el.dataset.suffix || "";
-    ScrollTrigger.create({
-      trigger: el, start: "top 90%", once: true,
-      onEnter: () => gsap.to(n, { v: end, duration: 1.6, ease: "power2.out", onUpdate: () => (el.textContent = Math.round(n.v) + suf) })
-    });
-  });
-
   // big titles: letters flip up in sync with scroll
   $$(".split-scrub").forEach((el) => {
     const chars = splitChars(el);
     gsap.from(chars, {
       yPercent: 110, rotateX: -90, opacity: 0, transformOrigin: "50% 100%", ease: "none", stagger: 0.06,
-      scrollTrigger: { trigger: el, start: "top 92%", end: "top 55%", scrub: true }
+      scrollTrigger: { trigger: el.closest("section"), start: "top 85%", end: "top 15%", scrub: true }
     });
   });
 
-  // service cards rise and tilt in
-  $$(".svc").forEach((el) => {
-    gsap.from(el, {
-      y: 140, rotate: 5, scale: 0.9, opacity: 0, ease: "none",
-      scrollTrigger: { trigger: el, start: "top 100%", end: "top 65%", scrub: true }
-    });
+  // ABOUT (pinned): words light up, then stats count
+  const words = splitWords($(".scrub-words"));
+  const aTl = pinTL("#about", 110);
+  aTl.addLabel("a0").to(words, { opacity: 1, stagger: 0.08, duration: 0.4, ease: "none" }).addLabel("a1");
+  $$("[data-count]").forEach((el, i) => {
+    const n = { v: 0 }, end = +el.dataset.count, suf = el.dataset.suffix || "";
+    aTl.fromTo(el.parentElement, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "back.out(2)" }, i ? "<0.15" : ">")
+      .to(n, { v: end, duration: 0.8, ease: "power2.out", onUpdate: () => (el.textContent = Math.round(n.v) + suf) }, "<");
+  });
+  aTl.addLabel("a2");
+
+  // SERVICES (pinned): cards drop in one by one with squash & stretch
+  const sTl = pinTL("#services", 120);
+  sTl.addLabel("s0");
+  $$(".svc").forEach((el, i) => {
+    sTl.fromTo(el, { y: () => innerHeight, rotate: i % 2 ? -8 : 8, opacity: 0, scaleY: 1.15, scaleX: 0.9 },
+      { y: 0, rotate: 0, opacity: 1, scaleY: 1.15, scaleX: 0.9, duration: 0.7, ease: "power2.in" })
+      .to(el, { scaleY: 0.88, scaleX: 1.06, duration: 0.12, transformOrigin: "50% 100%" })
+      .to(el, { scaleY: 1, scaleX: 1, duration: 0.35, ease: "back.out(3)" })
+      .addLabel("s" + (i + 1));
   });
 
-  // process: line draws, steps light up
-  gsap.to(".timeline__svg line", { strokeDashoffset: 0, ease: "none", scrollTrigger: { trigger: ".timeline", start: "top 60%", end: "bottom 60%", scrub: true } });
-  $$(".step").forEach((el) => {
-    gsap.to(el, { opacity: 1, ease: "none", scrollTrigger: { trigger: el, start: "top 75%", end: "top 55%", scrub: true } });
-    ScrollTrigger.create({ trigger: el, start: "top 60%", toggleClass: "is-on" });
-    gsap.from(el.querySelector("h3"), { x: 80, ease: "none", scrollTrigger: { trigger: el, start: "top 90%", end: "top 55%", scrub: true } });
+  // PROCESS (pinned): line draws step by step, each step lights up
+  const pTl = pinTL("#process", 120);
+  const steps = $$(".step");
+  pTl.addLabel("p0");
+  steps.forEach((el, i) => {
+    pTl.to(".timeline__svg line", { strokeDashoffset: 100 - ((i + 1) / steps.length) * 100, duration: 0.5, ease: "none" })
+      .to(el, { opacity: 1, duration: 0.3 }, "<0.2")
+      .fromTo(el.querySelector("h3"), { x: 80 }, { x: 0, duration: 0.4, ease: "back.out(2)" }, "<")
+      .to(el.querySelector(".step__dot"), { backgroundColor: "#8b5cf6", boxShadow: "0 0 24px #8b5cf6", scale: 1.3, duration: 0.2 }, "<")
+      .addLabel("p" + (i + 1));
   });
 
   // work: pinned horizontal gallery
@@ -387,7 +400,7 @@ function initScroll() {
   const dist = () => wTrack.scrollWidth + wHead.offsetWidth - innerWidth;
   const hz = gsap.to([wHead, wTrack], {
     x: () => -dist(), ease: "none",
-    scrollTrigger: { trigger: ".work", pin, start: "top top", end: () => "+=" + dist(), scrub: 1, invalidateOnRefresh: true }
+    scrollTrigger: { trigger: ".work", pin, start: "top top", end: () => "+=" + dist() * 0.6, scrub: 0.6, invalidateOnRefresh: true }
   });
   $$(".wcard").forEach((card) => {
     const m = card.querySelector(".wcard__media");
@@ -410,27 +423,31 @@ function initScroll() {
   const phones = $$(".phone");
   const mid = (phones.length - 1) / 2;
   const stl = gsap.timeline({
-    scrollTrigger: { trigger: ".shorts", start: "top top", end: "+=" + (phones.length * 60 + 80) + "%", pin: true, scrub: 0.8, invalidateOnRefresh: true }
+    scrollTrigger: { trigger: ".shorts", start: "top top", end: "+=" + (phones.length * 35 + 60) + "%", pin: true, scrub: 0.6, invalidateOnRefresh: true, snap: SNAP }
   });
+  stl.addLabel("h0");
   gsap.set(phones, { y: () => innerHeight, rotate: () => gsap.utils.random(-25, 25), scale: 0.7, opacity: 0 });
   phones.forEach((ph, i) => {
     stl.to(ph, { y: -i * 8, rotate: (i - mid) * 3, scale: 1, opacity: 1, duration: 1, ease: "power2.in" })
       .to(ph, { scaleY: 0.86, scaleX: 1.1, duration: 0.15, ease: "power1.out" })
-      .to(ph, { scaleY: 1, scaleX: 1, duration: 0.35, ease: "back.out(3)" });
+      .to(ph, { scaleY: 1, scaleX: 1, duration: 0.35, ease: "back.out(3)" })
+      .addLabel("h" + (i + 1));
   });
   stl.to(phones, {
     x: (i, el) => (i - mid) * el.offsetWidth * 1.08,
     y: (i) => Math.abs(i - mid) * 40,
     rotate: (i) => (i - mid) * 9,
     duration: 1.4, ease: "back.out(1.6)", stagger: { each: 0.08, from: "center" }
-  }, "+=0.2").to({}, { duration: 0.6 });
+  }, "+=0.2").addLabel("hEnd");
 
-  // contact: letters rise
-  gsap.from(contactChars, {
-    yPercent: 110, ease: "none", stagger: 0.04,
-    scrollTrigger: { trigger: ".contact__title", start: "top 90%", end: "top 45%", scrub: true }
-  });
-  gsap.from(".cta", { scale: 0, rotate: -90, ease: "none", scrollTrigger: { trigger: ".cta", start: "top 100%", end: "top 70%", scrub: true } });
+  // CONTACT (pinned): letters rise, CTA spins in
+  const cTl = pinTL("#contact", 80);
+  cTl.addLabel("c0")
+    .from(contactChars, { yPercent: 110, stagger: 0.04, duration: 0.6, ease: "power3.out" })
+    .from(".contact__sub, .contact__meta", { y: 40, opacity: 0, duration: 0.4 }, "<0.3")
+    .addLabel("c1")
+    .from(".cta", { scale: 0, rotate: -180, duration: 0.6, ease: "back.out(1.8)" })
+    .addLabel("c2");
 
   // back of card: playhead + frame number follow scroll
   ScrollTrigger.create({ start: 0, end: "max", onUpdate: (st) => {
