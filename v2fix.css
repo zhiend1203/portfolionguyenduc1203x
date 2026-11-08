@@ -21,3 +21,11 @@
 .cx__link { grid-template-columns: 1fr auto; }
 .cx__link span { grid-column: 1 / -1; }
 @media (max-width: 760px) { .cx__links { grid-template-columns: 1fr; } }
+/* icons */
+.ico { display: inline-grid; place-items: center; width: 1.15em; height: 1.15em; margin-right: .5em; vertical-align: -0.2em; font-style: normal; }
+.ico svg { width: 100%; height: 100%; }
+.hq__main, .hq__chip { display: inline-flex; align-items: center; }
+.hq__chip .ico { width: 15px; height: 15px; color: var(--vio2); }
+.cx__link b { display: flex; align-items: center; }
+.cx__link b .ico { color: var(--vio2); width: 20px; height: 20px; margin-right: 10px; }
+.cta .ico { display: block; width: 26px; height: 26px; margin: 0 auto 6px; }
