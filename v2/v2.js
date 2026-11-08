@@ -11,7 +11,8 @@ const lerp = (a, b, t) => a + (b - a) * t;
 // animation portfolio: always play full motion (many Windows setups report reduced-motion by default)
 const reduce = false;
 const isTouch = matchMedia("(hover: none)").matches;
-const thumb = (id, w = 1000) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
+const LOCAL_THUMBS = new Set(["14KowU4q7yDaDcYJJr0K9TenHLvE0dxbW","1DxalS9A7N2BsVqzw6k6r6VEufixnL3ID","1DxgHaNpg3jPo_-2VAzueRckdbaf8rinR","1KyuHOGzq-BxrHkb9ZgZx6OU465SgZZp8","1MKEZFfsvdsTBIX4P4s0gTMk07CMZwRlJ","1SpePFLN9b9yX-OH3CKsJaaAF_XH70Try","1XbeNOH6H1rD17PHiLUhVLBW8-GIDWm6O","1Zyn5rLpNbgC6eucnQrICIgMlI9VYEdkJ","1kJ2hXP4UB5pa4ECQUv3CaK5gUpN05mSb","1kRgpvGGBXjn2A38YcByheOMEmS9P6h0U","1rji8bBV8x95AjIt_Ctg-bk5eLApjM1Ep","1tyuo4lyjJrjMoJ6Oq0GFwYqOLu04mwQu","1w1QuAeAKIVO3tV0OTt9gY0C77cLK2AjN","1w5vckbquhzRmI1s8xl2kfmPQJSYA7dPZ"]);
+const thumb = (id, w = 1000) => LOCAL_THUMBS.has(id) && w >= 1000 ? `thumbs/${id}.webp` : `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
 const preview = (id) => `https://drive.google.com/file/d/${id}/preview`;
 const mouse = { x: 0, y: 0, sx: 0, sy: 0 };
 
@@ -410,7 +411,7 @@ const BG = (() => {
     { src: "bg/bg-about.webp", vid: "bg/bg-about.mp4", title: "Team Project 0225" },
     { src: "bg/bg-services.webp", vid: "bg/bg-services.mp4", title: "Team Project 1–4" },
     { src: "bg/bg-process.webp", vid: "bg/bg-process.mp4", title: "Ghidora Tank" },
-    { src: "bg/bg-work.webp", vid: "bg/bg-work.mp4", title: "YOBEVE — Flavour" },
+    { dim: true, src: "bg/bg-work.webp", vid: "bg/bg-work.mp4", title: "YOBEVE — Flavour" },
     { src: "bg/bg-shorts.webp", vid: "bg/bg-shorts.mp4", title: "Choco" },
     { src: "bg/bg-tools.webp", vid: "bg/bg-tools.mp4", title: "YOBEVE" },
     { src: "bg/bg-contact.webp", vid: "bg/bg-contact.mp4", title: "Showreel" }
@@ -419,7 +420,7 @@ const BG = (() => {
   const useVideo = !reduce && !(navigator.connection && navigator.connection.saveData);
   const slides = pick.map((p) => {
     const d = document.createElement("div");
-    d.className = "bgs";
+    d.className = "bgs" + (p.dim ? " bgs--dim" : "");
     d.innerHTML = (useVideo
       ? `<video class="bgm" muted loop playsinline preload="none" poster="${p.src}" src="${p.vid}"></video>`
       : `<img class="bgm" alt="" decoding="async" src="${p.src}" />`) + `<span class="bgs__tag">▶ ${p.title}</span>`;
@@ -460,7 +461,6 @@ const workStep = () => innerWidth * 0.85;
 function setWork(x, dur = 0.9) {
   workX = clamp(x, 0, workMax());
   gsap.to([".work__head", "#workTrack"], { x: -workX, duration: dur, ease: "power3.inOut", overwrite: true });
-  gsap.to($$(".wcard__media img"), { xPercent: (workX / Math.max(1, workMax())) * 16 - 8, duration: dur * 1.2, ease: "power3.out", overwrite: true });
 }
 
 // ---- navigation
