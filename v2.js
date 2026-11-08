@@ -196,9 +196,9 @@ function initBalls() {
       }
     }
     for (const b of balls) {
-      b.rot -= b.vx / b.R;
+      b.rot += (-b.vx * 0.04 - b.rot) * 0.1; // gentle tilt only, text stays upright
       b.m.position.set(b.x, b.y, 0);
-      b.m.rotation.set(b.vy * 0.004, 0, b.rot * 0.15);
+      b.m.rotation.set(clamp(b.vy * 0.01, -0.35, 0.35), 0, clamp(b.rot, -0.4, 0.4));
     }
   }
   function loop() {
@@ -218,7 +218,8 @@ function initBalls() {
     visible = e.isIntersecting;
     if (visible && !raf) loop();
   }).observe(canvas);
-  return { drop };
+  function hide() { active = false; balls.forEach((b, i) => { b.x = 0; b.y = H + b.R * 2 + i * 40; b.vx = b.vy = 0; b.rot = 0; b.m.position.set(b.x, b.y, 0); }); r.render(sc, cam); }
+  return { drop, hide };
 }
 
 /* ============================================================
@@ -400,7 +401,7 @@ function buildTimelines() {
   // 6 tools
   const tT = mk(6);
   flipIn(tT, SECS[6]);
-  tT.add(() => balls && balls.drop(), 0.1).fromTo(".tools__hint", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.8);
+  tT.fromTo(".tools__hint", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.8);
   // 7 contact
   mk(7).fromTo(contactChars, { yPercent: 110 }, { yPercent: 0, duration: 0.8, stagger: 0.035, ease: "power4.out" })
     .fromTo(".contact .kicker, .contact__sub, .contact__meta", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.08 }, 0.35)
@@ -466,6 +467,7 @@ function goTo(i, dir = 1) {
   page = i;
   setUI();
   if (i === 4) setWork(dir > 0 ? 0 : workMax(), 0);
+  if (balls) { if (i === 6) balls.drop(); else if (from === 6) gsap.delayedCall(0.9, balls.hide); }
   BG.show(i, dir);
   const dist = Math.abs(i - from);
   gsap.to(scroller, {
