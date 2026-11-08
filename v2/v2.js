@@ -403,15 +403,22 @@ function buildTimelines() {
 
 // ---- background slideshow: one product still per page, wipes in the scroll direction
 const BG = (() => {
-  const c = window.PROJECTS.commercial, sr = window.PROJECTS.series;
-  const tk = window.PROJECTS.tank || [];
-  const pick = [c[0], sr[0], c[1], tk[0] || sr[6], c[3], sr.find((p) => p.cat === "shorts") || sr[1], tk[3] || c[2], c[4]];
+  // high-res stills extracted from the source videos (see v2/bg)
+  const pick = [
+    { src: "bg/bg-hero.webp", title: "Vietnam Airlines" },
+    { src: "bg/bg-about.webp", title: "Team Project 0225" },
+    { src: "bg/bg-services.webp", title: "Techcombank" },
+    { src: "bg/bg-process.webp", title: "Ghidora Tank" },
+    { src: "bg/bg-work.webp", title: "YOBEVE — Flavour" },
+    { src: "bg/bg-shorts.webp", title: "Choco" },
+    { src: "bg/bg-tools.webp", title: "YOBEVE" },
+    { src: "bg/bg-contact.webp", title: "Showreel" }
+  ];
   const host = $("#bgshow");
-  const BGW = Math.min(3840, Math.ceil((Math.max(screen.width, innerWidth) * (devicePixelRatio || 1)) / 320) * 320);
   const slides = pick.map((p) => {
     const d = document.createElement("div");
     d.className = "bgs";
-    d.innerHTML = `<img alt="" decoding="async" src="${thumb(p.id, BGW)}" onerror="this.remove()" /><span class="bgs__tag">▶ ${p.title}</span>`;
+    d.innerHTML = `<img alt="" decoding="async" src="${p.src}" onerror="this.remove()" /><span class="bgs__tag">▶ ${p.title}</span>`;
     host.appendChild(d);
     return d;
   });

@@ -4,3 +4,6 @@
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+
+/v2/bg/*
+  Cache-Control: public, max-age=604800
