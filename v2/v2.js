@@ -407,24 +407,25 @@ const BG = (() => {
   const tk = window.PROJECTS.tank || [];
   const pick = [c[0], sr[0], c[1], tk[0] || sr[6], c[3], sr.find((p) => p.cat === "shorts") || sr[1], tk[3] || c[2], c[4]];
   const host = $("#bgshow");
+  const BGW = Math.min(3840, Math.ceil((Math.max(screen.width, innerWidth) * (devicePixelRatio || 1)) / 320) * 320);
   const slides = pick.map((p) => {
     const d = document.createElement("div");
     d.className = "bgs";
-    d.innerHTML = `<img alt="" src="${thumb(p.id, 1600)}" onerror="this.remove()" /><span class="bgs__tag">▶ ${p.title}</span>`;
+    d.innerHTML = `<img alt="" decoding="async" src="${thumb(p.id, BGW)}" onerror="this.remove()" /><span class="bgs__tag">▶ ${p.title}</span>`;
     host.appendChild(d);
     return d;
   });
   let cur = -1, z = 1;
-  const kb = slides.map((d) => gsap.to(d.querySelector("img"), { scale: 1.12, xPercent: gsap.utils.random(-3, 3), duration: 14, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true }));
+  const kb = slides.map((d) => gsap.to(d.querySelector("img"), { scale: 1.04, xPercent: gsap.utils.random(-1.2, 1.2), duration: 16, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true }));
   function show(i, dir = 1) {
     if (i === cur) return;
     const n = slides[i], o = slides[cur];
     n.style.zIndex = ++z;
     gsap.fromTo(n, { clipPath: dir > 0 ? "inset(100% 0% 0% 0%)" : "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: reduce ? 0.01 : 1.1, ease: "power4.inOut" });
-    gsap.fromTo(n.querySelector("img"), { yPercent: 18 * dir }, { yPercent: 0, duration: 1.4, ease: "power3.out" });
+    gsap.fromTo(n.querySelector("img"), { yPercent: 6 * dir }, { yPercent: 0, duration: 1.4, ease: "power3.out" });
     kb[i].play();
     if (o) {
-      gsap.to(o.querySelector("img"), { yPercent: -14 * dir, duration: 1.1, ease: "power4.inOut" });
+      gsap.to(o.querySelector("img"), { yPercent: -6 * dir, duration: 1.1, ease: "power4.inOut" });
       const k = kb[cur];
       gsap.delayedCall(1.2, () => { k.pause(); o.style.clipPath = "inset(0 0 100% 0)"; });
     }
