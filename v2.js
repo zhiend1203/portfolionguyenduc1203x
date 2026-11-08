@@ -57,7 +57,7 @@ const P = {
   about: () => isWide() ? { x: -0.27, y: 0.02, s: 1, ry: 180, rz: 3, o: 1 } : { x: 0, y: -0.2, s: 0.6, ry: 180, rz: 3, o: 0.25 },
   services: () => isWide() ? { x: -0.25, y: 0.13, s: 0.9, ry: 360, rz: -6, o: 1 } : { x: 0.3, y: 0.36, s: 0.3, ry: 360, rz: -8, o: 0 },
   process: () => isWide() ? { x: -0.34, y: 0.14, s: 0.8, ry: 540, rz: 5, o: 1 } : { x: 0.3, y: 0.3, s: 0.4, ry: 540, rz: 5, o: 0 },
-  out: () => isWide() ? { x: 0.39, y: 0.12, s: 0.52, ry: 540, rz: -4, o: 1 } : { x: 0.34, y: -0.33, s: 0.3, ry: 540, rz: -4, o: 1 }
+  out: () => isWide() ? { x: 0.4, y: 0.33, s: 0.48, ry: 540, rz: -4, o: 1 } : { x: 0.34, y: -0.33, s: 0.3, ry: 540, rz: -4, o: 1 }
 };
 const cur = { x: 0, y: 0, s: 1, ry: 0, rz: 0 };
 const trail = ghosts.map(() => ({ x: 0, y: 0, s: 1, ry: 0, rz: 0 }));
@@ -274,7 +274,7 @@ const works = [
   ...NEWW.slice(2),
   ...series.filter((p) => p.cat !== "shorts").map((p) => ({ ...p, tag: p.cat === "stickman" ? "Stickman series" : "Storytelling" }))
 ];
-$("#workTrack").innerHTML = works.map((p, i) => `
+const workCard = (p, i) => `
   <article class="wcard${p.image ? " wcard--img" : ""}">
     <div class="wcard__media" ${p.local ? `data-local="${p.local}"` : `data-video="${p.id}"`} data-title="${p.title}">
       <span class="wcard__fb">${p.title}</span>
@@ -283,7 +283,24 @@ $("#workTrack").innerHTML = works.map((p, i) => `
       <span class="wcard__play">▶</span>
     </div>
     <div class="wcard__meta"><span class="wcard__n">${String(i + 1).padStart(2, "0")}</span><h3>${p.title}</h3><span class="wcard__tag">${p.tag || ""}</span></div>
-  </article>`).join("");
+  </article>`;
+const SHOW = 9;
+$("#workTrack").innerHTML = works.slice(0, SHOW).map(workCard).join("") + `
+  <article class="wcard wcard--more"><button class="wmore" id="openAll">
+    <b>+${works.length - SHOW}</b><span>View all projects</span><i>→</i></button></article>`;
+// all-projects overlay
+const allEl = document.createElement("div");
+allEl.className = "allp"; allEl.id = "allp"; allEl.setAttribute("data-lenis-prevent", "");
+allEl.innerHTML = `<div class="allp__in"><div class="allp__head"><div><p class="kicker"><span>04</span> Archive</p><h2>ALL PROJECTS <em>${works.length}</em></h2></div><button class="allp__x" id="closeAll" aria-label="Close">✕</button></div>
+  <div class="allp__grid">${works.map(workCard).join("")}</div></div>`;
+document.body.appendChild(allEl);
+let allOpen = false;
+const openAll = () => { allOpen = true; pagerPaused = true; allEl.classList.add("is-open"); allEl.scrollTop = 0;
+  gsap.fromTo(".allp .wcard", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.025, ease: "power3.out" });
+  $$(".allp video").forEach((v) => { v.preload = "auto"; v.play().catch(() => {}); }); };
+const closeAll = () => { allOpen = false; pagerPaused = false; allEl.classList.remove("is-open"); };
+document.addEventListener("click", (e) => { if (e.target.closest("#openAll")) openAll(); if (e.target.closest("#closeAll")) closeAll(); });
+addEventListener("keydown", (e) => { if (e.key === "Escape" && allOpen && !modal.classList.contains("is-open")) closeAll(); });
 const shorts = series.filter((p) => p.cat === "shorts");
 $("#fan").innerHTML = shorts.map((p) => `
   <div class="phone" data-video="${p.id}" data-title="${p.title}" data-short="1">
@@ -309,7 +326,7 @@ function closeModal() {
   modal.classList.remove("is-open");
   modal.setAttribute("aria-hidden", "true");
   setTimeout(() => (media.innerHTML = ""), 300);
-  pagerPaused = false;
+  pagerPaused = typeof allOpen !== "undefined" && allOpen;
 }
 document.addEventListener("click", (e) => {
   const v = e.target.closest("[data-video], [data-local]");

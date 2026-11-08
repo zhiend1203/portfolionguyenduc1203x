@@ -89,3 +89,22 @@
   .cx__link > i { display: none; }
   .contact__meta { margin-top: 16px; font-size: 9px; gap: 10px; flex-wrap: wrap; }
 }
+
+/* work: "view all" card + all-projects overlay */
+.wcard--more { display: flex; }
+.wmore { width: 100%; aspect-ratio: 16 / 10; border-radius: 14px; border: 1px dashed rgba(192,132,252,.55); background: radial-gradient(120% 120% at 0% 0%, rgba(139,92,246,.25), rgba(5,5,7,.6)); display: grid; place-content: center; justify-items: center; gap: 6px; transition: .35s; }
+.wmore b { font: 400 clamp(40px, 4vw, 64px)/1 var(--head); color: var(--vio2); }
+.wmore span { font: 600 15px var(--sub); }
+.wmore i { font-style: normal; font-size: 22px; transition: transform .35s; }
+.wmore:hover { border-style: solid; background: rgba(139,92,246,.3); transform: translateY(-6px); }
+.wmore:hover i { transform: translateX(8px); }
+.allp { position: fixed; inset: 0; z-index: 100; background: rgba(5,5,7,.94); backdrop-filter: blur(16px); overflow-y: auto; overscroll-behavior: contain; visibility: hidden; opacity: 0; transition: opacity .35s, visibility .35s; }
+.allp.is-open { visibility: visible; opacity: 1; }
+.allp__in { width: min(1600px, 100%); margin: 0 auto; padding: 90px var(--pad) 80px; }
+.allp__head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 36px; }
+.allp__head h2 { font: 400 clamp(40px, 5vw, 96px)/.95 var(--head); }
+.allp__head h2 em { font-style: normal; color: var(--vio2); font-size: .45em; vertical-align: top; }
+.allp__x { width: 52px; height: 52px; border-radius: 50%; background: var(--fg); color: #000; font-size: 18px; position: fixed; top: 24px; right: max(var(--pad), calc((100vw - 1600px) / 2 + var(--pad))); z-index: 2; }
+.allp__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 28px 20px; }
+.allp .wcard__meta { background: none; padding: 0; }
+@media (max-width: 760px) { .allp__grid { grid-template-columns: 1fr 1fr; gap: 18px 10px; } .allp__in { padding-top: 80px; } .allp .wcard__tag { display: none; } .allp__x { width: 44px; height: 44px; top: 16px; } }
