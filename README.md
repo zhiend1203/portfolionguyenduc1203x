@@ -1,8 +1,9 @@
 # Nguyen Minh Duc — 2D Animator Portfolio
 
-Static portfolio site (HTML + CSS + JS, no build step) with GSAP scroll animations:
-preloader, split-text reveals, skills marquee, pinned showreel that grows on scroll,
-horizontal commercial gallery, filterable YouTube series grid, custom cursor and magnetic buttons.
+Static portfolio site (HTML + CSS + JS, no build step). Monochrome dark style:
+"Welcome" intro, floating pill nav, typewriter hero, draggable ID badge on a physics lanyard
+(`lanyard.js`), About with stats, tabbed Portfolio Showcase (Commercials / YouTube Series /
+Shorts / Tools) and glass Contact cards. Animations use GSAP + ScrollTrigger and Lenis.
 
 Videos play from Google Drive (files must be shared "Anyone with the link").
 
@@ -10,6 +11,7 @@ Videos play from Google Drive (files must be shared "Anyone with the link").
 
 - **Videos / titles:** `projects.js` — each entry is a Google Drive file ID + title.
 - **Showreel:** `data-video` / `data-thumb` on `.reel__frame` in `index.html`.
+- **Typewriter words, tab descriptions, tools:** top of `main.js`.
 - **Text, links:** `index.html`. Colors and fonts: top of `styles.css`.
 
 ## Deploy on Cloudflare Pages

@@ -1,67 +1,98 @@
 (() => {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const thumb = (id, w = 1280) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
-  const preview = (id) => `https://drive.google.com/file/d/${id}/preview`;
   const hasGsap = typeof window.gsap !== "undefined";
+  const thumb = (id, w = 1000) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
+  const preview = (id) => `https://drive.google.com/file/d/${id}/preview`;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-  document.getElementById("year").textContent = new Date().getFullYear();
+  $("#year").textContent = new Date().getFullYear();
 
-  /* ---------- Build cards ---------- */
+  /* ================= PORTFOLIO TABS ================= */
   const { commercial, series } = window.PROJECTS;
+  const DESC = {
+    commercial: "2D animated commercial — character animation, motion graphics and compositing.",
+    stickman: "Episode from an ongoing stickman YouTube series, built on reusable Moho rigs.",
+    story: "Storytelling / explainer video animated from script and voiceover.",
+    shorts: "Vertical 9:16 short for YouTube Shorts, TikTok and Reels."
+  };
+  const TOOLS = [
+    { name: "Moho Pro", img: "assets/moho.png", light: true },
+    { name: "After Effects", img: "assets/ae.png" },
+    { name: "Premiere Pro", img: "assets/pr.png" },
+    { name: "Photoshop", img: "assets/ps.png" },
+    { name: "Illustrator", img: "assets/ai.png" },
+    { name: "Blender", text: "B" }
+  ];
+  const DATA = {
+    commercial: commercial.map((p) => ({ ...p, desc: DESC.commercial })),
+    series: series.filter((p) => p.cat !== "shorts").map((p) => ({ ...p, desc: DESC[p.cat], tag: p.cat === "stickman" ? "Stickman series" : "Storytelling" })),
+    shorts: series.filter((p) => p.cat === "shorts").map((p) => ({ ...p, desc: DESC.shorts, tag: "9:16 Short", short: true }))
+  };
 
-  function card(p, i, extra = "") {
-    const el = document.createElement("article");
-    el.className = `card ${extra}`.trim();
-    el.dataset.video = p.id;
-    el.dataset.title = p.title;
-    if (p.cat) el.dataset.cat = p.cat;
-    el.innerHTML = `
-      <span class="card__num">${String(i + 1).padStart(2, "0")}</span>
-      <div class="card__media">
-        <span class="card__fallback">${p.title.split(" ")[0]}</span>
-        <img alt="${p.title}" loading="lazy" src="${thumb(p.id, 900)}" />
-      </div>
-      <div class="card__meta">
-        <h3 class="card__title">${p.title}</h3>
-        <span class="card__tag">${p.tag || p.cat}</span>
-      </div>`;
-    const img = el.querySelector("img");
-    img.addEventListener("error", () => img.remove());
-    return el;
+  const panel = $("#panel");
+
+  function cardHTML(p) {
+    return `
+      <article class="pcard${p.short ? " pcard--short" : ""}">
+        <div class="pcard__media" data-video="${p.id}" data-title="${p.title}"${p.short ? ' data-short="1"' : ""}>
+          <span class="pcard__fallback">${p.title}</span>
+          <img alt="${p.title}" loading="lazy" src="${thumb(p.id)}" onerror="this.remove()" />
+          <span class="pcard__play">▶</span>
+        </div>
+        <h3 class="pcard__title">${p.title}</h3>
+        <p class="pcard__desc">${p.desc}</p>
+        <div class="pcard__foot">
+          <span class="pcard__tag">${p.tag || ""}</span>
+          <button class="pcard__btn" data-video="${p.id}" data-title="${p.title}"${p.short ? ' data-short="1"' : ""}>Watch <span>→</span></button>
+        </div>
+      </article>`;
   }
 
-  const track = document.getElementById("workTrack");
-  commercial.forEach((p, i) => track.appendChild(card(p, i)));
+  function toolsHTML() {
+    return `<div class="tools-grid">${TOOLS.map((t) => `
+      <div class="tool">
+        ${t.img
+          ? `<span class="tool__logo${t.light ? " tool__logo--light" : ""}"><img src="${t.img}" alt="${t.name}" /></span>`
+          : `<span class="tool__logo tool__logo--text">${t.text}</span>`}
+        <span class="tool__name">${t.name}</span>
+      </div>`).join("")}</div>`;
+  }
 
-  const grid = document.getElementById("seriesGrid");
-  series.forEach((p, i) => grid.appendChild(card(p, i, p.cat === "shorts" ? "is-short" : "")));
-
-  document.querySelectorAll("[data-thumb]").forEach((img) => {
-    img.src = thumb(img.dataset.thumb, 1920);
-    img.addEventListener("error", () => img.remove());
-  });
-
-  /* ---------- Filters ---------- */
-  document.querySelectorAll(".filter").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".filter").forEach((b) => b.classList.toggle("is-active", b === btn));
-      const f = btn.dataset.filter;
-      const cards = [...grid.children];
-      cards.forEach((c) => c.classList.toggle("is-hidden", f !== "all" && c.dataset.cat !== f));
-      if (hasGsap && !reduce) {
-        gsap.fromTo(cards.filter((c) => !c.classList.contains("is-hidden")),
-          { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .6, stagger: .05, ease: "power3.out" });
+  function showTab(name, animate) {
+    const render = () => {
+      panel.innerHTML = name === "tools" ? toolsHTML() : DATA[name].map(cardHTML).join("");
+      if (hasGsap && !reduce && animate) {
+        gsap.fromTo(panel.querySelectorAll(".pcard, .tool"),
+          { y: 30, opacity: 0, filter: "blur(6px)" },
+          { y: 0, opacity: 1, filter: "blur(0px)", duration: .6, stagger: .05, ease: "power3.out" });
       }
       if (window.ScrollTrigger) ScrollTrigger.refresh();
-    });
-  });
+    };
+    if (hasGsap && !reduce && animate && panel.children.length) {
+      gsap.to(panel.children, { opacity: 0, y: -10, duration: .2, stagger: .015, onComplete: render });
+    } else render();
+  }
 
-  /* ---------- Modal ---------- */
-  const modal = document.getElementById("modal");
-  const media = document.getElementById("modalMedia");
-  const mTitle = document.getElementById("modalTitle");
+  const tabs = $$(".tab");
+  const pill = $(".tabs__pill");
+  function movePill(btn) {
+    pill.style.width = btn.offsetWidth + "px";
+    pill.style.transform = `translateX(${btn.offsetLeft - 6}px)`;
+  }
+  tabs.forEach((t) => t.addEventListener("click", () => {
+    if (t.classList.contains("is-active")) return;
+    tabs.forEach((x) => { x.classList.toggle("is-active", x === t); x.setAttribute("aria-selected", x === t); });
+    movePill(t);
+    showTab(t.dataset.tab, true);
+  }));
+  movePill($(".tab.is-active"));
+  window.addEventListener("resize", () => movePill($(".tab.is-active")));
+  showTab("commercial", false);
+
+  /* ================= MODAL ================= */
+  const modal = $("#modal"), media = $("#modalMedia"), mTitle = $("#modalTitle");
   let lenis;
-
   function openModal(id, title, short) {
     media.innerHTML = `<iframe src="${preview(id)}" allow="autoplay; fullscreen" allowfullscreen title="${title}"></iframe>`;
     media.classList.toggle("is-short", !!short);
@@ -69,39 +100,67 @@
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
     lenis && lenis.stop();
-    if (hasGsap) {
-      gsap.to(".modal__backdrop", { opacity: 1, duration: .4 });
-      gsap.to(".modal__box", { opacity: 1, scale: 1, duration: .5, ease: "power3.out" });
-    } else {
-      document.querySelector(".modal__backdrop").style.opacity = 1;
-      Object.assign(document.querySelector(".modal__box").style, { opacity: 1, transform: "none" });
-    }
   }
   function closeModal() {
-    const done = () => {
-      modal.classList.remove("is-open");
-      modal.setAttribute("aria-hidden", "true");
-      media.innerHTML = "";
-      lenis && lenis.start();
-    };
-    if (hasGsap) {
-      gsap.to(".modal__backdrop", { opacity: 0, duration: .3 });
-      gsap.to(".modal__box", { opacity: 0, scale: .94, duration: .3, onComplete: done });
-    } else done();
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    setTimeout(() => (media.innerHTML = ""), 350);
+    lenis && lenis.start();
   }
   document.addEventListener("click", (e) => {
     const v = e.target.closest("[data-video]");
-    if (v) { openModal(v.dataset.video, v.dataset.title, v.classList.contains("is-short")); return; }
+    if (v) { openModal(v.dataset.video, v.dataset.title, v.dataset.short); return; }
     if (e.target.closest("[data-close]")) closeModal();
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal(); });
 
-  /* ---------- Without GSAP / reduced motion: just show everything ---------- */
-  const loader = document.querySelector(".loader");
+  /* ================= NAV ACTIVE LINK ================= */
+  const links = $$(".nav__links a");
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (en.isIntersecting) links.forEach((a) => a.classList.toggle("is-active", a.getAttribute("href") === "#" + en.target.id));
+    });
+  }, { rootMargin: "-45% 0px -50% 0px" });
+  $$("main section[id]").forEach((s) => io.observe(s));
+
+  /* ================= TYPEWRITER ================= */
+  const typed = $("#typed");
+  const words = ["Moho 2D Animator", "Stickman Specialist", "Rigging & Lip-sync", "Faceless YouTube Videos"];
+  function typewriter() {
+    if (reduce) { typed.textContent = words[0]; return; }
+    let w = 0, i = 0, del = false;
+    (function tick() {
+      const word = words[w];
+      i += del ? -1 : 1;
+      typed.textContent = word.slice(0, i);
+      let t = del ? 40 : 85;
+      if (!del && i === word.length) { del = true; t = 1700; }
+      else if (del && i === 0) { del = false; w = (w + 1) % words.length; t = 350; }
+      setTimeout(tick, t);
+    })();
+  }
+
+  /* ================= LANYARD ================= */
+  const badge = $("#badge");
+  let lanyard = null;
+  if (!reduce) {
+    lanyard = window.Lanyard(badge, $("#badgeCard"), $("#strap"));
+    badge.addEventListener("lanyard:grab", () => {
+      const h = $(".badge__hint"); if (h) h.style.opacity = 0;
+    }, { once: true });
+  } else badge.classList.add("is-static");
+
+  /* ================= NO GSAP / REDUCED MOTION FALLBACK ================= */
+  const intro = $(".intro");
+  const counters = $$("[data-count]");
+  const setCount = (n, v) => (n.textContent = Math.round(v) + (n.dataset.suffix || ""));
+
   if (!hasGsap || reduce) {
-    loader.remove();
-    document.querySelectorAll(".about__text").forEach((t) => (t.style.opacity = 1));
-    document.querySelectorAll("[data-count]").forEach((n) => (n.textContent = n.dataset.count + (n.dataset.suffix || "")));
+    intro.remove();
+    document.body.classList.remove("is-intro");
+    counters.forEach((n) => setCount(n, +n.dataset.count));
+    typewriter();
+    lanyard && lanyard.drop();
     return;
   }
 
@@ -113,132 +172,52 @@
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add((t) => lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
-    document.querySelectorAll('a[href^="#"]').forEach((a) =>
-      a.addEventListener("click", (e) => {
-        const target = document.querySelector(a.getAttribute("href"));
-        if (target) { e.preventDefault(); lenis.scrollTo(target, { offset: 0 }); }
-      }));
+    lenis.stop();
+    $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => {
+      const target = $(a.getAttribute("href"));
+      if (target) { e.preventDefault(); lenis.scrollTo(target, { offset: a.getAttribute("href") === "#home" ? -200 : -90 }); }
+    }));
   }
 
-  /* ---------- Split text into chars ---------- */
-  document.querySelectorAll(".split").forEach((el) => {
-    const text = el.textContent;
-    el.innerHTML = [...text].map((c) => (c === " " ? " " : `<span class="char">${c}</span>`)).join("");
+  /* ---------- Intro → site ---------- */
+  gsap.set(".fx", { opacity: 0, y: 28, filter: "blur(8px)" });
+  gsap.set(".nav", { opacity: 0, y: -20 });
+  gsap.set("#badgeCard, .badge__hint", { opacity: 0 });
+
+  gsap.timeline({ delay: .3 })
+    .to(".intro__icons svg", { opacity: 1, duration: .5, stagger: .15 })
+    .to(".intro__line .w", { opacity: 1, filter: "blur(0px)", duration: .55, stagger: .16, ease: "power2.out" }, "+=.1")
+    .to(".intro__url", { opacity: 1, duration: .4 }, "-=.1")
+    .to(".intro", { opacity: 0, scale: 1.04, duration: .7, ease: "power2.inOut" }, "+=.7")
+    .add(() => {
+      intro.remove();
+      document.body.classList.remove("is-intro");
+      lenis && lenis.start();
+      gsap.set("#badgeCard", { opacity: 1 });
+      lanyard && lanyard.drop();
+      typewriter();
+    })
+    .to(".nav", { opacity: 1, y: 0, duration: .7, ease: "power3.out" }, "-=.2")
+    .to(".fx", { opacity: 1, y: 0, filter: "blur(0px)", duration: .9, stagger: .09, ease: "power3.out" }, "<")
+    .to(".badge__hint", { opacity: 1, duration: .6 }, "+=.4");
+
+  /* ---------- Scroll reveals ---------- */
+  ScrollTrigger.batch(".reveal", {
+    start: "top 88%",
+    onEnter: (els) => gsap.fromTo(els,
+      { y: 40, opacity: 0, filter: "blur(8px)" },
+      { y: 0, opacity: 1, filter: "blur(0px)", duration: .9, stagger: .08, ease: "power3.out", overwrite: true })
   });
-  document.querySelectorAll(".reveal-words").forEach((el) => {
-    el.innerHTML = el.textContent.trim().split(/\s+/).map((w) => `<span class="word">${w}</span>`).join(" ");
-  });
+  gsap.set(".reveal", { opacity: 0 });
 
-  /* ---------- Preloader → hero intro ---------- */
-  document.body.classList.add("is-loading");
-  const counter = { v: 0 };
-  const countEl = document.getElementById("loaderCount");
-  gsap.set(".hero__title .char", { yPercent: 110 });
-  gsap.set([".hero__eyebrow", ".hero__sub", ".hero__scroll", ".hero__stick"], { opacity: 0, y: 20 });
-
-  gsap.timeline()
-    .to(counter, { v: 100, duration: 1.8, ease: "power2.inOut", onUpdate: () => (countEl.textContent = Math.round(counter.v)) })
-    .to(".loader__panel", { scaleY: 1, duration: .6, ease: "power4.inOut" })
-    .to(".loader__inner", { opacity: 0, duration: .2 }, "<")
-    .set(".loader", { background: "transparent" })
-    .to(".loader__panel", { scaleY: 0, transformOrigin: "top", duration: .7, ease: "power4.inOut" })
-    .add(() => { loader.remove(); document.body.classList.remove("is-loading"); })
-    .to(".hero__title .char", { yPercent: 0, duration: 1, stagger: .025, ease: "power4.out" }, "-=.3")
-    .to([".hero__eyebrow", ".hero__sub", ".hero__scroll"], { opacity: 1, y: 0, duration: .8, stagger: .1, ease: "power3.out" }, "-=.7")
-    .to(".hero__stick", { opacity: 1, y: 0, duration: .6, ease: "back.out(2)" }, "-=.6");
-
-  /* ---------- Marquee ---------- */
-  const mTrack = document.querySelector(".marquee__track");
-  mTrack.innerHTML += mTrack.innerHTML;
-  const marquee = gsap.to(mTrack, { xPercent: -50, duration: 22, ease: "none", repeat: -1 });
-  ScrollTrigger.create({
-    onUpdate: (self) => {
-      const dir = self.direction;
-      gsap.to(marquee, { timeScale: dir * Math.min(1 + Math.abs(self.getVelocity()) / 800, 5), duration: .3, overwrite: true });
-      gsap.to(marquee, { timeScale: dir, duration: 1, delay: .3 });
-    }
-  });
-
-  /* ---------- Hero parallax out ---------- */
-  gsap.to(".hero__title", { yPercent: -25, opacity: .3, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
-
-  const mm = gsap.matchMedia();
-
-  /* ---------- Showreel grows ---------- */
-  mm.add("(min-width: 721px)", () => {
-    gsap.timeline({ scrollTrigger: { trigger: ".reel", start: "top top", end: "+=120%", scrub: true, pin: ".reel__pin" } })
-      .to(".reel__frame", { width: "100vw", borderRadius: 0, ease: "none" })
-      .to(".reel__frame img", { scale: 1, ease: "none" }, 0);
-  });
-
-  /* ---------- Horizontal work scroll ---------- */
-  mm.add("(min-width: 721px)", () => {
-    const dist = () => track.scrollWidth - window.innerWidth;
-    gsap.to(track, {
-      x: () => -dist(), ease: "none",
-      scrollTrigger: { trigger: ".work", start: "top top", end: () => "+=" + dist(), scrub: 1, pin: true, invalidateOnRefresh: true }
-    });
-  });
-
-  /* ---------- Section titles ---------- */
-  document.querySelectorAll(".section-title, .contact__title").forEach((t) => {
-    gsap.from(t.querySelectorAll(".char"), {
-      yPercent: 110, rotate: 6, duration: .9, stagger: .02, ease: "power4.out",
-      scrollTrigger: { trigger: t, start: "top 85%" }
-    });
-  });
-
-  /* ---------- About word highlight ---------- */
-  gsap.to(".about__text .word", {
-    opacity: 1, stagger: .05, ease: "none",
-    scrollTrigger: { trigger: ".about__text", start: "top 80%", end: "bottom 45%", scrub: true }
-  });
-
-  /* ---------- About photo + tools ---------- */
-  gsap.fromTo(".about__photo img", { clipPath: "inset(100% 0 0 0 round 24px)", scale: 1.25 }, {
-    clipPath: "inset(0% 0 0 0 round 24px)", scale: 1, duration: 1.4, ease: "power4.out",
-    scrollTrigger: { trigger: ".about__photo", start: "top 80%" }
-  });
-  gsap.to(".about__photo", { yPercent: -8, ease: "none", scrollTrigger: { trigger: ".about", start: "top bottom", end: "bottom top", scrub: true } });
-  gsap.from(".about__list li", { x: -30, opacity: 0, duration: .7, stagger: .1, ease: "power3.out", scrollTrigger: { trigger: ".about__list", start: "top 85%" } });
-  gsap.from(".tool", { y: 40, scale: .6, opacity: 0, duration: .8, stagger: .08, ease: "back.out(2.2)", scrollTrigger: { trigger: ".tools", start: "top 90%" } });
+  /* ---------- About photo parallax ---------- */
+  gsap.to(".about__ring", { yPercent: -10, ease: "none", scrollTrigger: { trigger: ".about", start: "top bottom", end: "bottom top", scrub: true } });
 
   /* ---------- Counters ---------- */
-  document.querySelectorAll("[data-count]").forEach((n) => {
+  counters.forEach((n) => {
     const o = { v: 0 };
-    gsap.to(o, {
-      v: +n.dataset.count, duration: 1.6, ease: "power2.out",
-      onUpdate: () => (n.textContent = Math.round(o.v) + (n.dataset.suffix || "")),
-      scrollTrigger: { trigger: n, start: "top 90%" }
-    });
+    gsap.to(o, { v: +n.dataset.count, duration: 1.6, ease: "power2.out", onUpdate: () => setCount(n, o.v), scrollTrigger: { trigger: n, start: "top 92%" } });
   });
-
-  /* ---------- Grid cards / steps reveal ---------- */
-  ScrollTrigger.batch(".grid .card, .step", {
-    start: "top 90%",
-    onEnter: (els) => gsap.fromTo(els, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: .8, stagger: .08, ease: "power3.out" })
-  });
-
-  /* ---------- Custom cursor ---------- */
-  const cursor = document.querySelector(".cursor");
-  if (matchMedia("(hover: hover)").matches) {
-    const xTo = gsap.quickTo(cursor, "x", { duration: .25, ease: "power3" });
-    const yTo = gsap.quickTo(cursor, "y", { duration: .25, ease: "power3" });
-    window.addEventListener("mousemove", (e) => { xTo(e.clientX); yTo(e.clientY); });
-    document.addEventListener("mouseover", (e) => {
-      cursor.classList.toggle("is-play", !!e.target.closest("[data-video]"));
-      cursor.classList.toggle("is-link", !e.target.closest("[data-video]") && !!e.target.closest("a, button"));
-    });
-
-    /* Magnetic buttons */
-    document.querySelectorAll(".magnetic").forEach((b) => {
-      b.addEventListener("mousemove", (e) => {
-        const r = b.getBoundingClientRect();
-        gsap.to(b, { x: (e.clientX - r.left - r.width / 2) * .35, y: (e.clientY - r.top - r.height / 2) * .35, duration: .4 });
-      });
-      b.addEventListener("mouseleave", () => gsap.to(b, { x: 0, y: 0, duration: .7, ease: "elastic.out(1, .4)" }));
-    });
-  }
 
   window.addEventListener("load", () => ScrollTrigger.refresh());
 })();
