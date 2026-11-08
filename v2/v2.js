@@ -8,7 +8,8 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t;
-const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+// animation portfolio: always play full motion (many Windows setups report reduced-motion by default)
+const reduce = false;
 const isTouch = matchMedia("(hover: none)").matches;
 const thumb = (id, w = 1000) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
 const preview = (id) => `https://drive.google.com/file/d/${id}/preview`;
@@ -435,7 +436,7 @@ const BG = (() => {
     gsap.fromTo(n.querySelector(".bgm"), { yPercent: 6 * dir }, { yPercent: 0, duration: 1.4, ease: "power3.out" });
     kb[i].play();
     const v = n.querySelector("video");
-    if (v) { v.preload = "auto"; v.currentTime = 0; v.play().catch(() => {}); }
+    if (v) { v.muted = true; v.preload = "auto"; v.currentTime = 0; v.play().catch(() => {}); }
     const nx = slides[i + 1] && slides[i + 1].querySelector("video");
     if (nx) nx.preload = "auto";
     if (o) {

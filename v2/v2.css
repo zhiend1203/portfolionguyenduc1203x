@@ -209,11 +209,7 @@ section { position: relative; padding: 18vh var(--pad); }
 .modal__title { margin-top: 14px; font: 600 16px var(--sub); }
 .modal__x { position: absolute; top: -44px; right: 0; font-size: 20px; }
 
-@media (prefers-reduced-motion: reduce) {
-  .about__text .word { opacity: 1; }
-  .step { opacity: 1; }
-  .timeline__svg line { stroke-dashoffset: 0; }
-}
+
 
 /* ---------- 2D photo card ---------- */
 .pc-wrap { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
