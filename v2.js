@@ -54,10 +54,10 @@ const C = { x: -0.24, y: 0, s: 1, ry: 0, rz: -4, o: 1, sx: 1, sy: 1 };
 const isWide = () => innerWidth > 760;
 const P = {
   hero: () => isWide() ? { x: -0.24, y: 0, s: 1, ry: 0, rz: -4, o: 1 } : { x: 0.2, y: -0.28, s: 0.5, ry: 0, rz: 5, o: 1 },
-  about: () => isWide() ? { x: -0.27, y: 0.02, s: 1, ry: 180, rz: 3, o: 1 } : { x: 0, y: -0.2, s: 0.6, ry: 180, rz: 3, o: 0.25 },
-  services: () => isWide() ? { x: -0.25, y: 0.13, s: 0.9, ry: 360, rz: -6, o: 1 } : { x: 0.3, y: 0.36, s: 0.3, ry: 360, rz: -8, o: 0 },
-  process: () => isWide() ? { x: -0.34, y: 0.14, s: 0.8, ry: 540, rz: 5, o: 1 } : { x: 0.3, y: 0.3, s: 0.4, ry: 540, rz: 5, o: 0 },
-  out: () => isWide() ? { x: 0.4, y: 0.33, s: 0.48, ry: 540, rz: -4, o: 1 } : { x: 0.34, y: -0.33, s: 0.3, ry: 540, rz: -4, o: 1 }
+  about: () => isWide() ? { x: -0.27, y: 0.02, s: 1, ry: 180, rz: 3, o: 1 } : { x: 0.36, y: -0.36, s: 0.27, ry: 180, rz: 3, o: 1 },
+  services: () => isWide() ? { x: -0.25, y: 0.13, s: 0.9, ry: 360, rz: -6, o: 1 } : { x: 0.36, y: -0.36, s: 0.27, ry: 360, rz: -4, o: 1 },
+  process: () => isWide() ? { x: -0.34, y: 0.14, s: 0.8, ry: 540, rz: 5, o: 1 } : { x: 0.36, y: -0.36, s: 0.27, ry: 540, rz: 4, o: 1 },
+  out: () => isWide() ? { x: 0.4, y: 0.33, s: 0.48, ry: 540, rz: -4, o: 1 } : { x: 0.36, y: -0.36, s: 0.27, ry: 540, rz: -4, o: 1 }
 };
 const cur = { x: 0, y: 0, s: 1, ry: 0, rz: 0 };
 const trail = ghosts.map(() => ({ x: 0, y: 0, s: 1, ry: 0, rz: 0 }));
