@@ -10,6 +10,9 @@ const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t;
 // animation portfolio: always play full motion (many Windows setups report reduced-motion by default)
 const reduce = false;
+const VH = () => (window.visualViewport ? Math.min(window.innerHeight, visualViewport.height) : window.innerHeight);
+const setVH = () => document.documentElement.style.setProperty("--vvh", VH() + "px");
+setVH(); addEventListener("resize", setVH); window.visualViewport && visualViewport.addEventListener("resize", setVH);
 const isTouch = matchMedia("(hover: none)").matches;
 const LOCAL_THUMBS = new Set(["14KowU4q7yDaDcYJJr0K9TenHLvE0dxbW","1DxalS9A7N2BsVqzw6k6r6VEufixnL3ID","1DxgHaNpg3jPo_-2VAzueRckdbaf8rinR","1KyuHOGzq-BxrHkb9ZgZx6OU465SgZZp8","1MKEZFfsvdsTBIX4P4s0gTMk07CMZwRlJ","1SpePFLN9b9yX-OH3CKsJaaAF_XH70Try","1XbeNOH6H1rD17PHiLUhVLBW8-GIDWm6O","1Zyn5rLpNbgC6eucnQrICIgMlI9VYEdkJ","1kJ2hXP4UB5pa4ECQUv3CaK5gUpN05mSb","1kRgpvGGBXjn2A38YcByheOMEmS9P6h0U","1rji8bBV8x95AjIt_Ctg-bk5eLApjM1Ep","1tyuo4lyjJrjMoJ6Oq0GFwYqOLu04mwQu","1w1QuAeAKIVO3tV0OTt9gY0C77cLK2AjN","1w5vckbquhzRmI1s8xl2kfmPQJSYA7dPZ"]);
 const thumb = (id, w = 1000) => LOCAL_THUMBS.has(id) && w >= 1000 ? `thumbs/${id}.webp` : `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
@@ -60,7 +63,7 @@ const cur = { x: 0, y: 0, s: 1, ry: 0, rz: 0 };
 const trail = ghosts.map(() => ({ x: 0, y: 0, s: 1, ry: 0, rz: 0 }));
 let frame = 0;
 function tf(t, rx = 0, extraY = 0) {
-  return `translate3d(${t.x * innerWidth}px, ${t.y * innerHeight}px, 0) perspective(1200px) rotateX(${rx}deg) rotateY(${t.ry + extraY}deg) rotateZ(${t.rz}deg) scale(${t.s})`;
+  return `translate3d(${t.x * innerWidth}px, ${t.y * VH()}px, 0) perspective(1200px) rotateX(${rx}deg) rotateY(${t.ry + extraY}deg) rotateZ(${t.rz}deg) scale(${t.s})`;
 }
 let hov = 0, hovT = 0;
 card.addEventListener("pointerenter", () => { hovT = 1; card.classList.add("is-hover"); });
@@ -226,16 +229,29 @@ function initBalls() {
    CONTENT: work cards, shorts, modal
    ============================================================ */
 const { commercial, series } = window.PROJECTS;
+const NEWW = [
+  { local: "media/h-1209.mp4", v: "media/p-1209", title: "Mech Battle 1209", tag: "Mech / tank" },
+  { local: "media/h-tap6.mp4", v: "media/p-tap6", title: "Episode 6", tag: "YouTube series" },
+  { local: "media/h-72.mp4", v: "media/p-72", title: "Rescue Pups Ep. 72", tag: "YouTube series" },
+  { local: "media/h-among.mp4", v: "media/p-among", title: "Among Crew", tag: "Trend" },
+  { local: "media/h-73.mp4", v: "media/p-73", title: "Rescue Pups Ep. 73", tag: "YouTube series" },
+  { local: "media/h-tap5.mp4", v: "media/p-tap5", title: "Poppy Trend Ep. 5", tag: "Trend" },
+  { local: "media/h-79.mp4", v: "media/p-79", title: "Rescue Pups Ep. 79", tag: "YouTube series" }
+];
 const works = [
-  ...commercial.map((p) => ({ ...p })),
+  ...commercial.slice(0, 1),
+  ...NEWW.slice(0, 2),
+  ...commercial.slice(1).map((p) => ({ ...p })),
   ...(window.PROJECTS.tank || []).map((p) => ({ ...p })),
+  ...NEWW.slice(2),
   ...series.filter((p) => p.cat !== "shorts").map((p) => ({ ...p, tag: p.cat === "stickman" ? "Stickman series" : "Storytelling" }))
 ];
 $("#workTrack").innerHTML = works.map((p, i) => `
   <article class="wcard${p.image ? " wcard--img" : ""}">
-    <div class="wcard__media" data-video="${p.id}" data-title="${p.title}">
+    <div class="wcard__media" ${p.local ? `data-local="${p.local}"` : `data-video="${p.id}"`} data-title="${p.title}">
       <span class="wcard__fb">${p.title}</span>
-      <img alt="${p.title}" loading="lazy" src="${thumb(p.id)}" onerror="this.remove()" />
+      <img alt="${p.title}" loading="lazy" src="${p.v ? p.v + ".jpg" : thumb(p.id)}" onerror="this.remove()" />
+      ${p.v ? `<video muted loop playsinline autoplay preload="none" src="${p.v}.mp4"></video>` : ""}
       <span class="wcard__play">▶</span>
     </div>
     <div class="wcard__meta"><span class="wcard__n">${String(i + 1).padStart(2, "0")}</span><h3>${p.title}</h3><span class="wcard__tag">${p.tag || ""}</span></div>
@@ -252,8 +268,9 @@ $("#fan").innerHTML = shorts.map((p) => `
 
 const modal = $("#modal"), media = $("#modalMedia"), mTitle = $("#modalTitle"), mBox = $(".modal__box");
 let lenis, pagerPaused = false;
-function openModal(id, title, short) {
-  media.innerHTML = `<iframe src="${preview(id)}" allow="autoplay; fullscreen" allowfullscreen title="${title}"></iframe>`;
+function openModal(id, title, short, local) {
+  media.innerHTML = local ? `<video src="${local}" controls autoplay playsinline style="width:100%;height:100%;background:#000"></video>`
+    : `<iframe src="${preview(id)}" allow="autoplay; fullscreen" allowfullscreen title="${title}"></iframe>`;
   mTitle.textContent = title;
   mBox.classList.toggle("is-short", !!short);
   modal.classList.add("is-open");
@@ -267,8 +284,8 @@ function closeModal() {
   pagerPaused = false;
 }
 document.addEventListener("click", (e) => {
-  const v = e.target.closest("[data-video]");
-  if (v) { e.preventDefault(); openModal(v.dataset.video, v.dataset.title, v.dataset.short); return; }
+  const v = e.target.closest("[data-video], [data-local]");
+  if (v) { e.preventDefault(); openModal(v.dataset.video, v.dataset.title, v.dataset.short, v.dataset.local); return; }
   if (e.target.closest("[data-close]")) closeModal();
 });
 addEventListener("keydown", (e) => e.key === "Escape" && closeModal());
@@ -279,11 +296,11 @@ addEventListener("keydown", (e) => e.key === "Escape" && closeModal());
 const cursor = $(".cursor");
 addEventListener("pointermove", (e) => {
   mouse.x = (e.clientX / innerWidth) * 2 - 1;
-  mouse.y = -((e.clientY / innerHeight) * 2 - 1);
+  mouse.y = -((e.clientY / VH()) * 2 - 1);
   if (!isTouch) gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.25, ease: "power3.out", overwrite: true });
 });
 document.addEventListener("pointerover", (e) => {
-  cursor.classList.toggle("is-hover", !!e.target.closest("a, button, [data-video]"));
+  cursor.classList.toggle("is-hover", !!e.target.closest("a, button, [data-video], [data-local]"));
 });
 $$(".magnetic").forEach((el) => {
   el.addEventListener("pointermove", (e) => {
@@ -333,7 +350,7 @@ gsap.ticker.add(cardFromScroll);
 // ---- per-page entrance timelines (played every time the page is entered)
 const flipIn = (tl, sec) => { const ch = titleChars.get(sec); if (ch) tl.fromTo(ch, { yPercent: 110, rotateX: -90, opacity: 0 }, { yPercent: 0, rotateX: 0, opacity: 1, transformOrigin: "50% 100%", duration: 0.7, stagger: 0.04, ease: "back.out(1.7)" }, 0); };
 const squashDrop = (tl, el, at, rot = 6) => tl
-  .fromTo(el, { y: () => -innerHeight * 0.9, rotate: rot, opacity: 0, scaleX: 0.9, scaleY: 1.15 }, { y: 0, rotate: 0, opacity: 1, duration: 0.5, ease: "power2.in" }, at)
+  .fromTo(el, { y: () => -VH() * 0.9, rotate: rot, opacity: 0, scaleX: 0.9, scaleY: 1.15 }, { y: 0, rotate: 0, opacity: 1, duration: 0.5, ease: "power2.in" }, at)
   .to(el, { scaleX: 1.08, scaleY: 0.86, transformOrigin: "50% 100%", duration: 0.09, ease: "power1.out" })
   .to(el, { scaleX: 1, scaleY: 1, duration: 0.6, ease: "elastic.out(1.1, 0.4)" });
 const T = {};
@@ -380,7 +397,7 @@ function buildTimelines() {
   hT.add(() => { floatTw && floatTw.kill(); }, 0);
   phones.forEach((ph, i) => {
     const at = 0.15 + i * 0.16;
-    hT.fromTo(ph, { x: 0, y: () => -innerHeight, rotate: (i - mid) * -14, opacity: 1, scaleX: 0.9, scaleY: 1.15 },
+    hT.fromTo(ph, { x: 0, y: () => -VH(), rotate: (i - mid) * -14, opacity: 1, scaleX: 0.9, scaleY: 1.15 },
       { y: -i * 6, rotate: (i - mid) * 2.5, duration: 0.42, ease: "power2.in" }, at)
       .to(ph, { scaleX: 1.12, scaleY: 0.85, transformOrigin: "50% 100%", duration: 0.07 }, ">")
       .to(ph, { scaleX: 1, scaleY: 1, duration: 0.45, ease: "elastic.out(1.2, 0.45)" }, ">");
@@ -419,9 +436,9 @@ const BG = { show() {} };
   const cv = $("#fx"), cx = cv.getContext("2d");
   let W, H, dpr;
   const P = [];
-  const size = () => { dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  const size = () => { dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = VH(); cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); };
   size(); addEventListener("resize", size);
-  const N = Math.round(Math.min(110, (innerWidth * innerHeight) / 26000));
+  const N = Math.round(Math.min(110, (innerWidth * VH()) / 26000));
   for (let i = 0; i < N; i++) P.push({ x: Math.random() * W, y: Math.random() * H, z: 0.3 + Math.random() * 0.9, k: i % 3, r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.02, vx: 0, vy: 0 });
   let lastY = 0;
   gsap.ticker.add(() => {

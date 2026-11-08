@@ -1,0 +1,13 @@
+/* pager layout: size pages to the visible viewport (Brave/4K reports innerHeight > visible height) */
+.hero, .about, .services, .process, .work, .shorts, .tools, .contact { height: var(--vvh, 100vh) !important; }
+.hero { min-height: 0 !important; }
+/* new local work cards play a short preview */
+.wcard__media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+/* contact links */
+.cx__row { display: flex; align-items: center; gap: clamp(20px, 3vw, 50px); flex-wrap: wrap; }
+.cx__links { display: grid; gap: 10px; margin-top: 32px; min-width: min(400px, 100%); }
+.cx__link { display: grid; grid-template-columns: 110px 1fr auto; align-items: baseline; gap: 14px; padding: 14px 18px; border: 1px solid var(--line); border-radius: 14px; background: rgba(5,5,7,.6); transition: .3s; }
+.cx__link span { font: 500 11px var(--mono); color: var(--mut); letter-spacing: .12em; text-transform: uppercase; }
+.cx__link b { font: 600 clamp(15px, 1.1vw, 20px) var(--sub); }
+.cx__link i { font-style: normal; color: var(--vio2); }
+.cx__link:hover { border-color: var(--vio); background: rgba(139,92,246,.14); }

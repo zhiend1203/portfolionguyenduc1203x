@@ -3,112 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nguyen Minh Duc — Moho 2D Animator</title>
+  <title>Nguyen Minh Duc — 2D Animator</title>
   <link rel="canonical" href="https://animation.gripe/" />
-  <meta name="description" content="Nguyen Minh Duc — Moho 2D animator: character animation, rigging and lip-sync for YouTube channels and TV commercials. 1000+ videos, 5+ years in Moho." />
   <meta property="og:title" content="Nguyen Minh Duc — Moho 2D Animator" />
-  <meta property="og:image" content="https://animation.gripe/media/hero.jpg" />
+  <meta property="og:image" content="https://animation.gripe/assets/duc-card.jpg" />
+  <meta name="description" content="Nguyen Minh Duc — Moho 2D animator for faceless YouTube, storytelling, stickman videos and TVC commercials." />
   <link rel="icon" href="assets/avatar.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="v2.css?v=v4a" />
-  <link rel="stylesheet" href="v3.css?v=v4a" />
-  <link rel="stylesheet" href="v4.css?v=v4a" />
+  <link rel="stylesheet" href="v2.css?v=p5a" />
+  <link rel="stylesheet" href="v2fix.css?v=p5a" />
 </head>
 <body class="is-loading">
+  <!-- LOADER -->
   <div class="loader" aria-hidden="true">
     <div class="loader__count"><span id="loadNum">0</span>%</div>
     <div class="loader__bar"><span id="loadBar"></span></div>
     <p class="loader__hint">warming up the rig…</p>
   </div>
 
-  <canvas id="fx" aria-hidden="true" hidden></canvas>
-
-  <div class="cursor" aria-hidden="true"><span></span></div>
-  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
-
-  <header class="nav">
-    <a href="#home" class="nav__logo">DUC<span>.</span>ANIM</a>
-    <nav class="nav__links">
-      <a href="#work">Work</a>
-      <a href="#archive">Archive</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <a class="nav__hire magnetic" href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener">Hire me ↗</a>
-  </header>
-
-  <main>
-    <!-- HERO: showreel first -->
-    <section class="hx" id="home">
-      <div class="hx__copy">
-        <p class="eyebrow" data-hero>Nguyen Minh Duc — Hai Phong, Vietnam</p>
-        <h1 class="hx__title">
-          <span class="line"><span class="split" data-hero-title>MOHO 2D</span></span>
-          <span class="line"><span class="split outline" data-hero-title>ANIMATOR</span></span>
-        </h1>
-        <p class="hx__sub" data-hero>Character animation, rigging &amp; lip-sync for YouTube channels and TV commercials. 1000+ videos delivered.</p>
-        <div class="hx__btns" data-hero>
-          <a class="btnx btnx--solid magnetic" href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener">Hire me on Upwork ↗</a>
-          <button class="btnx btnx--ghost" data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel">▶ Watch full showreel</button>
-        </div>
-      </div>
-      <div class="hx__stage" data-hero>
-        <div class="hcard">
-          <img src="assets/duc-card.jpg" alt="Nguyen Minh Duc" draggable="false" />
-          <span class="hcard__rec">● REC</span>
-          <div class="hcard__bot"><b>NGUYEN MINH DUC</b><span>2D ANIMATOR · MOHO</span></div>
-        </div>
-      <div class="hx__screen" data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel">
-        <div class="hx__media"><video id="heroVid" muted loop playsinline autoplay preload="auto" poster="media/hero.jpg?v=3" src="media/hero.mp4?v=3"></video></div>
-        <div class="hx__tc"><span class="rec">● REC</span> SHOWREEL 2026 <span id="heroTc">00:00</span></div>
-        <span class="hx__corner tl"></span><span class="hx__corner tr"></span><span class="hx__corner bl"></span><span class="hx__corner br"></span>
-        <span class="hx__bar"><i id="heroBar"></i></span>
-        <span class="hx__open">▶ Full showreel</span>
-      </div>
-      </div>
-    </section>
-
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee__track" id="marquee">
-        <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
-        <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
-      </div>
-    </div>
-
-    <!-- SELECTED WORK -->
-    <section class="sel" id="work">
-      <div class="sec-head">
-        <p class="kicker"><span>01</span> Selected work</p>
-        <h2 class="big split-scrub">SELECTED WORK</h2>
-        <p class="sec-note" data-reveal>Commercials, YouTube series and rig work — click any piece to watch.</p>
-      </div>
-      <div class="sel__grid" id="selGrid"></div>
-    </section>
-
-    <!-- ARCHIVE -->
-    <section class="arch" id="archive">
-      <div class="sec-head sec-head--row">
-        <div>
-          <p class="kicker"><span>02</span> Archive</p>
-          <h2 class="big split-scrub">ALL PROJECTS</h2>
-        </div>
-        <div class="tabsx" id="tabs" data-reveal>
-          <button class="is-on" data-f="all">All</button>
-          <button data-f="commercial">Commercials</button>
-          <button data-f="series">YouTube series</button>
-          <button data-f="shorts">Shorts</button>
-          <button data-f="tank">Tank &amp; Mech</button>
-        </div>
-      </div>
-      <div class="arch__grid" id="archGrid"></div>
-    </section>
-
-    <!-- ABOUT + TOOLKIT -->
-    <section class="abt" id="about">
-      <div class="abt__grid">
-        <div class="abt__cardslot">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="glow glow--a" aria-hidden="true"></div>
+  <div class="glow glow--b" aria-hidden="true"></div>
+  <div class="pc-wrap" aria-hidden="true">
+    <div class="ghost"></div><div class="ghost"></div><div class="ghost"></div>
     <div class="pcard" id="pcard">
       <div class="pcard__face pcard__front">
         <img src="assets/duc-card.jpg" alt="" draggable="false" />
@@ -140,69 +59,164 @@
         <div class="glare"></div>
       </div>
     </div>
+  </div>
+  <div class="cursor" aria-hidden="true"><span></span></div>
+  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+  <header class="nav">
+    <a href="#home" class="nav__logo">DUC<span>.</span>ANIM</a>
+    <nav class="nav__links">
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <aside class="side side--left">
+    <a href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener" aria-label="Upwork" class="side__ico">Up</a>
+    <button class="side__ico" data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel" aria-label="Showreel">▶</button>
+    <span class="side__line"></span>
+  </aside>
+  <aside class="side side--right">
+    <button class="side__link" data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel">SHOWREEL ↗</button>
+  </aside>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="ghost-word" aria-hidden="true"><span>ANIMATION&nbsp;·&nbsp;ANIMATION&nbsp;·&nbsp;</span><span>ANIMATION&nbsp;·&nbsp;ANIMATION&nbsp;·&nbsp;</span></div>
+      <div class="hero__copy">
+        <p class="eyebrow" data-hero>Hi, I'm Nguyen Minh Duc — a</p>
+        <h1 class="hero__title">
+          <span class="line"><span class="split" data-hero-title>MOHO 2D</span></span>
+          <span class="line"><span class="split outline" data-hero-title>ANIMATOR</span></span>
+        </h1>
+        <p class="hero__sub" data-hero>Faceless YouTube · Storytelling · Stickman · TVC</p>
       </div>
-        <div class="abt__copy">
-          <p class="kicker"><span>03</span> About me</p>
-          <p class="about__text scrub-words">2D animator based in Hai Phong, Vietnam, with 5+ years in Moho. I build reusable character rigs so every new episode is faster and stays on-model — and I understand YouTube pacing: visuals that keep moving so viewers keep watching.</p>
-          <div class="stats">
-            <div class="stat"><b data-count="1000" data-suffix="+">0</b><span>Videos made</span></div>
-            <div class="stat"><b data-count="500" data-suffix="+">0</b><span>YouTube animation projects</span></div>
-            <div class="stat"><b data-count="5" data-suffix="+">0</b><span>Years in Moho</span></div>
-          </div>
-          <div class="svcx" data-reveal>
-            <div><b>Character animation</b><span>Acting, walk cycles, lip-sync, camera moves</span></div>
-            <div><b>Rigging</b><span>Reusable Moho rigs with smart bones</span></div>
-            <div><b>Edit &amp; composite</b><span>After Effects · Premiere, ready for YouTube or TV</span></div>
-          </div>
+    <div class="marquee" aria-hidden="true">
+        <div class="marquee__track" id="marquee">
+          <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
+          <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
         </div>
       </div>
-      <div class="tools" id="tools">
-        <h2 class="big tools__title split-scrub">MY TOOLKIT</h2>
-        <p class="tools__hint">move your mouse through them</p>
-        <canvas id="balls"></canvas>
+
+      <a href="#about" class="hero__scroll" data-hero><span class="mouse"><span></span></span> scroll</a>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about" id="about">
+      <div class="ghost-word" aria-hidden="true"><span>ABOUT&nbsp;·&nbsp;ABOUT&nbsp;·&nbsp;</span><span>ABOUT&nbsp;·&nbsp;ABOUT&nbsp;·&nbsp;</span></div>
+      <div class="about__box">
+        <p class="kicker"><span>01</span> About me</p>
+        <p class="about__text scrub-words">2D animator based in Hai Phong, Vietnam, with 5+ years in Moho. I build reusable character rigs so every new episode is faster and stays on-model — and I understand YouTube pacing: visuals that keep moving so viewers keep watching.</p>
+        <div class="stats">
+          <div class="stat"><b data-count="1000" data-suffix="+">0</b><span>Videos made</span></div>
+          <div class="stat"><b data-count="500" data-suffix="+">0</b><span>YouTube animation projects</span></div>
+          <div class="stat"><b data-count="5" data-suffix="+">0</b><span>Years in Moho</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES (desk scene) -->
+    <section class="services" id="services">
+      <div class="ghost-word" aria-hidden="true"><span>SERVICES&nbsp;·&nbsp;SERVICES&nbsp;·&nbsp;</span><span>SERVICES&nbsp;·&nbsp;SERVICES&nbsp;·&nbsp;</span></div>
+      <div class="services__head">
+        <p class="kicker"><span>02</span> Services</p>
+        <h2 class="big split-scrub">WHAT I DO</h2>
+      </div>
+      <div class="services__list">
+        <article class="svc">
+          <span class="svc__n">A</span>
+          <h3>Character Animation</h3>
+          <p>Acting, walk cycles, lip-sync and camera moves — animated from your script and voiceover.</p>
+          <div class="svc__tags"><span>Moho Pro</span><span>Lip-sync</span><span>Acting</span></div>
+        </article>
+        <article class="svc">
+          <span class="svc__n">B</span>
+          <h3>Rigging</h3>
+          <p>Reusable Moho rigs with smart bones, so every new episode is faster and stays on-model.</p>
+          <div class="svc__tags"><span>Smart bones</span><span>Switch layers</span></div>
+        </article>
+        <article class="svc">
+          <span class="svc__n">C</span>
+          <h3>Edit &amp; Composite</h3>
+          <p>Motion graphics, compositing and final edit ready for YouTube, Shorts or TV.</p>
+          <div class="svc__tags"><span>After Effects</span><span>Premiere</span></div>
+        </article>
       </div>
     </section>
 
     <!-- PROCESS -->
-    <section class="proc" id="process">
-      <div class="sec-head">
-        <p class="kicker"><span>04</span> Process</p>
-        <h2 class="big split-scrub">HOW IT MOVES</h2>
-      </div>
-      <div class="proc__row">
-        <span class="proc__line"><i></i></span>
-        <div class="pstep"><i></i><span>01</span><h3>Brief</h3><p>Send your script, voiceover and a reference style.</p></div>
-        <div class="pstep"><i></i><span>02</span><h3>Rig &amp; design</h3><p>Characters and scenes built as reusable Moho rigs.</p></div>
-        <div class="pstep"><i></i><span>03</span><h3>Animate</h3><p>Draft sent fast so you can give notes early.</p></div>
-        <div class="pstep"><i></i><span>04</span><h3>Deliver</h3><p>Revisions, then 1080p / 4K delivery.</p></div>
+    <section class="process" id="process">
+      <div class="ghost-word" aria-hidden="true"><span>PROCESS&nbsp;·&nbsp;PROCESS&nbsp;·&nbsp;</span><span>PROCESS&nbsp;·&nbsp;PROCESS&nbsp;·&nbsp;</span></div>
+      <p class="kicker"><span>03</span> Process</p>
+      <h2 class="big split-scrub">HOW IT MOVES</h2>
+      <div class="timeline">
+        <svg class="timeline__svg" viewBox="0 0 4 100" preserveAspectRatio="none"><line x1="2" y1="0" x2="2" y2="100" /></svg>
+        <div class="step"><span class="step__dot"></span><span class="step__n">01</span><div><h3>Brief</h3><p>Send your script, voiceover and a reference style.</p></div></div>
+        <div class="step"><span class="step__dot"></span><span class="step__n">02</span><div><h3>Rig &amp; design</h3><p>Characters and scenes built as reusable Moho rigs.</p></div></div>
+        <div class="step"><span class="step__dot"></span><span class="step__n">03</span><div><h3>Animate</h3><p>Draft sent fast so you can give notes early.</p></div></div>
+        <div class="step"><span class="step__dot"></span><span class="step__n">04</span><div><h3>Deliver</h3><p>Revisions, then 1080p / 4K delivery.</p></div></div>
       </div>
     </section>
 
+    <!-- WORK (horizontal) -->
+    <section class="work" id="work">
+      <div class="ghost-word" aria-hidden="true"><span>WORK&nbsp;·&nbsp;WORK&nbsp;·&nbsp;</span><span>WORK&nbsp;·&nbsp;WORK&nbsp;·&nbsp;</span></div>
+      <div class="work__pin">
+        <div class="work__head">
+          <p class="kicker"><span>04</span> Selected work</p>
+          <h2 class="big">MY WORK</h2>
+          <p class="work__hint">keep scrolling →</p>
+        </div>
+        <div class="work__track" id="workTrack"></div>
+      </div>
+    </section>
+
+    <!-- SHORTS -->
+    <section class="shorts" id="shorts">
+      <div class="ghost-word" aria-hidden="true"><span>SHORTS&nbsp;·&nbsp;SHORTS&nbsp;·&nbsp;</span><span>SHORTS&nbsp;·&nbsp;SHORTS&nbsp;·&nbsp;</span></div>
+      <p class="kicker"><span>05</span> Vertical</p>
+      <h2 class="big split-scrub">SHORTS</h2>
+      <div class="fan" id="fan"></div>
+    </section>
+
+    <!-- TOOLS (physics balls) -->
+    <section class="tools" id="tools">
+      <div class="ghost-word" aria-hidden="true"><span>TOOLKIT&nbsp;·&nbsp;TOOLKIT&nbsp;·&nbsp;</span><span>TOOLKIT&nbsp;·&nbsp;TOOLKIT&nbsp;·&nbsp;</span></div>
+      <h2 class="big tools__title split-scrub">MY TOOLKIT</h2>
+      <p class="tools__hint">move your mouse through them</p>
+      <canvas id="balls"></canvas>
+    </section>
+
     <!-- CONTACT -->
-    <section class="contact cx" id="contact">
+    <section class="contact" id="contact">
+      <div class="ghost-word" aria-hidden="true"><span>CONTACT&nbsp;·&nbsp;CONTACT&nbsp;·&nbsp;</span><span>CONTACT&nbsp;·&nbsp;CONTACT&nbsp;·&nbsp;</span></div>
       <div class="reel" id="reel">
         <div class="reel__stage" id="reelStage"></div>
         <div class="reel__ui"><span class="reel__n" id="reelN">01 / 08</span><span class="reel__t" id="reelT"></span><span class="reel__play">▶ watch</span></div>
         <span class="reel__bar"><i id="reelBar"></i></span>
       </div>
-      <p class="kicker"><span>05</span> Contact</p>
+      <p class="kicker"><span>06</span> Contact</p>
       <h2 class="contact__title">
         <span class="line"><span class="split" data-contact>LET'S MAKE</span></span>
         <span class="line"><span class="split outline" data-contact>IT MOVE</span></span>
       </h2>
-      <p class="contact__sub" data-reveal>Have a script in mind? Send it over — I'll reply with a plan and a quote. Happy to start with a short paid test.</p>
+      <p class="contact__sub">Have a script in mind? Send it over — I'll reply with a plan and a quote. Happy to start with a short paid test.</p>
       <div class="cx__row">
         <a class="cta magnetic" href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener"><span>Hire me on Upwork ↗</span></a>
-        <div class="cx__links" data-reveal>
+        <div class="cx__links">
           <a class="cx__link" href="mailto:zhiend1203@gmail.com"><span>Email</span><b>zhiend1203@gmail.com</b><i>↗</i></a>
           <a class="cx__link" href="tel:+84389730028"><span>Phone / Zalo</span><b>+84 389 730 028</b><i>↗</i></a>
         </div>
       </div>
-      <div class="contact__meta" data-reveal>
+      <div class="contact__meta">
         <span>UTC+7 · Hai Phong, VN</span><span>Full-time · 30+ hrs/week</span><span>© <span id="year"></span> Nguyen Minh Duc</span>
       </div>
     </section>
   </main>
+
 
   <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal__bg" data-close></div>
@@ -216,7 +230,7 @@
   <script src="vendor/gsap.min.js"></script>
   <script src="vendor/ScrollTrigger.min.js"></script>
   <script src="vendor/lenis.min.js"></script>
-  <script src="projects.js?v=v4a"></script>
-  <script type="module" src="v3.js?v=v4a"></script>
+  <script src="projects.js?v=p5a"></script>
+  <script type="module" src="v2.js?v=p5a"></script>
 </body>
 </html>
