@@ -210,7 +210,7 @@ function initBalls() {
     visible = e.isIntersecting;
     if (visible && !raf) loop();
   }).observe(canvas);
-  ScrollTrigger.create({ trigger: "#tools", start: "top 60%", onEnter: drop, onEnterBack: () => !active && drop() });
+  return { drop };
 }
 
 /* ============================================================
@@ -238,20 +238,20 @@ $("#fan").innerHTML = shorts.map((p) => `
   </div>`).join("");
 
 const modal = $("#modal"), media = $("#modalMedia"), mTitle = $("#modalTitle"), mBox = $(".modal__box");
-let lenis;
+let lenis, pagerPaused = false;
 function openModal(id, title, short) {
   media.innerHTML = `<iframe src="${preview(id)}" allow="autoplay; fullscreen" allowfullscreen title="${title}"></iframe>`;
   mTitle.textContent = title;
   mBox.classList.toggle("is-short", !!short);
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
-  lenis && lenis.stop();
+  pagerPaused = true;
 }
 function closeModal() {
   modal.classList.remove("is-open");
   modal.setAttribute("aria-hidden", "true");
   setTimeout(() => (media.innerHTML = ""), 300);
-  lenis && lenis.start();
+  pagerPaused = false;
 }
 document.addEventListener("click", (e) => {
   const v = e.target.closest("[data-video]");
@@ -291,196 +291,202 @@ $$(".svc").forEach((el) => el.addEventListener("pointermove", (e) => {
 const heroChars = $$("[data-hero-title]").flatMap(splitChars);
 const contactChars = $$("[data-contact]").flatMap(splitChars);
 
-// card path: list of [scrollY, preset] keyframes, rebuilt on refresh
-let stops = [], scrollDriven = false;
+/* ============================================================
+   FULL-PAGE PAGER — 1 wheel notch / swipe = next page, page plays its animation
+   ============================================================ */
+const SECS = ["#home", "#about", "#services", "#process", "#work", "#shorts", "#tools", "#contact"].map((q) => $(q));
+const top = (el) => el.offsetTop;
+let page = 0, busy = false, workX = 0, ready = false;
+const scroller = { y: 0 };
+const titleChars = new Map($$(".split-scrub").map((el) => [el.closest("section"), splitChars(el)]));
+const words = splitWords($(".scrub-words"));
+
+// card keyframes by page scroll position
+let stops = [];
 function buildStops() {
-  const vh = innerHeight;
-  const box = (sel) => { const el = $(sel); return el.parentElement.classList.contains("pin-spacer") ? el.parentElement : el; };
-  const T = (sel) => box(sel).getBoundingClientRect().top + scrollY;
-  stops = [
-    [0, P.hero()],
-    [T("#about"), P.about()],
-    [T("#services") - vh, P.about()],
-    [T("#services"), P.services()],
-    [T("#process") - vh, P.services()],
-    [T("#process"), P.process()],
-    [T("#work") - vh, P.process()],
-    [T("#work") - vh * 0.2, P.out()]
-  ];
+  stops = [[0, P.hero()], [top(SECS[1]), P.about()], [top(SECS[2]), P.services()], [top(SECS[3]), P.process()], [top(SECS[4]), P.out()]];
 }
 function cardFromScroll() {
-  if (!scrollDriven || !stops.length) return;
-  const y = scrollY;
+  if (!ready) return;
+  const y = scroller.y;
   let i = 0;
   while (i < stops.length - 2 && y > stops[i + 1][0]) i++;
   const [a, A] = stops[i], [b, B] = stops[i + 1];
-  const t = gsap.parseEase("power1.inOut")(clamp((y - a) / Math.max(1, b - a)));
+  const t = clamp((y - a) / Math.max(1, b - a));
   for (const k of ["x", "y", "s", "ry", "rz", "o"]) C[k] = lerp(A[k], B[k], t);
 }
-gsap.ticker.add(cardFromScroll, false, true);
+gsap.ticker.add(cardFromScroll);
 
-const SNAP = { snapTo: "labelsDirectional", duration: { min: 0.25, max: 0.7 }, delay: 0.08, ease: "power2.inOut" };
-function pinTL(sel, len) {
-  return gsap.timeline({ scrollTrigger: { trigger: sel, start: "top top", end: "+=" + len + "%", pin: true, scrub: 0.6, snap: SNAP } });
-}
+// ---- per-page entrance timelines (played every time the page is entered)
+const flipIn = (tl, sec) => { const ch = titleChars.get(sec); if (ch) tl.fromTo(ch, { yPercent: 110, rotateX: -90, opacity: 0 }, { yPercent: 0, rotateX: 0, opacity: 1, transformOrigin: "50% 100%", duration: 0.7, stagger: 0.04, ease: "back.out(1.7)" }, 0); };
+const squashDrop = (tl, el, at, rot = 6) => tl
+  .fromTo(el, { y: () => -innerHeight * 0.9, rotate: rot, opacity: 0, scaleX: 0.9, scaleY: 1.15 }, { y: 0, rotate: 0, opacity: 1, duration: 0.5, ease: "power2.in" }, at)
+  .to(el, { scaleX: 1.08, scaleY: 0.86, transformOrigin: "50% 100%", duration: 0.09, ease: "power1.out" })
+  .to(el, { scaleX: 1, scaleY: 1, duration: 0.6, ease: "elastic.out(1.1, 0.4)" });
+const T = {};
+const mk = (i) => (T[i] = gsap.timeline({ paused: true }));
+let balls;
 
-function initScroll() {
-  // 3D camera path
-  ScrollTrigger.addEventListener("refresh", buildStops);
-  buildStops();
-  scrollDriven = true;
-  gsap.to(".glow", { opacity: 0, ease: "none", scrollTrigger: { trigger: "#work", start: "top bottom", end: "top 20%", scrub: true } });
-
-  // hero letters scatter away as you scroll
-  gsap.to(heroChars, {
-    yPercent: -140, rotate: () => gsap.utils.random(-40, 40), opacity: 0, ease: "none",
-    stagger: { each: 0.03, from: "random" },
-    scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom 30%", scrub: true }
-  });
-  gsap.to("[data-hero]", { y: -60, opacity: 0, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "50% top", scrub: true } });
-
-  // marquee driven by scroll velocity
-  const track = $("#marquee");
-  let mx = 0, dir = 1, boost = 0;
-  ScrollTrigger.create({ onUpdate: (self) => { dir = self.direction; boost = Math.min(Math.abs(self.getVelocity()) / 120, 30); } });
-  gsap.ticker.add(() => {
-    const half = track.scrollWidth / 2;
-    mx -= (1.2 + boost) * dir;
-    boost *= 0.92;
-    if (mx <= -half) mx += half;
-    if (mx > 0) mx -= half;
-    track.style.transform = `translate3d(${mx}px,0,0)`;
-  });
-
-  // big titles: letters flip up in sync with scroll
-  $$(".split-scrub").forEach((el) => {
-    const chars = splitChars(el);
-    gsap.from(chars, {
-      yPercent: 110, rotateX: -90, opacity: 0, transformOrigin: "50% 100%", ease: "none", stagger: 0.06,
-      scrollTrigger: { trigger: el.closest("section"), start: "top 85%", end: "top 15%", scrub: true }
-    });
-  });
-
-  // ABOUT (pinned): words light up, then stats count
-  const words = splitWords($(".scrub-words"));
-  const aTl = pinTL("#about", 110);
-  aTl.addLabel("a0").to(words, { opacity: 1, stagger: 0.08, duration: 0.4, ease: "none" }).addLabel("a1");
+function buildTimelines() {
+  // 0 hero
+  mk(0).fromTo(heroChars, { yPercent: 110 }, { yPercent: 0, duration: 0.9, ease: "power4.out", stagger: 0.03 })
+    .fromTo("[data-hero]", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.08 }, 0.2);
+  // 1 about
+  const aT = mk(1);
+  aT.fromTo(".about .kicker", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4 })
+    .fromTo(words, { opacity: 0.12 }, { opacity: 1, duration: 0.25, stagger: 0.025, ease: "none" }, 0.1);
   $$("[data-count]").forEach((el, i) => {
     const n = { v: 0 }, end = +el.dataset.count, suf = el.dataset.suffix || "";
-    aTl.fromTo(el.parentElement, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "back.out(2)" }, i ? "<0.15" : ">")
-      .to(n, { v: end, duration: 0.8, ease: "power2.out", onUpdate: () => (el.textContent = Math.round(n.v) + suf) }, "<");
+    aT.fromTo(el.parentElement, { y: 70, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "back.out(2.2)" }, 0.6 + i * 0.12)
+      .fromTo(n, { v: 0 }, { v: end, duration: 1.1, ease: "power2.out", onUpdate: () => (el.textContent = Math.round(n.v) + suf) }, "<");
   });
-  aTl.addLabel("a2");
-
-  // SERVICES (pinned): cards drop in one by one with squash & stretch
-  const sTl = pinTL("#services", 120);
-  sTl.addLabel("s0");
-  $$(".svc").forEach((el, i) => {
-    sTl.fromTo(el, { y: () => innerHeight, rotate: i % 2 ? -8 : 8, opacity: 0, scaleY: 1.15, scaleX: 0.9 },
-      { y: 0, rotate: 0, opacity: 1, scaleY: 1.15, scaleX: 0.9, duration: 0.7, ease: "power2.in" })
-      .to(el, { scaleY: 0.88, scaleX: 1.06, duration: 0.12, transformOrigin: "50% 100%" })
-      .to(el, { scaleY: 1, scaleX: 1, duration: 0.35, ease: "back.out(3)" })
-      .addLabel("s" + (i + 1));
-  });
-
-  // PROCESS (pinned): line draws step by step, each step lights up
-  const pTl = pinTL("#process", 120);
-  const steps = $$(".step");
-  pTl.addLabel("p0");
+  // 2 services
+  const sT = mk(2);
+  flipIn(sT, SECS[2]);
+  $$(".svc").forEach((el, i) => squashDrop(sT, el, 0.25 + i * 0.22, i % 2 ? -7 : 7));
+  // 3 process
+  const pT = mk(3), steps = $$(".step");
+  flipIn(pT, SECS[3]);
+  pT.fromTo(".timeline__svg line", { strokeDashoffset: 100 }, { strokeDashoffset: 0, duration: 1.4, ease: "power1.inOut" }, 0.3);
   steps.forEach((el, i) => {
-    pTl.to(".timeline__svg line", { strokeDashoffset: 100 - ((i + 1) / steps.length) * 100, duration: 0.5, ease: "none" })
-      .to(el, { opacity: 1, duration: 0.3 }, "<0.2")
-      .fromTo(el.querySelector("h3"), { x: 80 }, { x: 0, duration: 0.4, ease: "back.out(2)" }, "<")
-      .to(el.querySelector(".step__dot"), { backgroundColor: "#8b5cf6", boxShadow: "0 0 24px #8b5cf6", scale: 1.3, duration: 0.2 }, "<")
-      .addLabel("p" + (i + 1));
+    const at = 0.3 + i * 0.35;
+    pT.fromTo(el, { opacity: 0.15 }, { opacity: 1, duration: 0.3 }, at)
+      .fromTo(el.querySelector("h3"), { x: 70 }, { x: 0, duration: 0.5, ease: "back.out(2)" }, at)
+      .fromTo(el.querySelector(".step__dot"), { scale: 0.6, backgroundColor: "#050507", boxShadow: "0 0 0px #8b5cf6" }, { scale: 1.25, backgroundColor: "#8b5cf6", boxShadow: "0 0 24px #8b5cf6", duration: 0.3, ease: "back.out(3)" }, at);
   });
-
-  // work: pinned horizontal gallery
-  const pin = $(".work__pin"), wTrack = $("#workTrack"), wHead = $(".work__head");
-  const dist = () => wTrack.scrollWidth + wHead.offsetWidth - innerWidth;
-  const hz = gsap.to([wHead, wTrack], {
-    x: () => -dist(), ease: "none",
-    scrollTrigger: { trigger: ".work", pin, start: "top top", end: () => "+=" + dist() * 0.6, scrub: 0.6, invalidateOnRefresh: true }
-  });
-  $$(".wcard").forEach((card) => {
-    const m = card.querySelector(".wcard__media");
-    gsap.fromTo(m, { clipPath: "inset(12% 12% 12% 12% round 16px)", scale: 0.88 }, {
-      clipPath: "inset(0% 0% 0% 0% round 16px)", scale: 1, ease: "none",
-      scrollTrigger: { trigger: card, containerAnimation: hz, start: "left 100%", end: "left 60%", scrub: true }
-    });
-    const img = m.querySelector("img");
-    if (img) gsap.fromTo(img, { xPercent: -8 }, {
-      xPercent: 8, ease: "none",
-      scrollTrigger: { trigger: card, containerAnimation: hz, start: "left right", end: "right left", scrub: true }
-    });
-    gsap.from(card.querySelector(".wcard__meta"), {
-      y: 30, opacity: 0, ease: "none",
-      scrollTrigger: { trigger: card, containerAnimation: hz, start: "left 90%", end: "left 60%", scrub: true }
-    });
-  });
-
-  // shorts: pinned; phones fly in one by one (squash on landing), stack, then fan out
-  const phones = $$(".phone");
-  const mid = (phones.length - 1) / 2;
-  const stl = gsap.timeline({
-    scrollTrigger: { trigger: ".shorts", start: "top top", end: "+=" + (phones.length * 35 + 60) + "%", pin: true, scrub: 0.6, invalidateOnRefresh: true, snap: SNAP }
-  });
-  stl.addLabel("h0");
-  gsap.set(phones, { y: () => innerHeight, rotate: () => gsap.utils.random(-25, 25), scale: 0.7, opacity: 0 });
+  // 4 work
+  const wT = mk(4);
+  wT.fromTo(".work__head > *", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: "power3.out" })
+    .fromTo(".wcard__media", { clipPath: "inset(50% 50% 50% 50% round 16px)", scale: 0.85 }, { clipPath: "inset(0% 0% 0% 0% round 16px)", scale: 1, duration: 0.7, stagger: { each: 0.04, grid: "auto", from: "start" }, ease: "power3.inOut" }, 0.15)
+    .fromTo(".wcard__meta", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.04 }, 0.4);
+  // 5 shorts
+  const hT = mk(5), phones = $$(".phone"), mid = (phones.length - 1) / 2;
+  flipIn(hT, SECS[5]);
   phones.forEach((ph, i) => {
-    stl.to(ph, { y: -i * 8, rotate: (i - mid) * 3, scale: 1, opacity: 1, duration: 1, ease: "power2.in" })
-      .to(ph, { scaleY: 0.86, scaleX: 1.1, duration: 0.15, ease: "power1.out" })
-      .to(ph, { scaleY: 1, scaleX: 1, duration: 0.35, ease: "back.out(3)" })
-      .addLabel("h" + (i + 1));
+    hT.fromTo(ph, { x: 0, y: () => innerHeight, rotate: gsap.utils.random(-25, 25), scale: 0.75, opacity: 0, scaleX: 1, scaleY: 1 },
+      { y: -i * 8, rotate: (i - mid) * 3, scale: 1, opacity: 1, duration: 0.45, ease: "power2.in" }, 0.2 + i * 0.25)
+      .to(ph, { scaleY: 0.86, scaleX: 1.1, duration: 0.08 })
+      .to(ph, { scaleY: 1, scaleX: 1, duration: 0.3, ease: "back.out(3)" });
   });
-  stl.to(phones, {
-    x: (i, el) => (i - mid) * el.offsetWidth * 1.08,
-    y: (i) => Math.abs(i - mid) * 40,
-    rotate: (i) => (i - mid) * 9,
-    duration: 1.4, ease: "back.out(1.6)", stagger: { each: 0.08, from: "center" }
-  }, "+=0.2").addLabel("hEnd");
-
-  // CONTACT (pinned): letters rise, CTA spins in
-  const cTl = pinTL("#contact", 80);
-  cTl.addLabel("c0")
-    .from(contactChars, { yPercent: 110, stagger: 0.04, duration: 0.6, ease: "power3.out" })
-    .from(".contact__sub, .contact__meta", { y: 40, opacity: 0, duration: 0.4 }, "<0.3")
-    .addLabel("c1")
-    .from(".cta", { scale: 0, rotate: -180, duration: 0.6, ease: "back.out(1.8)" })
-    .addLabel("c2");
-
-  // back of card: playhead + frame number follow scroll
-  ScrollTrigger.create({ start: 0, end: "max", onUpdate: (st) => {
-    card.style.setProperty("--p", st.progress.toFixed(3));
-    $("#frameNo").textContent = String(Math.round(st.progress * 240) + 1).padStart(3, "0");
-  } });
-
-  // progress + nav
-  gsap.to("#progress", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: true } });
-  $$(".nav__links a").forEach((a) => {
-    const sec = $(a.getAttribute("href"));
-    ScrollTrigger.create({ trigger: sec, start: "top 50%", end: "bottom 50%", onToggle: (s) => a.classList.toggle("is-active", s.isActive) });
-  });
-
-  ScrollTrigger.refresh();
+  hT.to(phones, { x: (i, el) => (i - mid) * el.offsetWidth * 1.08, y: (i) => Math.abs(i - mid) * 40, rotate: (i) => (i - mid) * 9, duration: 0.8, ease: "back.out(1.7)" }, ">0.05");
+  // 6 tools
+  const tT = mk(6);
+  flipIn(tT, SECS[6]);
+  tT.add(() => balls && balls.drop(), 0.1).fromTo(".tools__hint", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.8);
+  // 7 contact
+  mk(7).fromTo(contactChars, { yPercent: 110 }, { yPercent: 0, duration: 0.8, stagger: 0.035, ease: "power4.out" })
+    .fromTo(".contact .kicker, .contact__sub, .contact__meta", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.08 }, 0.35)
+    .fromTo(".cta", { scale: 0, rotate: -180 }, { scale: 1, rotate: 0, duration: 0.9, ease: "elastic.out(1, 0.5)" }, 0.6);
+  // start every page in its "before" state
+  Object.values(T).forEach((tl) => tl.progress(0).pause());
 }
 
-/* ============================================================
-   BOOT
-   ============================================================ */
-function startLenis() {
-  if (reduce || !window.Lenis) return;
-  lenis = new window.Lenis({ lerp: 0.09 });
-  lenis.on("scroll", ScrollTrigger.update);
-  gsap.ticker.add((t) => lenis.raf(t * 1000));
-  gsap.ticker.lagSmoothing(0);
+// ---- horizontal work paging
+const workMax = () => Math.max(0, $("#workTrack").scrollWidth + $(".work__head").offsetWidth - innerWidth);
+const workStep = () => innerWidth * 0.85;
+function setWork(x, dur = 0.9) {
+  workX = clamp(x, 0, workMax());
+  gsap.to([".work__head", "#workTrack"], { x: -workX, duration: dur, ease: "power3.inOut", overwrite: true });
+  gsap.to($$(".wcard__media img"), { xPercent: (workX / Math.max(1, workMax())) * 16 - 8, duration: dur * 1.2, ease: "power3.out", overwrite: true });
+}
+
+// ---- navigation
+const navLinks = $$(".nav__links a");
+function setUI() {
+  gsap.to("#progress", { scaleX: page / (SECS.length - 1), duration: 0.6 });
+  navLinks.forEach((a) => a.classList.toggle("is-active", $(a.getAttribute("href")) === SECS[page] || (a.getAttribute("href") === "#work" && (page === 4 || page === 5))));
+}
+function goTo(i, dir = 1) {
+  i = clamp(i, 0, SECS.length - 1);
+  if (i === page || busy) return;
+  busy = true;
+  const from = page;
+  page = i;
+  setUI();
+  if (i === 4) setWork(dir > 0 ? 0 : workMax(), 0);
+  const dist = Math.abs(i - from);
+  gsap.to(scroller, {
+    y: top(SECS[i]), duration: reduce ? 0.01 : Math.min(1.6, 0.85 + 0.12 * (dist - 1)), ease: "power3.inOut",
+    onUpdate: () => window.scrollTo(0, scroller.y),
+    onComplete: () => setTimeout(() => (busy = false), 250)
+  });
+  gsap.delayedCall(reduce ? 0 : 0.45, () => T[i] && T[i].restart());
+}
+function step(dir) {
+  if (busy || pagerPaused) return;
+  if (page === 4) {
+    if (dir > 0 && workX < workMax() - 2) { busy = true; setWork(workX + workStep()); return setTimeout(() => (busy = false), 650); }
+    if (dir < 0 && workX > 2) { busy = true; setWork(workX - workStep()); return setTimeout(() => (busy = false), 650); }
+  }
+  goTo(page + dir, dir);
+}
+let lastWheel = 0;
+function onWheel(e) {
+  if (pagerPaused) return;
+  e.preventDefault();
+  const now = performance.now(), gap = now - lastWheel;
+  lastWheel = now;
+  const d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+  if (Math.abs(d) < 3 || busy) return;
+  if (gap < 140 && now - lastNav < 900) return; // trackpad inertia tail
+  lastNav = now;
+  step(d > 0 ? 1 : -1);
+}
+let lastNav = 0, ty0 = null;
+function startPager() {
+  document.documentElement.classList.add("pager");
+  buildStops();
+  buildTimelines();
+  ready = true;
+  addEventListener("wheel", onWheel, { passive: false });
+  addEventListener("touchstart", (e) => (ty0 = e.touches[0].clientY), { passive: true });
+  addEventListener("touchmove", (e) => !pagerPaused && e.preventDefault(), { passive: false });
+  addEventListener("touchend", (e) => {
+    if (ty0 == null || pagerPaused) return;
+    const dy = ty0 - e.changedTouches[0].clientY; ty0 = null;
+    if (Math.abs(dy) > 40) step(dy > 0 ? 1 : -1);
+  });
+  addEventListener("keydown", (e) => {
+    if (pagerPaused) return;
+    if (["ArrowDown", "PageDown", " "].includes(e.key)) { e.preventDefault(); step(1); }
+    if (["ArrowUp", "PageUp"].includes(e.key)) { e.preventDefault(); step(-1); }
+    if (e.key === "Home") goTo(0, -1);
+    if (e.key === "End") goTo(SECS.length - 1, 1);
+  });
   $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => {
+    const i = SECS.indexOf($(a.getAttribute("href")));
+    if (i < 0) return;
     e.preventDefault();
-    lenis.scrollTo(a.getAttribute("href"), { duration: 1.6 });
+    goTo(i, i > page ? 1 : -1);
   }));
+  addEventListener("resize", () => {
+    buildStops();
+    scroller.y = top(SECS[page]);
+    window.scrollTo(0, scroller.y);
+    if (page === 4) setWork(workX, 0);
+  });
+  // card back: playhead + frame follow page position
+  gsap.ticker.add(() => {
+    const p = scroller.y / Math.max(1, top(SECS[SECS.length - 1]));
+    card.style.setProperty("--p", p.toFixed(3));
+    $("#frameNo").textContent = String(Math.round(p * 240) + 1).padStart(3, "0");
+  });
+  // marquee: always runs, speeds up during page moves
+  const track = $("#marquee");
+  let mx = 0, lastY = 0;
+  gsap.ticker.add(() => {
+    const v = scroller.y - lastY; lastY = scroller.y;
+    const half = track.scrollWidth / 2;
+    mx -= 1.2 + Math.abs(v) * 0.6;
+    if (mx <= -half) mx += half;
+    track.style.transform = `translate3d(${mx}px,0,0)`;
+  });
+  setUI();
 }
 
-initBalls();
+balls = initBalls();
+window.scrollTo(0, 0);
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
 const load = { v: 0 };
 const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
@@ -496,11 +502,11 @@ gsap.timeline()
   } })
   .add(() => fontsReady)
   .to(".loader", { yPercent: -100, duration: 0.9, ease: "power4.inOut" })
-  .add(() => { document.body.classList.remove("is-loading"); $(".loader").remove(); startLenis(); }, "-=0.3")
+  .add(() => { document.body.classList.remove("is-loading"); $(".loader").remove(); }, "-=0.3")
   // card drops in: stretch while falling, squash on impact, settle
   .to(C, { y: P.hero().y, rz: P.hero().rz, duration: 0.55, ease: "power2.in" }, "-=0.2")
   .to(C, { sx: 1.22, sy: 0.74, duration: 0.09, ease: "power1.out" })
   .to(C, { sx: 1, sy: 1, duration: 0.9, ease: "elastic.out(1.1, 0.35)" })
   .to(heroChars, { yPercent: 0, duration: 1.1, ease: "power4.out", stagger: 0.035 }, "-=0.9")
   .to("[data-hero]", { opacity: 1, y: 0, duration: 0.8, stagger: 0.1 }, "<0.3")
-  .add(initScroll);
+  .add(() => { startPager(); T[0].progress(1); });
