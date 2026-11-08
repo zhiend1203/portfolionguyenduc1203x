@@ -29,3 +29,7 @@
 .cx__link b { display: flex; align-items: center; }
 .cx__link b .ico { color: var(--vio2); width: 20px; height: 20px; margin-right: 10px; }
 .cta .ico { display: block; width: 26px; height: 26px; margin: 0 auto 6px; }
+/* official brand colours */
+.ico.ico--up, .hq__chip .ico--up, .cx__link b .ico--up { color: #14A800 !important; }
+.ico.ico--fb, .hq__chip .ico--fb, .cx__link b .ico--fb { color: #0866FF !important; }
+.ico.ico--dc, .hq__chip .ico--dc, .cx__link b .ico--dc { color: #5865F2 !important; }
