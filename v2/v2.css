@@ -269,11 +269,14 @@ html.pager { overflow: hidden; }
 /* ---------- background slideshow ---------- */
 .bgshow { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; background: var(--bg); }
 .bgs { position: absolute; inset: 0; overflow: hidden; clip-path: inset(0 0 100% 0); }
-.bgs img { position: absolute; inset: -6%; width: 112%; height: 112%; object-fit: cover; opacity: 0.38; filter: saturate(1.1) contrast(1.05); will-change: transform; }
+.bgs img { position: absolute; inset: -6%; width: 112%; height: 112%; object-fit: cover; opacity: 0.85; filter: saturate(1.15) contrast(1.05); will-change: transform; }
 .bgs::after { content: ""; position: absolute; inset: 0;
-  background: radial-gradient(120% 90% at 50% 50%, rgba(5,5,7,.35), rgba(5,5,7,.92) 75%), linear-gradient(90deg, rgba(5,5,7,.85), rgba(5,5,7,.2) 50%, rgba(5,5,7,.85)); }
+  background: linear-gradient(0deg, rgba(5,5,7,.7), transparent 35%), linear-gradient(180deg, rgba(5,5,7,.55), transparent 22%), radial-gradient(140% 110% at 50% 50%, rgba(5,5,7,.1), rgba(5,5,7,.55) 80%), rgba(5,5,7,.22); }
 .bgs__tag { position: absolute; right: var(--pad); bottom: 90px; z-index: 2; font: 400 10px var(--mono); letter-spacing: .16em; color: rgba(255,255,255,.45); text-transform: uppercase; }
 .work, .shorts, .tools, .contact { background: transparent !important; }
 .wcard--img .wcard__media { background: radial-gradient(circle at 50% 40%, #2a2340, #111116 70%); }
 .wcard--img .wcard__media img { object-fit: contain; padding: 8%; }
 .wcard--img .wcard__play { font-size: 0; } .wcard--img .wcard__play::after { content: "⤢"; font-size: 16px; }
+
+.hero__title, .big, .about__text, .contact__title, .step h3 { text-shadow: 0 4px 30px rgba(0,0,0,.55); }
+.eyebrow, .hero__sub, .kicker, .step p, .contact__sub { text-shadow: 0 2px 12px rgba(0,0,0,.8); }
