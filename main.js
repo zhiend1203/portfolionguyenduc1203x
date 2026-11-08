@@ -194,6 +194,15 @@
     scrollTrigger: { trigger: ".about__text", start: "top 80%", end: "bottom 45%", scrub: true }
   });
 
+  /* ---------- About photo + tools ---------- */
+  gsap.fromTo(".about__photo img", { clipPath: "inset(100% 0 0 0 round 24px)", scale: 1.25 }, {
+    clipPath: "inset(0% 0 0 0 round 24px)", scale: 1, duration: 1.4, ease: "power4.out",
+    scrollTrigger: { trigger: ".about__photo", start: "top 80%" }
+  });
+  gsap.to(".about__photo", { yPercent: -8, ease: "none", scrollTrigger: { trigger: ".about", start: "top bottom", end: "bottom top", scrub: true } });
+  gsap.from(".about__list li", { x: -30, opacity: 0, duration: .7, stagger: .1, ease: "power3.out", scrollTrigger: { trigger: ".about__list", start: "top 85%" } });
+  gsap.from(".tool", { y: 40, scale: .6, opacity: 0, duration: .8, stagger: .08, ease: "back.out(2.2)", scrollTrigger: { trigger: ".tools", start: "top 90%" } });
+
   /* ---------- Counters ---------- */
   document.querySelectorAll("[data-count]").forEach((n) => {
     const o = { v: 0 };

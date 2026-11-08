@@ -11,6 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="assets/avatar.jpg" />
+  <meta property="og:image" content="https://animation.gripe/assets/avatar.jpg" />
 </head>
 <body>
   <!-- PRELOADER -->
@@ -36,6 +38,7 @@
     <a href="#top" class="nav__logo">DUC<span>.</span>ANIM</a>
     <nav class="nav__links">
       <a href="#reel">Reel</a>
+      <a href="#about">About</a>
       <a href="#work">Work</a>
       <a href="#series">Series</a>
       <a href="#process">Process</a>
@@ -88,9 +91,34 @@
     </section>
 
     <!-- ABOUT -->
-    <section class="about">
-      <p class="about__text reveal-words">I build reusable Moho rigs so every new episode is faster and looks the same. I understand YouTube pacing — visuals that keep moving so viewers keep watching.</p>
+    <section class="about" id="about">
+      <div class="about__grid">
+        <figure class="about__photo">
+          <img src="assets/avatar.jpg" alt="Nguyen Minh Duc" loading="lazy" />
+          <figcaption>Nguyen Minh Duc · Hai Phong, VN</figcaption>
+        </figure>
+        <div class="about__body">
+          <p class="about__eyebrow">About</p>
+          <p class="about__text reveal-words">I build reusable Moho rigs so every new episode is faster and looks the same. I understand YouTube pacing — visuals that keep moving so viewers keep watching.</p>
+          <ul class="about__list">
+            <li>Character rigging, lip-sync, walk cycles &amp; acting</li>
+            <li>Commercials, MVs, short &amp; long-form animated series</li>
+            <li>Pipeline: storyboard → animatic → animation → final</li>
+          </ul>
+          <div class="tools">
+            <span class="tools__label">Tools</span>
+            <div class="tools__row">
+              <span class="tool tool--wide"><img src="assets/moho.png" alt="Moho" /></span>
+              <span class="tool"><img src="assets/ae.png" alt="After Effects" /></span>
+              <span class="tool"><img src="assets/pr.png" alt="Premiere Pro" /></span>
+              <span class="tool"><img src="assets/ps.png" alt="Photoshop" /></span>
+              <span class="tool"><img src="assets/ai.png" alt="Illustrator" /></span>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="stats">
+        <div class="stat"><span class="stat__num" data-count="3" data-suffix="+">0</span><span class="stat__label">years of 2D animation</span></div>
         <div class="stat"><span class="stat__num" data-count="30" data-suffix="+">0</span><span class="stat__label">hrs / week, full-time</span></div>
         <div class="stat"><span class="stat__num" data-count="20" data-suffix="+">0</span><span class="stat__label">videos in this portfolio</span></div>
         <div class="stat"><span class="stat__num" data-count="4" data-suffix="K">0</span><span class="stat__label">max delivery, 16:9 or 9:16</span></div>
