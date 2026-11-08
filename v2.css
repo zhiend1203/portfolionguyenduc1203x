@@ -130,7 +130,7 @@ section { position: relative; padding: 18vh var(--pad); }
 }
 
 /* ---------- process ---------- */
-.timeline { position: relative; margin-top: 4vh; max-width: 720px; margin-left: auto; }
+.timeline { position: relative; margin: 6vh auto 0; width: min(720px, 46vw); }
 .timeline__svg { position: absolute; left: 7px; top: 0; width: 4px; height: 100%; overflow: visible; }
 .timeline__svg line { stroke: var(--vio); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-dasharray: 100; stroke-dashoffset: 100; }
 .step { display: grid; grid-template-columns: 18px 64px 1fr; gap: 18px; align-items: start; padding: 0 0 5vh; opacity: 0.2; }
@@ -316,3 +316,4 @@ section:nth-of-type(even) .ghost-word { animation-direction: reverse; animation-
 .kicker span { animation: blink 1.6s steps(2) infinite; }
 .wcard__media { transition: transform .4s cubic-bezier(.3,1.5,.5,1), box-shadow .4s; }
 .wcard:hover .wcard__media { transform: translateY(-8px) rotate(-1deg); box-shadow: 0 30px 60px rgba(0,0,0,.6), 0 0 40px rgba(139,92,246,.35); }
+@media (max-width: 760px) { .timeline { width: 100%; } }
