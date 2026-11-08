@@ -21,7 +21,31 @@
 
   <div class="glow glow--a" aria-hidden="true"></div>
   <div class="glow glow--b" aria-hidden="true"></div>
-  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="pc-wrap" aria-hidden="true">
+    <div class="ghost"></div><div class="ghost"></div><div class="ghost"></div>
+    <div class="pcard" id="pcard">
+      <div class="pcard__face pcard__front">
+        <img src="../assets/avatar.jpg" alt="" draggable="false" />
+        <span class="pc-corner tl"></span><span class="pc-corner tr"></span><span class="pc-corner bl"></span><span class="pc-corner br"></span>
+        <div class="pc-top"><span class="rec">● REC</span><span id="tc">00:00:00:00</span></div>
+        <div class="pc-bot"><b>NGUYEN MINH DUC</b><span>2D ANIMATOR · MOHO</span></div>
+        <div class="glare"></div>
+      </div>
+      <div class="pcard__face pcard__back">
+        <div class="pb-head"><span>ID // ANIMATOR</span><span>VN</span></div>
+        <div class="pb-name">DUC</div>
+        <div class="pb-rows">
+          <div><span>Role</span><b>2D Animator</b></div>
+          <div><span>Tool</span><b>Moho Pro</b></div>
+          <div><span>Base</span><b>Hai Phong · UTC+7</b></div>
+          <div><span>Status</span><b class="on">● Available</b></div>
+        </div>
+        <div class="pb-tl"><i></i><i></i><i></i><i></i><i></i><span class="pb-ph"></span></div>
+        <div class="pb-foot"><span>frame</span><b id="frameNo">001</b></div>
+        <div class="glare"></div>
+      </div>
+    </div>
+  </div>
   <div class="cursor" aria-hidden="true"><span></span></div>
   <div class="progress" aria-hidden="true"><span id="progress"></span></div>
 

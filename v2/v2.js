@@ -39,285 +39,51 @@ function splitWords(el) {
 }
 
 /* ============================================================
-   3D STAGE — low-poly animator at his desk
+   2D PHOTO CARD — squash & stretch, onion skin, flips on scroll
    ============================================================ */
-const stage = $("#stage");
-const renderer = new THREE.WebGLRenderer({ canvas: stage, antialias: true, alpha: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x050507, 6, 14);
-const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 50);
-
-const M = (color, o = {}) => new THREE.MeshStandardMaterial({ color, flatShading: true, roughness: 0.7, ...o });
-const mat = {
-  skin: M(0xf0c4a0), hoodie: M(0x2c2548), hoodie2: M(0x3a3060), pants: M(0x18181f),
-  white: M(0xf2f2f5), black: M(0x0a0a0c, { roughness: 0.3 }), chair: M(0x1b1b22),
-  desk: M(0x26232f), metal: M(0x3a3a44, { metalness: 0.6, roughness: 0.35 }),
-  vio: M(0x8b5cf6, { emissive: 0x4c1d95, emissiveIntensity: 0.6 })
-};
-function mesh(geo, m, p = [0, 0, 0], r = [0, 0, 0], parent) {
-  const o = new THREE.Mesh(geo, m);
-  o.position.set(...p);
-  o.rotation.set(...r);
-  o.castShadow = true;
-  o.receiveShadow = true;
-  if (parent) parent.add(o);
-  return o;
-}
-
-// lights
-scene.add(new THREE.HemisphereLight(0xb9b4ff, 0x0a0a12, 0.55));
-const key = new THREE.DirectionalLight(0xffffff, 2.2);
-key.position.set(2.5, 4, 3);
-key.castShadow = true;
-key.shadow.mapSize.set(1024, 1024);
-key.shadow.camera.left = -3; key.shadow.camera.right = 3; key.shadow.camera.top = 3; key.shadow.camera.bottom = -3;
-scene.add(key);
-const fill = new THREE.DirectionalLight(0xffe8d6, 0.9);
-fill.position.set(-1, 1.6, 4);
-scene.add(fill);
-const rim = new THREE.PointLight(0x8b5cf6, 14, 8, 1.6);
-rim.position.set(-1.2, 2.2, -1.4);
-scene.add(rim);
-const rim2 = new THREE.PointLight(0xc084fc, 6, 6, 1.6);
-rim2.position.set(1.4, 0.6, -1);
-scene.add(rim2);
-
-// floor
-const floor = mesh(new THREE.CircleGeometry(3.2, 40), new THREE.MeshStandardMaterial({ color: 0x0c0b12, roughness: 0.9 }), [0, 0, 0.3], [-Math.PI / 2, 0, 0], scene);
-floor.castShadow = false;
-const ring = mesh(new THREE.RingGeometry(1.35, 1.38, 64), new THREE.MeshBasicMaterial({ color: 0x8b5cf6, transparent: true, opacity: 0.5 }), [0, 0.005, 0.3], [-Math.PI / 2, 0, 0], scene);
-ring.castShadow = false;
-
-// --- character
-const guy = new THREE.Group();
-scene.add(guy);
-// legs (seated)
-for (const sx of [-1, 1]) {
-  mesh(new THREE.CylinderGeometry(0.085, 0.095, 0.44, 6), mat.pants, [sx * 0.12, 0.64, 0.2], [Math.PI / 2, 0, 0], guy);
-  mesh(new THREE.CylinderGeometry(0.075, 0.08, 0.52, 6), mat.pants, [sx * 0.12, 0.37, 0.42], [0, 0, 0], guy);
-  mesh(new THREE.BoxGeometry(0.15, 0.09, 0.26), mat.white, [sx * 0.12, 0.06, 0.48], [0, 0, 0], guy);
-}
-mesh(new THREE.BoxGeometry(0.42, 0.14, 0.3), mat.pants, [0, 0.66, 0], [0, 0, 0], guy);
-// torso
-const torso = new THREE.Group();
-torso.position.set(0, 0.68, 0);
-guy.add(torso);
-mesh(new THREE.CylinderGeometry(0.2, 0.25, 0.58, 7), mat.hoodie, [0, 0.29, 0], [0, 0, 0], torso);
-mesh(new THREE.BoxGeometry(0.26, 0.12, 0.05), mat.hoodie2, [0, 0.16, 0.22], [0.12, 0, 0], torso); // pocket
-mesh(new THREE.TorusGeometry(0.17, 0.065, 5, 9), mat.hoodie2, [0, 0.56, -0.03], [Math.PI / 2 + 0.25, 0, 0], torso); // hood
-for (const sx of [-1, 1]) mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.16, 4), mat.white, [sx * 0.05, 0.44, 0.2], [0.15, 0, 0], torso);
-mesh(new THREE.CylinderGeometry(0.07, 0.08, 0.12, 6), mat.skin, [0, 0.62, 0], [0, 0, 0], torso);
-
-// arms: shoulder pivot -> upper -> elbow pivot -> fore -> hand
-function makeArm(sx) {
-  const sh = new THREE.Group();
-  sh.position.set(sx * 0.25, 0.52, 0);
-  torso.add(sh);
-  mesh(new THREE.SphereGeometry(0.08, 6, 5), mat.hoodie, [0, 0, 0], [0, 0, 0], sh);
-  mesh(new THREE.CylinderGeometry(0.065, 0.07, 0.3, 6), mat.hoodie, [0, -0.15, 0], [0, 0, 0], sh);
-  const el = new THREE.Group();
-  el.position.set(0, -0.3, 0);
-  sh.add(el);
-  mesh(new THREE.CylinderGeometry(0.055, 0.065, 0.28, 6), mat.hoodie2, [0, -0.14, 0], [0, 0, 0], el);
-  mesh(new THREE.IcosahedronGeometry(0.06, 0), mat.skin, [0, -0.31, 0], [0, 0, 0], el);
-  return { sh, el };
-}
-const armR = makeArm(-1), armL = makeArm(1);
-
-// head
-const head = new THREE.Group();
-head.position.set(0, 0.86, 0);
-torso.add(head);
-mesh(new THREE.IcosahedronGeometry(0.25, 1), mat.skin, [0, 0, 0], [0, 0, 0], head);
-for (const sx of [-1, 1]) mesh(new THREE.IcosahedronGeometry(0.055, 0), mat.skin, [sx * 0.245, -0.01, 0], [0, 0, 0], head);
-const eyes = [-1, 1].map((sx) => mesh(new THREE.SphereGeometry(0.03, 6, 5), mat.black, [sx * 0.085, 0.01, 0.225], [0, 0, 0], head));
-mesh(new THREE.TorusGeometry(0.06, 0.012, 4, 10, Math.PI), mat.black, [0, -0.08, 0.215], [0.25, 0, Math.PI], head); // smile
-mesh(new THREE.IcosahedronGeometry(0.03, 0), mat.skin, [0, -0.025, 0.25], [0, 0, 0], head); // nose
-// cap
-mesh(new THREE.SphereGeometry(0.262, 9, 5, 0, Math.PI * 2, 0, Math.PI / 2), mat.white, [0, 0.04, 0], [-0.12, 0, 0], head);
-const brim = mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.025, 10, 1, false, -Math.PI / 2, Math.PI), mat.white, [0, 0.07, 0.17], [-0.12, 0, 0], head);
-brim.scale.set(1, 1, 0.9);
-mesh(new THREE.SphereGeometry(0.025, 5, 4), mat.vio, [0, 0.305, -0.03], [0, 0, 0], head); // cap button
-
-// chair
-const chair = new THREE.Group();
-scene.add(chair);
-mesh(new THREE.BoxGeometry(0.56, 0.06, 0.52), mat.chair, [0, 0.56, 0], [0, 0, 0], chair);
-mesh(new THREE.BoxGeometry(0.52, 0.62, 0.06), mat.chair, [0, 0.95, -0.3], [-0.12, 0, 0], chair);
-mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.42, 6), mat.metal, [0, 0.33, 0], [0, 0, 0], chair);
-for (let i = 0; i < 5; i++) {
-  const a = (i / 5) * Math.PI * 2;
-  mesh(new THREE.BoxGeometry(0.05, 0.04, 0.32), mat.metal, [Math.sin(a) * 0.15, 0.08, Math.cos(a) * 0.15], [0, a, 0], chair);
-}
-
-// desk props (rise in on scroll)
-const props = [];
-function prop(build, base) {
-  const g = new THREE.Group();
-  g.position.set(...base);
-  build(g);
-  scene.add(g);
-  g.userData.base = base;
-  props.push(g);
-  return g;
-}
-prop((g) => {
-  mesh(new THREE.BoxGeometry(1.7, 0.05, 0.8), mat.desk, [0, 0.82, 0], [0, 0, 0], g);
-  for (const [x, z] of [[-0.8, -0.35], [0.8, -0.35], [-0.8, 0.35], [0.8, 0.35]]) mesh(new THREE.BoxGeometry(0.05, 0.8, 0.05), mat.metal, [x, 0.4, z], [0, 0, 0], g);
-  mesh(new THREE.BoxGeometry(1.7, 0.012, 0.012), mat.vio, [0, 0.8, -0.4], [0, 0, 0], g);
-}, [0, 0, 0.66]);
-
-const screenCanvas = document.createElement("canvas");
-screenCanvas.width = 512; screenCanvas.height = 320;
-const sctx = screenCanvas.getContext("2d");
-const screenTex = new THREE.CanvasTexture(screenCanvas);
-screenTex.colorSpace = THREE.SRGBColorSpace;
-prop((g) => {
-  mesh(new THREE.BoxGeometry(0.26, 0.02, 0.18), mat.metal, [0, 0.855, 0], [0, 0, 0], g);
-  mesh(new THREE.BoxGeometry(0.05, 0.26, 0.04), mat.metal, [0, 0.98, 0.02], [0, 0, 0], g);
-  mesh(new THREE.BoxGeometry(0.96, 0.6, 0.04), mat.black, [0, 1.25, 0], [0, 0, 0], g);
-  const scr = new THREE.Mesh(new THREE.PlaneGeometry(0.92, 0.56), new THREE.MeshBasicMaterial({ map: screenTex, toneMapped: false }));
-  scr.position.set(0, 1.25, -0.021);
-  scr.rotation.y = Math.PI;
-  g.add(scr);
-}, [0, 0, 0.92]);
-prop((g) => {
-  mesh(new THREE.BoxGeometry(0.5, 0.025, 0.16), mat.white, [0, 0.858, 0], [0, 0, 0], g);
-}, [0.05, 0, 0.47]);
-prop((g) => { // pen tablet
-  mesh(new THREE.BoxGeometry(0.34, 0.015, 0.24), mat.black, [0, 0.853, 0], [0, 0.2, 0], g);
-  mesh(new THREE.BoxGeometry(0.28, 0.004, 0.17), mat.vio, [0, 0.862, 0], [0, 0.2, 0], g);
-  mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.18, 5), mat.white, [0.05, 0.87, 0.02], [0, 0, Math.PI / 2.2], g);
-}, [-0.5, 0, 0.5]);
-prop((g) => { // mug
-  mesh(new THREE.CylinderGeometry(0.05, 0.045, 0.11, 8), mat.vio, [0, 0.9, 0], [0, 0, 0], g);
-  mesh(new THREE.TorusGeometry(0.03, 0.01, 4, 8), mat.vio, [0.055, 0.9, 0], [0, 0, 0], g);
-}, [0.55, 0, 0.5]);
-const screenLight = new THREE.PointLight(0xc084fc, 0, 3, 1.5);
-screenLight.position.set(0, 1.25, 0.75);
-scene.add(screenLight);
-
-// Monitor content: a bouncing ball with onion skin + timeline (animator's screen)
-function drawScreen(t) {
-  const c = sctx, W = 512, H = 320;
-  c.fillStyle = "#0d0b14"; c.fillRect(0, 0, W, H);
-  c.fillStyle = "#1a1626"; c.fillRect(0, 0, W, 24);
-  ["#ff5f57", "#febc2e", "#28c840"].forEach((col, i) => { c.fillStyle = col; c.beginPath(); c.arc(14 + i * 14, 12, 4, 0, 7); c.fill(); });
-  c.fillStyle = "#8e8e98"; c.font = "12px monospace"; c.fillText("ball_rig.moho", 66, 16);
-  c.strokeStyle = "rgba(255,255,255,0.05)";
-  for (let x = 0; x < W; x += 32) { c.beginPath(); c.moveTo(x, 24); c.lineTo(x, 250); c.stroke(); }
-  for (let y = 24; y < 250; y += 32) { c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
-  const ground = 228;
-  c.strokeStyle = "#3a3448"; c.lineWidth = 2; c.beginPath(); c.moveTo(20, ground + 16); c.lineTo(W - 20, ground + 16); c.stroke();
-  const ball = (tt, alpha) => {
-    const p = ((tt % 1.1) + 1.1) % 1.1 / 1.1;
-    const h = Math.abs(Math.sin(Math.PI * p));
-    const sp = Math.abs(Math.cos(Math.PI * p));
-    let sy = 1 + 0.3 * sp * sp, sx = 1 / sy;
-    if (h < 0.07) { sy = 0.68; sx = 1.35; }
-    const x = 50 + ((tt * 80) % 410);
-    const y = ground - h * 165 + (1 - sy) * 16;
-    c.save(); c.translate(x, y); c.scale(sx, sy);
-    c.globalAlpha = alpha; c.fillStyle = alpha < 1 ? "#8b5cf6" : "#c084fc";
-    c.beginPath(); c.arc(0, 0, 16, 0, 7); c.fill(); c.restore(); c.globalAlpha = 1;
-    return p;
-  };
-  for (let k = 4; k >= 1; k--) ball(t - k * 0.07, 0.12 * (5 - k) / 2);
-  const p = ball(t, 1);
-  c.fillStyle = "#15121e"; c.fillRect(0, 250, W, 70);
-  c.fillStyle = "#2a2538";
-  for (let x = 20; x < W - 10; x += 12) c.fillRect(x, 262, 1, x % 48 === 20 ? 12 : 6);
-  c.fillStyle = "#c084fc";
-  [20, 128, 236, 344, 452].forEach((x) => { c.save(); c.translate(x, 292); c.rotate(Math.PI / 4); c.fillRect(-5, -5, 10, 10); c.restore(); });
-  const ph = 20 + p * 432;
-  c.fillStyle = "#ff4d6d"; c.fillRect(ph, 254, 2, 62);
-  c.fillStyle = "#8e8e98"; c.fillText(`frame ${String(Math.floor(p * 24) + 1).padStart(2, "0")}/24`, W - 100, 16);
-}
-
-/* ---------- camera states ---------- */
-const S = { px: 0, py: 1.45, pz: 2.6, tx: 0, ty: 1.32, tz: 0, shift: 8, desk: 0, typing: 0, look: 1, fade: 1 };
+const card = $("#pcard");
+const ghosts = $$(".ghost");
+const faces = $$(".glare");
+// C = scroll-driven target state (x/y in viewport fractions)
+const C = { x: -0.24, y: 0, s: 1, ry: 0, rz: -4, o: 1, sx: 1, sy: 1 };
+const isWide = () => innerWidth > 760;
 const P = {
-  hero: { px: 0, py: 1.45, pz: 2.6, tx: 0, ty: 1.32, tz: 0, shift: 8, desk: 0, typing: 0, look: 1 },
-  about: { px: 1.6, py: 1.75, pz: 2.3, tx: 0, ty: 1.15, tz: 0.1, shift: 9, desk: 0, typing: 0, look: 1 },
-  services: { px: -2.7, py: 2.0, pz: -2.6, tx: 0.1, ty: 1.45, tz: 0.6, shift: 7, desk: 1, typing: 1, look: 0 },
-  process: { px: -1.6, py: 3.5, pz: -2.6, tx: 0.1, ty: 0.85, tz: 0.6, shift: 7, desk: 1, typing: 1, look: 0 }
+  hero: () => isWide() ? { x: -0.24, y: 0, s: 1, ry: 0, rz: -4, o: 1 } : { x: 0, y: -0.16, s: 0.75, ry: 0, rz: -3, o: 1 },
+  about: () => isWide() ? { x: -0.27, y: 0.02, s: 1, ry: 180, rz: 3, o: 1 } : { x: 0, y: -0.2, s: 0.6, ry: 180, rz: 3, o: 0.25 },
+  services: () => isWide() ? { x: -0.3, y: 0.2, s: 0.62, ry: 360, rz: -8, o: 1 } : { x: 0.25, y: 0.3, s: 0.4, ry: 360, rz: -8, o: 0.3 },
+  process: () => isWide() ? { x: -0.33, y: 0.02, s: 0.72, ry: 540, rz: 5, o: 1 } : { x: 0.3, y: 0.3, s: 0.4, ry: 540, rz: 5, o: 0 },
+  out: () => ({ x: -0.3, y: -0.9, s: 0.7, ry: 600, rz: -20, o: 0 })
 };
-Object.assign(S, P.hero);
-const tgt = new THREE.Vector3();
-let wave = 0; // 0..1 hello wave after intro
-const easeBack = (x) => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
-
-function resize() {
-  const w = innerWidth, h = innerHeight;
-  renderer.setSize(w, h, false);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
+const cur = { x: 0, y: 0, s: 1, ry: 0, rz: 0 };
+const trail = ghosts.map(() => ({ x: 0, y: 0, s: 1, ry: 0, rz: 0 }));
+let frame = 0;
+function tf(t, rx = 0, extraY = 0) {
+  return `translate3d(${t.x * innerWidth}px, ${t.y * innerHeight}px, 0) perspective(1200px) rotateX(${rx}deg) rotateY(${t.ry + extraY}deg) rotateZ(${t.rz}deg) scale(${t.s})`;
 }
-addEventListener("resize", resize);
-resize();
-
-const clock = new THREE.Clock();
-let blinkT = 2;
-function renderStage() {
-  const dt = Math.min(clock.getDelta(), 0.05);
-  const t = clock.elapsedTime;
-  mouse.sx = lerp(mouse.sx, mouse.x, 0.06);
-  mouse.sy = lerp(mouse.sy, mouse.y, 0.06);
-  const wide = camera.aspect > 1 ? 1 : 0;
-
-  // camera
-  camera.position.set(S.px + mouse.sx * 0.12, S.py + mouse.sy * 0.08, S.pz);
-  tgt.set(S.tx, S.ty, S.tz);
-  camera.lookAt(tgt);
-  camera.filmOffset = S.shift * wide;
-  camera.updateProjectionMatrix();
-
-  // desk props rise
-  props.forEach((g, i) => {
-    const lp = clamp((S.desk - i * 0.12) / 0.45);
-    const s = lp <= 0 ? 0.0001 : easeBack(lp);
-    g.scale.setScalar(s);
-    g.position.y = (1 - lp) * -0.4;
-    g.visible = lp > 0;
+function renderCard() {
+  mouse.sx = lerp(mouse.sx, mouse.x, 0.08);
+  mouse.sy = lerp(mouse.sy, mouse.y, 0.08);
+  const prev = { ...cur };
+  for (const k of ["x", "y", "s", "ry", "rz"]) cur[k] = lerp(cur[k], C[k], 0.14);
+  const speed = Math.abs(cur.x - prev.x) * 40 + Math.abs(cur.y - prev.y) * 40 + Math.abs(cur.ry - prev.ry) * 0.06;
+  const rx = mouse.sy * 9, ty = mouse.sx * 14;
+  card.style.transform = tf(cur, rx, ty) + ` scale(${C.sx}, ${C.sy})`;
+  card.style.opacity = C.o;
+  trail.forEach((g, i) => {
+    const f = 0.22 - i * 0.06;
+    for (const k of ["x", "y", "s", "ry", "rz"]) g[k] = lerp(g[k], cur[k], f);
+    ghosts[i].style.transform = tf(g, rx, ty);
+    ghosts[i].style.opacity = clamp(speed, 0, 1) * (0.55 - i * 0.15) * C.o;
   });
-  screenLight.intensity = S.desk * 2.5;
-  if (S.desk > 0.3) { drawScreen(t); screenTex.needsUpdate = true; }
-
-  // breathing + head
-  torso.scale.y = 1 + Math.sin(t * 2) * 0.012;
-  const lookY = mouse.sx * 0.55 * S.look;
-  const lookX = -mouse.sy * 0.3 * S.look + S.typing * 0.22;
-  head.rotation.y = lerp(head.rotation.y, lookY + Math.sin(t * 0.7) * 0.04, 0.08);
-  head.rotation.x = lerp(head.rotation.x, lookX, 0.08);
-  torso.rotation.x = S.typing * 0.12;
-
-  // blink
-  blinkT -= dt;
-  const blink = blinkT < 0.12 ? 0.1 : 1;
-  if (blinkT < 0) blinkT = 2 + Math.random() * 3;
-  eyes.forEach((e) => (e.scale.y = blink));
-
-  // arms: rest -> typing, plus hello wave
-  const ty = S.typing;
-  for (const [arm, side] of [[armR, -1], [armL, 1]]) {
-    const tap = ty * Math.sin(t * 18 + side) * 0.06;
-    arm.sh.rotation.set(lerp(-0.15, -0.5, ty) + tap, 0, side * lerp(0.08, 0.12, ty));
-    arm.el.rotation.set(lerp(-1.35, -0.85, ty) - tap * 1.5, 0, 0);
+  const gx = 50 + mouse.sx * 40 + "%", gy = 30 - mouse.sy * 40 + "%";
+  faces.forEach((f) => { f.style.setProperty("--gx", gx); f.style.setProperty("--gy", gy); });
+  frame++;
+  if (frame % 2 === 0) {
+    const fr = Math.floor(frame / 2);
+    $("#tc").textContent = `00:00:${String(Math.floor(fr / 24) % 60).padStart(2, "0")}:${String(fr % 24).padStart(2, "0")}`;
   }
-  if (wave > 0) {
-    armR.sh.rotation.set(lerp(armR.sh.rotation.x, -0.1, wave), 0, lerp(armR.sh.rotation.z, -2.5, wave));
-    armR.el.rotation.set(0, 0, lerp(0, -0.35 + Math.sin(t * 10) * 0.45, wave));
-  }
-
-  ring.material.opacity = 0.35 + Math.sin(t * 1.5) * 0.15;
-  renderer.render(scene, camera);
 }
+gsap.ticker.add(renderCard);
 
 /* ============================================================
    PHYSICS BALLS (toolkit)
@@ -525,20 +291,39 @@ $$(".svc").forEach((el) => el.addEventListener("pointermove", (e) => {
 const heroChars = $$("[data-hero-title]").flatMap(splitChars);
 const contactChars = $$("[data-contact]").flatMap(splitChars);
 
-function camSegment(trigger, from, to, start, end) {
-  gsap.fromTo(S, { ...P[from] }, {
-    ...P[to], ease: "none", immediateRender: false,
-    scrollTrigger: { trigger, start, end, scrub: 1 }
-  });
+// card path: list of [scrollY, preset] keyframes, rebuilt on refresh
+let stops = [], scrollDriven = false;
+function buildStops() {
+  const vh = innerHeight, top = (sel) => $(sel).getBoundingClientRect().top + scrollY, h = (sel) => $(sel).offsetHeight;
+  const mid = (sel) => top(sel) + h(sel) / 2 - vh / 2;
+  stops = [
+    [0, P.hero()],
+    [mid("#about"), P.about()],
+    [top("#services") - vh, P.about()],
+    [top("#services") - vh * 0.1, P.services()],
+    [top("#process") - vh, P.services()],
+    [mid("#process"), P.process()],
+    [top("#work") - vh, P.process()],
+    [top("#work") - vh * 0.2, P.out()]
+  ];
 }
+function cardFromScroll() {
+  if (!scrollDriven || !stops.length) return;
+  const y = scrollY;
+  let i = 0;
+  while (i < stops.length - 2 && y > stops[i + 1][0]) i++;
+  const [a, A] = stops[i], [b, B] = stops[i + 1];
+  const t = gsap.parseEase("power1.inOut")(clamp((y - a) / Math.max(1, b - a)));
+  for (const k of ["x", "y", "s", "ry", "rz", "o"]) C[k] = lerp(A[k], B[k], t);
+}
+gsap.ticker.add(cardFromScroll, false, true);
 
 function initScroll() {
   // 3D camera path
-  camSegment("#about", "hero", "about", "top bottom", "center center");
-  camSegment("#services", "about", "services", "top bottom", "top 10%");
-  camSegment("#process", "services", "process", "top bottom", "center center");
-  gsap.to(S, { fade: 0, ease: "none", scrollTrigger: { trigger: "#work", start: "top bottom", end: "top 20%", scrub: true } });
-  gsap.to([stage, ".glow"], { opacity: 0, ease: "none", scrollTrigger: { trigger: "#work", start: "top bottom", end: "top 20%", scrub: true } });
+  ScrollTrigger.addEventListener("refresh", buildStops);
+  buildStops();
+  scrollDriven = true;
+  gsap.to(".glow", { opacity: 0, ease: "none", scrollTrigger: { trigger: "#work", start: "top bottom", end: "top 20%", scrub: true } });
 
   // hero letters scatter away as you scroll
   gsap.to(heroChars, {
@@ -639,6 +424,12 @@ function initScroll() {
   });
   gsap.from(".cta", { scale: 0, rotate: -90, ease: "none", scrollTrigger: { trigger: ".cta", start: "top 100%", end: "top 70%", scrub: true } });
 
+  // back of card: playhead + frame number follow scroll
+  ScrollTrigger.create({ start: 0, end: "max", onUpdate: (st) => {
+    card.style.setProperty("--p", st.progress.toFixed(3));
+    $("#frameNo").textContent = String(Math.round(st.progress * 240) + 1).padStart(3, "0");
+  } });
+
   // progress + nav
   gsap.to("#progress", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: true } });
   $$(".nav__links a").forEach((a) => {
@@ -664,14 +455,14 @@ function startLenis() {
   }));
 }
 
-gsap.ticker.add(() => {
-  if (S.fade > 0.01) renderStage();
-});
 initBalls();
 
 const load = { v: 0 };
 const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
 gsap.set(heroChars, { yPercent: 110 });
+Object.assign(C, P.hero(), { y: -1.2, rz: 12, sx: 0.8, sy: 1.3 });
+Object.assign(cur, C);
+trail.forEach((g) => Object.assign(g, C));
 gsap.set("[data-hero]", { opacity: 0, y: 20 });
 gsap.timeline()
   .to(load, { v: 100, duration: reduce ? 0.1 : 1.6, ease: "power2.inOut", onUpdate: () => {
@@ -681,11 +472,10 @@ gsap.timeline()
   .add(() => fontsReady)
   .to(".loader", { yPercent: -100, duration: 0.9, ease: "power4.inOut" })
   .add(() => { document.body.classList.remove("is-loading"); $(".loader").remove(); startLenis(); }, "-=0.3")
-  .to(heroChars, { yPercent: 0, duration: 1.1, ease: "power4.out", stagger: 0.035 }, "-=0.4")
+  // card drops in: stretch while falling, squash on impact, settle
+  .to(C, { y: P.hero().y, rz: P.hero().rz, duration: 0.55, ease: "power2.in" }, "-=0.2")
+  .to(C, { sx: 1.22, sy: 0.74, duration: 0.09, ease: "power1.out" })
+  .to(C, { sx: 1, sy: 1, duration: 0.9, ease: "elastic.out(1.1, 0.35)" })
+  .to(heroChars, { yPercent: 0, duration: 1.1, ease: "power4.out", stagger: 0.035 }, "-=0.9")
   .to("[data-hero]", { opacity: 1, y: 0, duration: 0.8, stagger: 0.1 }, "<0.3")
-  .add(() => {
-    gsap.timeline()
-      .to({ w: 0 }, { w: 1, duration: 0.5, ease: "power2.out", onUpdate() { wave = this.targets()[0].w; } })
-      .to({ w: 1 }, { w: 0, duration: 0.6, delay: 1.6, ease: "power2.inOut", onUpdate() { wave = this.targets()[0].w; } });
-  }, "<")
   .add(initScroll);
