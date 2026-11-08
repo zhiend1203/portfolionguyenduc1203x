@@ -93,6 +93,8 @@ card.addEventListener("pointerup", endDrag); card.addEventListener("pointercance
 ["touchstart", "touchmove", "touchend", "wheel"].forEach((t) => card.addEventListener(t, (e) => { if (docked()) e.stopPropagation(); }, { passive: true }));
 card.addEventListener("pointerenter", () => { if (isTouch) return; hovT = 1; card.classList.add("is-hover"); });
 card.addEventListener("pointerleave", () => { if (isTouch) return; hovT = 0; card.classList.remove("is-hover"); });
+const faceF = $(".pcard__front"), faceB = $(".pcard__back");
+let lastFront = null;
 function renderCard() {
   mouse.sx = lerp(mouse.sx, mouse.x, 0.08);
   mouse.sy = lerp(mouse.sy, mouse.y, 0.08);
@@ -107,6 +109,9 @@ function renderCard() {
   const idle = { ...cur, x: lerp(cur.x + D.x, 0, pull), y: lerp(cur.y + D.y, 0, pull) + Math.sin(now * 1.3) * 0.008 * (1 - hov), rz: cur.rz * (1 - hov) + Math.sin(now * 0.9) * 1.6 * (1 - hov), s: hs };
   const rx = mouse.sy * 9 * (1 - hov * 0.6), ty = mouse.sx * 14 * (1 - hov * 0.6);
   card.style.transform = tf(idle, rx, ty) + ` scale(${C.sx}, ${C.sy})`;
+  // don't trust backface-visibility (iOS / in-app WebViews ignore it): show only the face that points at the viewer
+  const ang = (((idle.ry + ty) % 360) + 360) % 360, front = ang < 90 || ang > 270;
+  if (front !== lastFront) { lastFront = front; faceF.style.visibility = front ? "visible" : "hidden"; faceB.style.visibility = front ? "hidden" : "visible"; }
   card.style.opacity = C.o;
   trail.forEach((g, i) => {
     const f = 0.22 - i * 0.06;
