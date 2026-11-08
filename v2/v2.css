@@ -280,3 +280,4 @@ html.pager { overflow: hidden; }
 
 .hero__title, .big, .about__text, .contact__title, .step h3 { text-shadow: 0 4px 30px rgba(0,0,0,.55); }
 .eyebrow, .hero__sub, .kicker, .step p, .contact__sub { text-shadow: 0 2px 12px rgba(0,0,0,.8); }
+.outline { text-shadow: none !important; }
