@@ -40,3 +40,6 @@
 .pb-links a:hover { border-color: var(--vio2); background: rgba(139,92,246,.18); transform: translateY(-2px); }
 .pb-links .ico { margin: 0; width: 18px; height: 18px; color: var(--vio2); }
 .pb-links span { font: 500 8px var(--mono) !important; letter-spacing: .08em; color: var(--mut); }
+/* docked card is draggable */
+.pcard.is-drag { cursor: grabbing !important; }
+.pc-wrap { z-index: 40 !important; }
