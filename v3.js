@@ -442,8 +442,22 @@ addEventListener("pointerdown", () => heroVid.paused && heroVid.play().catch(() 
 /* ---------- card path follows the page */
 let stops = [], ready = false;
 const tops = (sel) => $(sel).getBoundingClientRect().top + scrollY;
+function anchorAt(px, py, scrollAt, hFrac) {
+  // convert a page point (px, py) to card coords when the page is scrolled to scrollAt
+  const W = innerWidth, H = innerHeight, base = card.offsetHeight || 460;
+  return { x: (px - W / 2) / W, y: (py - scrollAt - H / 2) / H, s: hFrac / base };
+}
 function buildStops() {
   const vh = innerHeight, a = tops("#about"), ah = $(".abt__grid").offsetHeight;
+  if (isWide()) {
+    const r = $(".hx__screen").getBoundingClientRect(), top0 = r.top + scrollY;
+    const h = anchorAt(r.right - r.width * 0.04, top0 + r.height * 0.06, 0, r.height * 0.5);
+    P.hero = () => ({ ...h, ry: 0, rz: 9, o: 1 });
+    const sl = $(".abt__cardslot").getBoundingClientRect(), slTop = sl.top + scrollY, at = a - vh * 0.05;
+    const visH = window.visualViewport ? visualViewport.height : vh;
+    const ab = anchorAt(sl.left + sl.width / 2, at + Math.min(visH, vh) / 2, at, Math.min(visH * 0.62, sl.width * 1.2));
+    P.about = () => ({ ...ab, ry: 180, rz: -4, o: 1 });
+  }
   stops = [[0, P.hero()], [vh * 0.75, P.heroOut()], [a - vh * 0.9, P.aboutIn()], [a - vh * 0.05, P.about()], [a + ah - vh * 0.75, P.about()], [a + ah - vh * 0.1, P.out()]];
 }
 gsap.ticker.add(() => {
@@ -550,6 +564,7 @@ window.scrollTo(0, 0);
 const load = { v: 0 };
 gsap.set(heroChars, { yPercent: 110 });
 gsap.set("[data-hero]", { opacity: 0, y: 20 });
+buildStops();
 Object.assign(C, P.hero(), { y: -1.2, rz: 14, sx: 0.8, sy: 1.3 });
 Object.assign(cur, C); trail.forEach((g) => Object.assign(g, C));
 gsap.timeline()
