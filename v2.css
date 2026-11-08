@@ -190,7 +190,7 @@ section { position: relative; padding: 18vh var(--pad); }
 
 /* ---------- contact ---------- */
 .contact { height: 100vh; padding-top: 10vh; padding-bottom: 6vh; background: radial-gradient(60% 50% at 50% 60%, rgba(139, 92, 246, 0.16), transparent), var(--bg); display: flex; flex-direction: column; justify-content: center; }
-.contact__title { white-space: nowrap; font: 400 clamp(48px, 11vw, 200px)/0.88 var(--head); letter-spacing: 0.005em; }
+.contact__title { white-space: nowrap; font: 400 clamp(48px, 8.5vw, 190px)/0.88 var(--head); letter-spacing: 0.005em; }
 .contact__sub { color: var(--mut); max-width: 520px; margin-top: 30px; font-size: 17px; line-height: 1.6; }
 .cta { flex-shrink: 0; align-self: flex-start; margin-top: 32px; display: inline-grid; place-items: center; width: 180px; height: 180px; border-radius: 50%; background: var(--fg); color: #000; font: 700 17px var(--sub); text-align: center; padding: 30px; transition: background 0.3s; }
 .cta:hover { background: var(--vio2); }
@@ -317,3 +317,18 @@ section:nth-of-type(even) .ghost-word { animation-direction: reverse; animation-
 .wcard__media { transition: transform .4s cubic-bezier(.3,1.5,.5,1), box-shadow .4s; }
 .wcard:hover .wcard__media { transform: translateY(-8px) rotate(-1deg); box-shadow: 0 30px 60px rgba(0,0,0,.6), 0 0 40px rgba(139,92,246,.35); }
 @media (max-width: 760px) { .timeline { width: 100%; } }
+
+/* ---------- contact video reel (mask transitions) ---------- */
+.reel { position: absolute !important; right: var(--pad); top: 50%; transform: translateY(-50%) rotate(-1.5deg); width: min(40vw, 1100px); aspect-ratio: 16 / 10; border-radius: 22px; overflow: hidden; z-index: 1;
+  border: 1px solid rgba(255,255,255,.14); box-shadow: 0 40px 100px rgba(0,0,0,.6), 0 0 80px rgba(139,92,246,.25); cursor: pointer; background: #0b0a12; animation: bob 7s ease-in-out infinite; }
+.reel__slide { position: absolute; inset: 0; clip-path: inset(0 0 100% 0); }
+.reel__slide video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.reel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(5,5,7,.75), transparent 35%); pointer-events: none; z-index: 50; }
+.reel__ui { position: absolute; left: 24px; right: 24px; bottom: 22px; z-index: 60; display: flex; align-items: baseline; gap: 16px; }
+.reel__n { font: 500 12px var(--mono); color: var(--vio2); letter-spacing: .1em; }
+.reel__t { font: 700 clamp(18px, 1.6vw, 28px) var(--sub); flex: 1; }
+.reel__play { font: 500 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; padding: 8px 12px; border: 1px solid rgba(255,255,255,.3); border-radius: 99px; transition: .3s; }
+.reel:hover .reel__play { background: var(--fg); color: #000; }
+.reel__bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 60; background: rgba(255,255,255,.12); }
+.reel__bar i { display: block; height: 100%; width: 100%; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--vio), var(--vio2)); }
+@media (max-width: 1000px) { .reel { display: none; } }

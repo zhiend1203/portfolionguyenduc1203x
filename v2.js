@@ -405,6 +405,7 @@ function buildTimelines() {
   // 7 contact
   mk(7).fromTo(contactChars, { yPercent: 110 }, { yPercent: 0, duration: 0.8, stagger: 0.035, ease: "power4.out" })
     .fromTo(".contact .kicker, .contact__sub, .contact__meta", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.08 }, 0.35)
+    .fromTo("#reel", { clipPath: "inset(0% 0% 100% 0% round 22px)" }, { clipPath: "inset(0% 0% 0% 0% round 22px)", duration: 1, ease: "power4.inOut" }, 0.1)
     .fromTo(".cta", { scale: 0, rotate: -180 }, { scale: 1, rotate: 0, duration: 0.9, ease: "elastic.out(1, 0.5)" }, 0.6);
   // start every page in its "before" state
   Object.values(T).forEach((tl) => tl.progress(0).pause());
@@ -445,6 +446,54 @@ const BG = { show() {} };
   });
 })();
 
+// ---- contact reel: clips slide in every 4s with rotating mask shapes
+const REEL = (() => {
+  const items = [
+    ["vna-1", "Vietnam Airlines", "1Zyn5rLpNbgC6eucnQrICIgMlI9VYEdkJ"], ["ghidora-1", "Ghidora Tank", "1XbeNOH6H1rD17PHiLUhVLBW8-GIDWm6O"],
+    ["team14", "Team Project 1–4", "1tyuo4lyjJrjMoJ6Oq0GFwYqOLu04mwQu"], ["boss2", "Boss 2 — Rig preview", "1KyuHOGzq-BxrHkb9ZgZx6OU465SgZZp8"],
+    ["vna-2", "Vietnam Airlines", "1Zyn5rLpNbgC6eucnQrICIgMlI9VYEdkJ"], ["team0225", "Team Project 0225", "1w5vckbquhzRmI1s8xl2kfmPQJSYA7dPZ"],
+    ["ghidora-2", "Ghidora Tank", "1XbeNOH6H1rD17PHiLUhVLBW8-GIDWm6O"], ["outro", "Outro", "1w1QuAeAKIVO3tV0OTt9gY0C77cLK2AjN"]
+  ];
+  const masks = [
+    ["circle(0% at 72% 50%)", "circle(150% at 72% 50%)"],
+    ["polygon(0% 0%, 0% 0%, -40% 100%, -40% 100%)", "polygon(0% 0%, 140% 0%, 100% 100%, -40% 100%)"],
+    ["inset(50% 0% 50% 0%)", "inset(0% 0% 0% 0%)"],
+    ["inset(0% 0% 0% 100%)", "inset(0% 0% 0% 0%)"],
+    ["polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)", "polygon(-50% -50%, 150% -50%, 150% 150%, -50% 150%)"]
+  ];
+  const stage = $("#reelStage"), reel = $("#reel");
+  const slides = items.map(([f]) => {
+    const d = document.createElement("div");
+    d.className = "reel__slide";
+    d.innerHTML = `<video muted playsinline preload="none" poster="reel/${f}.jpg" src="reel/${f}.mp4"></video>`;
+    stage.appendChild(d);
+    return d;
+  });
+  let idx = -1, z = 1, timer = null, running = false;
+  function go(n) {
+    const prev = slides[idx];
+    idx = (n + slides.length) % slides.length;
+    const s = slides[idx], v = s.querySelector("video"), [a, b] = masks[idx % masks.length];
+    s.style.zIndex = ++z;
+    v.muted = true; v.preload = "auto"; v.currentTime = 0; v.play().catch(() => {});
+    const nx = slides[(idx + 1) % slides.length].querySelector("video"); nx.preload = "auto";
+    gsap.fromTo(s, { clipPath: a }, { clipPath: b, duration: 1.1, ease: "power4.inOut" });
+    gsap.fromTo(v, { scale: 1.3 }, { scale: 1, duration: 1.6, ease: "power3.out" });
+    if (prev) { const pv = prev.querySelector("video"); gsap.to(pv, { scale: 1.1, duration: 1.1, ease: "power2.in" }); gsap.delayedCall(1.2, () => { pv.pause(); }); }
+    $("#reelN").textContent = `${String(idx + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+    gsap.fromTo("#reelT", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, delay: 0.4 });
+    $("#reelT").textContent = items[idx][1];
+    reel.dataset.video = items[idx][2]; reel.dataset.title = items[idx][1];
+    gsap.fromTo("#reelBar", { scaleX: 0 }, { scaleX: 1, duration: 4, ease: "none" });
+    clearTimeout(timer);
+    if (running) timer = setTimeout(() => go(idx + 1), 4000);
+  }
+  return {
+    start() { if (running) return; running = true; go(idx + 1); },
+    stop() { running = false; clearTimeout(timer); slides.forEach((s) => s.querySelector("video").pause()); }
+  };
+})();
+
 // ---- horizontal work paging
 const workMax = () => Math.max(0, $("#workTrack").scrollWidth + $(".work__head").offsetWidth - innerWidth);
 const workStep = () => innerWidth * 0.85;
@@ -467,6 +516,7 @@ function goTo(i, dir = 1) {
   page = i;
   setUI();
   if (i === 4) setWork(dir > 0 ? 0 : workMax(), 0);
+  if (i === 7) gsap.delayedCall(0.5, REEL.start); else if (from === 7) REEL.stop();
   if (balls) { if (i === 6) balls.drop(); else if (from === 6) gsap.delayedCall(0.9, balls.hide); }
   BG.show(i, dir);
   const dist = Math.abs(i - from);
