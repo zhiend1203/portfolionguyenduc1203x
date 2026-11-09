@@ -11,14 +11,30 @@
   <link rel="icon" href="assets/avatar.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
   <link rel="stylesheet" href="v2.css?v=p5q" />
   <link rel="stylesheet" href="v2fix.css?v=p5q" />
+  <link rel="stylesheet" href="v5.css?v=c1" />
 </head>
-<body class="is-loading">
+<body class="is-loading" data-theme="brune">
   <!-- LOADER -->
+
+  <!-- HANGTAG INTRO (brune style) -->
+  <div class="tagi" id="tagi">
+    <div class="tagi__top"><b>DUC<i>.</i>ANIM</b><span>MOHO · 2D · VIETNAM</span></div>
+    <svg class="tagi__svg"><line id="tagLine" x1="0" y1="0" x2="0" y2="0" /></svg>
+    <div class="tagi__tag" id="tagEl">
+      <span class="tagi__eyelet"></span>
+      <img src="assets/duc-card.jpg" alt="Nguyen Minh Duc" draggable="false" />
+      <span class="tagi__rec"><i></i>REC</span>
+      <span class="tagi__tc">00:00:00:00</span>
+      <div class="tagi__name"><b>NGUYEN MINH DUC</b><em>2D ANIMATOR · MOHO</em></div>
+    </div>
+    <p class="tagi__hint" id="tagHint">HOLD &amp; PULL THE STRING</p>
+    <button class="tagi__skip" id="tagSkip">or click to enter ↓</button>
+  </div>
   <div class="loader" aria-hidden="true">
     <div class="loader__count"><span id="loadNum">0</span>%</div>
     <div class="loader__bar"><span id="loadBar"></span></div>
@@ -177,6 +193,51 @@
     </section>
 
     <!-- WORK (horizontal) -->
+
+    <!-- FEATURED SPOTLIGHTS (01/03) -->
+    <section class="spot" id="spot">
+      <p class="spot__k kicker"><span>04</span> Featured</p>
+      <div class="spot__item spot--a" data-pal="#06171b,#e6fbff,#2cc3d6">
+        <div class="spot__txt">
+          <span class="spot__badge">TVC · 2D motion</span>
+          <h2 class="spot__t">Vietnam<br/>Airlines</h2>
+          <p class="spot__d">App launch commercial — character and UI animation that flows with the brand's rhythm, cut for TV and social.</p>
+          <div class="spot__pills"><span>Moho</span><span>After Effects</span><span>30s spot</span></div>
+          <button class="spot__cta" data-video="1Zyn5rLpNbgC6eucnQrICIgMlI9VYEdkJ" data-title="Vietnam Airlines">▶ Watch the spot</button>
+        </div>
+        <div class="spot__media">
+          <div class="spot__frame"><video muted loop playsinline preload="none" poster="media/s-vna-main.jpg" src="media/s-vna-main.mp4"></video></div>
+          <video class="spot__float f1" muted loop playsinline preload="none" poster="media/s-vna-f1.jpg" src="media/s-vna-f1.mp4"></video><video class="spot__float f2" muted loop playsinline preload="none" poster="media/s-vna-f2.jpg" src="media/s-vna-f2.mp4"></video>
+        </div>
+        <span class="spot__n">01/03</span>
+      </div>
+      <div class="spot__item spot--b" data-pal="#1c0f08,#fff0e6,#ff8a4c">
+        <div class="spot__media">
+          <div class="spot__frame"><video muted loop playsinline preload="none" poster="media/s-72-main.jpg" src="media/s-72-main.mp4"></video></div>
+          <video class="spot__float f1" muted loop playsinline preload="none" poster="media/s-73-f.jpg" src="media/s-73-f.mp4"></video><video class="spot__float f2" muted loop playsinline preload="none" poster="media/s-79-f.jpg" src="media/s-79-f.mp4"></video>
+        </div>
+        <div class="spot__txt">
+          <span class="spot__badge">YouTube series · Moho</span>
+          <h2 class="spot__t">Rescue<br/>Pups</h2>
+          <p class="spot__d">Weekly kids' series — reusable dog rigs, lip-sync and acting so every new episode ships fast and stays on-model.</p>
+          <div class="spot__pills"><span>Character rig</span><span>Lip-sync</span><span>50+ episodes</span></div>
+          <button class="spot__cta" data-local="media/h-72.mp4" data-title="Rescue Pups Ep. 72">▶ Watch an episode</button>
+        </div>
+        <span class="spot__n">02/03</span>
+      </div>
+      <div class="spot__item spot--c" data-pal="#0d1506,#f1ffe0,#9be33b">
+        <h2 class="spot__t spot__t--big">MECH BATTLE</h2>
+        <div class="spot__media">
+          <div class="spot__frame"><video muted loop playsinline preload="none" poster="media/s-1209-main.jpg" src="media/s-1209-main.mp4"></video></div>
+          <video class="spot__float f1" muted loop playsinline preload="none" poster="media/s-1209-f1.jpg" src="media/s-1209-f1.mp4"></video><video class="spot__float f2" muted loop playsinline preload="none" poster="media/s-tank-f2.jpg" src="media/s-tank-f2.mp4"></video>
+        </div>
+        <div class="spot__corner l"><span class="spot__badge">Tank / mech action</span><p class="spot__d">Heavy-metal battles with smart-bone rigs, impact frames and camera shake.</p></div>
+        <div class="spot__corner r"><div class="spot__pills"><span>Smart bones</span><span>FX</span><span>Action</span></div><button class="spot__cta" data-local="media/h-1209.mp4" data-title="Mech Battle 1209">▶ Watch the fight</button></div>
+        <span class="spot__n">03/03</span>
+      </div>
+      <div class="spot__dots"><i></i><i></i><i></i></div>
+    </section>
+
     <section class="work" id="work">
       <div class="ghost-word" aria-hidden="true"><span>WORK&nbsp;·&nbsp;WORK&nbsp;·&nbsp;</span><span>WORK&nbsp;·&nbsp;WORK&nbsp;·&nbsp;</span></div>
       <div class="work__pin">
@@ -247,8 +308,9 @@
   <script src="vendor/gsap.min.js"></script>
   <script src="vendor/ScrollTrigger.min.js"></script>
   <script src="vendor/lenis.min.js"></script>
-  <script src="projects.js?v=p5q"></script>
+  <script src="projects.js?v=b1"></script>
   <script type="module" src="v2.js?v=b5"></script>
+  <script type="module" src="v5.js?v=b9"></script>
   <script>setTimeout(function(){if(document.body.classList.contains("is-loading")){document.body.classList.remove("is-loading");var l=document.querySelector(".loader");l&&l.remove();}},9000);</script>
 </body>
 </html>
