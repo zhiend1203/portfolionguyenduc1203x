@@ -45,7 +45,7 @@ body[data-theme="brune"] { background: var(--bg); color: var(--fg); }
 [data-theme="brune"] .modal { background: rgba(20, 12, 8, .85); }
 [data-theme="brune"] .allp { background: color-mix(in srgb, var(--bg) 94%, transparent); color: var(--fg); }
 [data-theme="brune"] .allp__x { background: var(--fg); color: var(--bg); }
-[data-theme="brune"] .phone { box-shadow: 0 30px 60px color-mix(in srgb, var(--fg) 30%, transparent); }
+[data-theme="brune"] .phone { box-shadow: none; } [data-theme="brune"] .phone__in { box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 40px color-mix(in srgb, var(--acc) 18%, transparent); }
 [data-theme="brune"] .wcard__media { box-shadow: 0 24px 50px color-mix(in srgb, var(--fg) 18%, transparent); }
 
 /* ---------- hangtag intro ---------- */
