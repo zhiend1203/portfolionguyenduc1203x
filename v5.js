@@ -7,14 +7,14 @@ const root = document.documentElement;
 /* ---------- palettes ---------- */
 // [bg, fg, accent]
 const PAL = {
-  home: ["#f3eee6", "#2a1a12", "#b5532b"],
-  about: ["#e8d6c1", "#3b2416", "#8a4b26"],
-  services: ["#f2e3d3", "#3a2316", "#c2552d"],
-  process: ["#2a1b15", "#f4e9de", "#e7a27c"],
-  work: ["#f3eee6", "#1f1511", "#b5532b"],
-  shorts: ["#d5e2c8", "#1e321e", "#3f7a3a"],
-  tools: ["#cfe0f2", "#13253b", "#2d6cc0"],
-  contact: ["#1e1410", "#f5ebdd", "#e7a27c"]
+  home: ["#f4f1ea", "#141218", "#7c5cff"],
+  about: ["#e9e4ff", "#1c1633", "#6a4cf5"],
+  services: ["#ffe9d6", "#2b1a10", "#ff6b3d"],
+  process: ["#16131f", "#f4f1ea", "#b9a4ff"],
+  work: ["#f4f1ea", "#141218", "#7c5cff"],
+  shorts: ["#fff0b8", "#2a2100", "#d99a00"],
+  tools: ["#ddebff", "#0f1e3a", "#3366ff"],
+  contact: ["#7c5cff", "#ffffff", "#ffe066"]
 };
 const spotPal = $$("#spot .spot__item").map((el) => el.dataset.pal.split(","));
 function paint([bg, fg, ac], d = 0.9) {
@@ -77,72 +77,118 @@ addEventListener("pointermove", (e) => {
   gsap.to(".spot__media", { x: nx * 30, y: ny * 20, rotationY: nx * 10, rotationX: -ny * 8, duration: 0.8, ease: "power3.out", transformPerspective: 900 });
 });
 
-/* ---------- hangtag intro ---------- */
-const tagi = $("#tagi"), tagEl = $("#tagEl"), line = $("#tagLine"), hint = $("#tagHint");
+/* ---------- hangtag intro: verlet rope + swinging tag ---------- */
+const tagi = $("#tagi"), tagEl = $("#tagEl"), hint = $("#tagHint"), svg = $(".tagi__svg");
+svg.innerHTML = '<path id="rope" fill="none" />';
+const rope = $("#rope");
 const VH = () => (window.visualViewport ? Math.min(innerHeight, visualViewport.height) : innerHeight);
-let ax = innerWidth / 2, L = VH() * 0.36;
-const S = { x: ax + 30, y: L, vx: 0, vy: 0 };
-let grab = null, gone = false, maxPull = 0;
+const N = 18;
+let ax, REST, SEG;
+const P = [];
+function layout() {
+  ax = innerWidth / 2; REST = VH() * 0.34; SEG = REST / (N - 1);
+}
+layout();
+for (let k = 0; k < N; k++) P.push({ x: ax, y: k * SEG, ox: ax, oy: k * SEG });
+P[N - 1].x = P[N - 1].ox = ax + 120; // start swung out so it falls into a swing
+let grab = null, gone = false, attached = true, ang = 0, angV = 0, tilt = 0, spinV = 0;
+const T = { x: ax, y: REST, vx: 0, vy: 0 }; // free-falling tag after the snap
 document.body.classList.add("tag-open");
 window.DUC?.pause(true);
+addEventListener("resize", () => { const old = ax; layout(); P.forEach((p) => { p.x += ax - old; p.ox += ax - old; }); });
 
-addEventListener("resize", () => { ax = innerWidth / 2; L = VH() * 0.36; });
 tagEl.addEventListener("pointerdown", (e) => {
   if (gone) return;
-  grab = { dx: S.x - e.clientX, dy: S.y - e.clientY };
+  grab = { x: e.clientX, y: e.clientY };
   tagEl.setPointerCapture(e.pointerId); tagi.classList.add("is-grab");
+  gsap.to(hint, { opacity: 0.25, duration: 0.3 });
 });
-tagEl.addEventListener("pointermove", (e) => {
-  if (!grab) return;
-  S.x = e.clientX + grab.dx; S.y = e.clientY + grab.dy; S.vx = S.vy = 0;
-  maxPull = Math.max(maxPull, S.y - L);
-  hint.style.opacity = Math.max(0.15, 1 - (S.y - L) / 200);
-});
+tagEl.addEventListener("pointermove", (e) => { if (grab) { grab.x = e.clientX; grab.y = e.clientY; } });
 const release = () => {
   if (!grab) return;
+  const end = P[N - 1], stretch = Math.hypot(end.x - ax, end.y) / REST;
   grab = null; tagi.classList.remove("is-grab");
-  if (S.y - L > Math.min(200, VH() * 0.22)) snap();
+  if (stretch > 1.32) snap(); else gsap.to(hint, { opacity: 1, duration: 0.4 });
 };
 tagEl.addEventListener("pointerup", release); tagEl.addEventListener("pointercancel", release);
 
-function tick() {
-  if (gone) return;
-  if (!grab) {
-    // spring (string, slightly elastic) + gravity + damping
-    const dx = S.x - ax, dy = S.y, d = Math.hypot(dx, dy) || 1;
-    const k = 0.08, f = (d - L) * k;
-    S.vx += (-dx / d) * f; S.vy += (-dy / d) * f + 0.6;
-    S.vx *= 0.94; S.vy *= 0.94;
-    S.x += S.vx; S.y += S.vy;
+const G = 0.55, DAMP = 0.992;
+function sim() {
+  // integrate
+  for (let k = 1; k < N; k++) {
+    const p = P[k];
+    if (k === N - 1 && attached && grab) continue;
+    const vx = (p.x - p.ox) * DAMP, vy = (p.y - p.oy) * DAMP;
+    p.ox = p.x; p.oy = p.y;
+    p.x += vx; p.y += vy + G * (k === N - 1 && attached ? 2.2 : 1); // the tag end is heavier
   }
-  render();
-  requestAnimationFrame(tick);
+  if (attached && grab) {
+    // follow the finger, but the string resists: allowed up to 1.55x its length with elastic falloff
+    const end = P[N - 1], dx = grab.x - ax, dy = Math.max(10, grab.y - 40), d = Math.hypot(dx, dy), lim = REST * 1.55;
+    const k = d > REST ? REST + (Math.min(d, lim * 1.4) - REST) * 0.62 : d;
+    end.ox = end.x; end.oy = end.y;
+    end.x = ax + (dx / d) * k; end.y = (dy / d) * k;
+  }
+  P[0].x = P[0].ox = ax; P[0].y = P[0].oy = 0;
+  // constraints (rope can stretch a little while being pulled)
+  const seg = attached && grab ? Math.max(SEG, Math.hypot(P[N - 1].x - ax, P[N - 1].y) / (N - 1)) : SEG;
+  for (let it = 0; it < 14; it++) {
+    for (let k = 0; k < N - 1; k++) {
+      const a = P[k], b = P[k + 1], dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1, diff = (d - seg) / d;
+      const pinA = k === 0, pinB = k + 1 === N - 1 && attached && grab;
+      if (pinA && pinB) continue;
+      if (pinA) { b.x -= dx * diff; b.y -= dy * diff; }
+      else if (pinB) { a.x += dx * diff; a.y += dy * diff; }
+      else { a.x += dx * diff * 0.5; a.y += dy * diff * 0.5; b.x -= dx * diff * 0.5; b.y -= dy * diff * 0.5; }
+    }
+  }
 }
-let spin = 0, lineTo = null;
-function render() {
-  const ang = Math.atan2(S.x - ax, S.y) * (180 / Math.PI);
-  line.setAttribute("x1", ax); line.setAttribute("y1", 0);
-  line.setAttribute("x2", lineTo ? lineTo.x : S.x); line.setAttribute("y2", lineTo ? lineTo.y : S.y);
-  tagEl.style.transform = `translate(${S.x}px, ${S.y}px) translate(-50%, 0) rotate(${-ang + spin}deg)`;
+function draw() {
+  let d = `M${P[0].x},${P[0].y}`;
+  for (let k = 1; k < N - 1; k++) { const mx = (P[k].x + P[k + 1].x) / 2, my = (P[k].y + P[k + 1].y) / 2; d += ` Q${P[k].x},${P[k].y} ${mx},${my}`; }
+  d += ` L${P[N - 1].x},${P[N - 1].y}`;
+  rope.setAttribute("d", d);
+  const tension = attached ? Math.min(1, Math.max(0, Math.hypot(P[N - 1].x - ax, P[N - 1].y) / REST - 1) / 0.32) : 0;
+  rope.style.strokeWidth = 1.6 - tension * 0.6;
+  rope.style.stroke = tension > 0.85 ? "#7c5cff" : "#141218";
+  if (attached) {
+    const a = P[N - 2], b = P[N - 1];
+    const target = Math.atan2(b.x - a.x, b.y - a.y) * -57.3;
+    // tag hangs from its hole: angular spring with lag -> natural secondary swing
+    angV += (target - ang) * 0.12; angV *= 0.82; ang += angV;
+    const vx = b.x - b.ox; tilt += (vx * 2.2 - tilt) * 0.15;
+    tagEl.style.transform = `translate(${b.x}px, ${b.y}px) translate(-50%, -6px) rotate(${ang}deg) rotateY(${Math.max(-35, Math.min(35, tilt))}deg) scale(${1 + tension * 0.04})`;
+    tagEl.style.setProperty("--sh", `${-ang * 0.6}px`);
+  } else {
+    T.vy += 1.1; T.x += T.vx; T.y += T.vy; ang += spinV;
+    tagEl.style.transform = `translate(${T.x}px, ${T.y}px) translate(-50%, -6px) rotate(${ang}deg)`;
+  }
+}
+function tick() {
+  sim(); draw();
+  if (!gone || T.y < VH() * 2) requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
-// little nudge so it swings on arrival, then a "tug" hint loop
-gsap.delayedCall(0.4, () => (S.vx = -9));
-const tug = gsap.timeline({ repeat: -1, repeatDelay: 2.2, delay: 2.5 }).add(() => { if (!grab && !gone) S.vy += 7; });
+// idle "tug" so people notice it can be pulled
+const tug = gsap.timeline({ repeat: -1, repeatDelay: 2.4, delay: 2.2 }).add(() => {
+  if (grab || gone) return;
+  const e = P[N - 1]; e.oy -= 7; e.ox += Math.random() > 0.5 ? 4 : -4;
+});
+gsap.fromTo(hint, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8, delay: 0.6, ease: "power3.out" });
 
 function snap() {
   if (gone) return;
-  gone = true; tug.kill();
-  // string snaps back up, tag drops & spins away, curtain lifts
-  lineTo = { x: S.x, y: S.y };
-  gsap.to(lineTo, { x: ax, y: 0, duration: 0.35, ease: "power3.out" });
-  gsap.to(S, { y: S.y + VH(), x: S.x + (S.x > ax ? 80 : -80), duration: 0.9, ease: "power2.in", onUpdate: render });
-  gsap.to({ v: 0 }, { v: 1, duration: 0.9, onUpdate() { spin = this.targets()[0].v * (S.x > ax ? 50 : -50); } });
+  gone = true; attached = false; tug.kill();
+  const e = P[N - 1];
+  T.x = e.x; T.y = e.y; T.vx = (e.x - e.ox) * 0.6 + (e.x > ax ? 3 : -3); T.vy = -9; spinV = e.x > ax ? 2.2 : -2.2;
+  // rope recoils: give the loose end a kick upwards
+  e.oy = e.y + 60; e.ox = e.x;
+  tagi.classList.add("is-snap");
   gsap.to(".tagi__top, .tagi__hint, .tagi__skip", { opacity: 0, duration: 0.3 });
-  gsap.to(tagi, { yPercent: -100, duration: 1, ease: "expo.inOut", delay: 0.35, onComplete: () => {
-    tagi.remove(); document.body.classList.remove("tag-open");
+  gsap.to(tagi, { yPercent: -100, duration: 1.05, ease: "expo.inOut", delay: 0.55, onComplete: () => {
+    gone = true; tagi.remove(); document.body.classList.remove("tag-open");
     window.DUC?.pause(false); window.DUC?.replayHero();
   } });
 }
-$("#tagSkip").addEventListener("click", () => { S.y = L + 260; snap(); });
-tagi.addEventListener("wheel", (e) => { if (e.deltaY > 0) { S.vy += 30; S.y += 120; snap(); } }, { passive: true });
+$("#tagSkip").addEventListener("click", () => { P[N - 1].ox = P[N - 1].x; P[N - 1].y += 40; snap(); });
+tagi.addEventListener("wheel", (e) => { if (e.deltaY > 0 && !gone) snap(); }, { passive: true });
