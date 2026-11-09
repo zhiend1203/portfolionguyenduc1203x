@@ -143,3 +143,13 @@ body[data-theme="brune"]::before { content: ""; position: fixed; inset: -20%; po
 [data-theme="brune"] .marquee__track { color: #0d0b14; }
 @media (max-width: 760px) { .spot__frame { border-width: 1px; } }
 @media (min-width: 761px) { .spot__corner.r { right: calc(var(--pad) + 13vw); } }
+/* 03: headline readable above the video instead of behind it */
+.spot--c { display: grid; grid-template-rows: auto 1fr; align-content: start; justify-items: center; padding-top: 15vh; gap: 2vh; }
+.spot--c .spot__t--big { position: relative; inset: auto; display: block; font-size: clamp(64px, 10.5vw, 210px); line-height: .86; z-index: 2; }
+.spot--c .spot__media { width: min(40vw, 640px); }
+@media (max-width: 760px) {
+  .spot--c { padding-top: 16vh; }
+  .spot--c .spot__t--big { font-size: 17vw; white-space: normal; padding-top: 0; }
+  .spot--c .spot__media { width: 84vw; margin-top: 2vh; }
+}
+.spot__t .sw { display: inline-block; white-space: nowrap; }

@@ -36,7 +36,7 @@ function splitT(el) {
   if (el.dataset.split) return;
   el.dataset.split = 1;
   el.innerHTML = el.innerHTML.split(/<br\s*\/?>/i).map((line) =>
-    `<span class="sl">${[...line].map((c) => `<span class="sc">${c === " " ? "&nbsp;" : c}</span>`).join("")}</span>`).join("");
+    `<span class="sl">${line.trim().split(/\s+/).map((w) => `<span class="sw">${[...w].map((c) => `<span class="sc">${c}</span>`).join("")}</span>`).join(" ")}</span>`).join("");
 }
 items.forEach((it) => splitT($(".spot__t", it)));
 gsap.set(items, { autoAlpha: 0 });
