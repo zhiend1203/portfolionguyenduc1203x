@@ -47,26 +47,27 @@ function showSpot(i, dir) {
   [out, inn].forEach((it) => {
     if (!it) return;
     gsap.killTweensOf([it, ...it.querySelectorAll(".sc, .spot__badge, .spot__d, .spot__pills, .spot__pills span, .spot__cta, .spot__n, .spot__frame")]);
-    gsap.killTweensOf(it.querySelectorAll(".spot__float"), "y,opacity");
+    gsap.killTweensOf(it.querySelectorAll(".spot__float"), "x,y,opacity");
   });
   paint(spotPal[i], 1);
   dots.forEach((d, k) => d.classList.toggle("on", k === i));
+  const W = innerWidth;
   if (out) {
-    gsap.to(out.querySelectorAll(".sc"), { yPercent: -110 * dir, opacity: 0, duration: 0.45, stagger: 0.012, ease: "power3.in" });
-    gsap.to(out.querySelectorAll(".spot__badge, .spot__d, .spot__pills, .spot__cta, .spot__n"), { y: -30 * dir, opacity: 0, duration: 0.4, ease: "power2.in" });
-    gsap.to(out.querySelector(".spot__frame"), { y: -140 * dir, rotate: -8 * dir, opacity: 0, duration: 0.55, ease: "power3.in" });
-    gsap.to(out.querySelectorAll(".spot__float"), { y: -220 * dir, opacity: 0, duration: 0.5, ease: "power3.in" });
-    gsap.set(out, { autoAlpha: 0, delay: 0.6 });
+    // camera pans sideways: whole item slides out, its layers at different speeds (parallax)
+    gsap.to(out, { x: -W * dir, duration: 1.1, ease: "power3.inOut" });
+    gsap.to(out.querySelectorAll(".spot__txt, .spot__corner, .spot__t--big"), { x: -W * 0.25 * dir, duration: 1.1, ease: "power3.inOut" });
+    gsap.to(out.querySelectorAll(".spot__float"), { x: -W * 0.35 * dir, duration: 1.1, ease: "power3.inOut" });
+    gsap.set(out, { autoAlpha: 0, delay: 1.1 });
     out.querySelectorAll("video").forEach((v) => v.pause());
   }
-  const at = out ? 0.45 : 0.15;
-  gsap.set(inn, { autoAlpha: 1, delay: at - 0.05 });
-  gsap.fromTo(inn.querySelectorAll(".sc"), { yPercent: 110 * dir, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.025, ease: "expo.out", delay: at });
-  gsap.fromTo(inn.querySelectorAll(".spot__badge, .spot__d, .spot__cta, .spot__n"), { y: 40 * dir, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.06, ease: "expo.out", delay: at + 0.15 });
-  gsap.set(inn.querySelectorAll(".spot__pills"), { y: 0, opacity: 1 });
-  gsap.fromTo(inn.querySelectorAll(".spot__pills span"), { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, stagger: 0.06, ease: "back.out(2.5)", delay: at + 0.3 });
-  gsap.fromTo(inn.querySelector(".spot__frame"), { y: 180 * dir, rotate: 10 * dir, opacity: 0, scale: 0.85 }, { y: 0, rotate: i === 1 ? 3 : -3, opacity: 1, scale: 1, duration: 1.1, ease: "expo.out", delay: at + 0.05 });
-  gsap.fromTo(inn.querySelectorAll(".spot__float"), { y: 260 * dir, opacity: 0 }, { y: 0, opacity: 1, duration: 1.3, stagger: 0.1, ease: "expo.out", delay: at + 0.15 });
+  gsap.set(inn, { autoAlpha: 1 });
+  gsap.fromTo(inn, { x: out ? W * dir : 0 }, { x: 0, duration: out ? 1.1 : 0.01, ease: "power3.inOut" });
+  gsap.fromTo(inn.querySelectorAll(".spot__txt, .spot__corner, .spot__t--big"), { x: out ? W * 0.3 * dir : 0 }, { x: 0, duration: 1.25, ease: "power3.inOut" });
+  gsap.fromTo(inn.querySelectorAll(".spot__float"), { x: out ? W * 0.45 * dir : 0 }, { x: 0, duration: 1.35, ease: "power3.inOut" });
+  gsap.set(inn.querySelectorAll(".sc, .spot__badge, .spot__d, .spot__pills, .spot__cta, .spot__n, .spot__frame, .spot__float"), { y: 0, yPercent: 0, opacity: 1 });
+  gsap.fromTo(inn.querySelector(".spot__frame"), { rotate: 6 * dir, scale: 0.92 }, { rotate: i === 1 ? 3 : -3, scale: 1, duration: 1.3, ease: "power3.out", delay: 0.2 });
+  gsap.fromTo(inn.querySelectorAll(".sc"), { opacity: out ? 0.0 : 0, xPercent: 60 * dir }, { opacity: 1, xPercent: 0, duration: 0.8, stagger: 0.02 * dir, ease: "expo.out", delay: out ? 0.55 : 0.1 });
+  gsap.fromTo(inn.querySelectorAll(".spot__pills span"), { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, stagger: 0.06, ease: "back.out(2.5)", delay: out ? 0.8 : 0.3 });
   inn.querySelectorAll("video").forEach((v) => { v.preload = "auto"; v.play().catch(() => {}); });
   cur = i;
 }
@@ -160,13 +161,13 @@ function draw() {
     const a = P[N - 2], b = P[N - 1];
     const target = Math.atan2(b.x - a.x, b.y - a.y) * -57.3;
     // tag hangs from its hole: angular spring with lag -> natural secondary swing
-    angV += (target - ang) * 0.12; angV *= 0.82; ang += angV;
-    const vx = b.x - b.ox; tilt += (vx * 2.2 - tilt) * 0.15;
-    tagEl.style.transform = `translate(${b.x}px, ${b.y}px) translate(-50%, -6px) rotate(${ang}deg) rotateY(${Math.max(-35, Math.min(35, tilt))}deg) scale(${1 + tension * 0.04})`;
+    angV += (target - ang) * 0.09; angV *= 0.86; ang += angV;
+    const vx = b.x - b.ox; tilt += (vx * 1.4 - tilt) * 0.08;
+    tagEl.style.transform = `translate(${b.x}px, ${b.y}px) translate(-50%, -14px) rotate(${ang}deg) rotateY(${Math.max(-35, Math.min(35, tilt))}deg) scale(${1 + tension * 0.03})`;
     tagEl.style.setProperty("--sh", `${-ang * 0.6}px`);
   } else {
     T.vy += 1.1; T.x += T.vx; T.y += T.vy; ang += spinV;
-    tagEl.style.transform = `translate(${T.x}px, ${T.y}px) translate(-50%, -6px) rotate(${ang}deg)`;
+    tagEl.style.transform = `translate(${T.x}px, ${T.y}px) translate(-50%, -14px) rotate(${ang}deg)`;
   }
 }
 function tick() {
@@ -174,11 +175,11 @@ function tick() {
   if (!gone || T.y < VH() * 2) requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
-// idle "tug" so people notice it can be pulled
-const tug = gsap.timeline({ repeat: -1, repeatDelay: 2.4, delay: 2.2 }).add(() => {
-  if (grab || gone) return;
-  const e = P[N - 1]; e.oy -= 7; e.ox += Math.random() > 0.5 ? 4 : -4;
-});
+// running timecode on the tag
+const tc = $(".tagi__tc"), t0 = performance.now();
+(function tcTick() { if (gone) return; const f = Math.floor((performance.now() - t0) / 1000 * 24), s = Math.floor(f / 24);
+  tc.textContent = `00:00:${String(s % 60).padStart(2, "0")}:${String(f % 24).padStart(2, "0")}`; requestAnimationFrame(tcTick); })();
+const tug = { kill() {} };
 gsap.fromTo(hint, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8, delay: 0.6, ease: "power3.out" });
 
 function snap() {

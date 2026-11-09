@@ -92,7 +92,13 @@ document.addEventListener("click", (e) => { if (isTouch && !card.contains(e.targ
 card.addEventListener("pointerup", endDrag); card.addEventListener("pointercancel", endDrag);
 ["touchstart", "touchmove", "touchend", "wheel"].forEach((t) => card.addEventListener(t, (e) => { if (docked()) e.stopPropagation(); }, { passive: true }));
 card.addEventListener("pointerenter", () => { if (isTouch) return; hovT = 1; card.classList.add("is-hover"); });
-card.addEventListener("pointerleave", () => { if (isTouch) return; hovT = 0; card.classList.remove("is-hover"); });
+// leave is decided by the card's on-screen box (+margin), not pointerleave: the 3D-transformed, growing card
+// otherwise flickers in/out under a still mouse ("bouncing")
+addEventListener("pointermove", (e) => {
+  if (isTouch || !hovT || drag) return;
+  const r = card.getBoundingClientRect(), m = 28;
+  if (e.clientX < r.left - m || e.clientX > r.right + m || e.clientY < r.top - m || e.clientY > r.bottom + m) { hovT = 0; card.classList.remove("is-hover"); }
+});
 const faceF = $(".pcard__front"), faceB = $(".pcard__back");
 let lastFront = null;
 function renderCard() {
