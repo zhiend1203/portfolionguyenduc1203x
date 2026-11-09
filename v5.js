@@ -7,14 +7,14 @@ const root = document.documentElement;
 /* ---------- palettes ---------- */
 // [bg, fg, accent]
 const PAL = {
-  home: ["#f4f1ea", "#141218", "#7c5cff"],
-  about: ["#e9e4ff", "#1c1633", "#6a4cf5"],
-  services: ["#ffe9d6", "#2b1a10", "#ff6b3d"],
-  process: ["#16131f", "#f4f1ea", "#b9a4ff"],
-  work: ["#f4f1ea", "#141218", "#7c5cff"],
-  shorts: ["#fff0b8", "#2a2100", "#d99a00"],
-  tools: ["#ddebff", "#0f1e3a", "#3366ff"],
-  contact: ["#7c5cff", "#ffffff", "#ffe066"]
+  home: ["#0d0b14", "#f4f1ea", "#8b6cff"],
+  about: ["#130f24", "#f2eeff", "#a48bff"],
+  services: ["#1a100c", "#fbeee6", "#ff7a4d"],
+  process: ["#0a0910", "#f4f1ea", "#b9a4ff"],
+  work: ["#0d0b14", "#f4f1ea", "#8b6cff"],
+  shorts: ["#161104", "#fff6dc", "#ffc93c"],
+  tools: ["#08101f", "#e8f0ff", "#4d86ff"],
+  contact: ["#150e30", "#ffffff", "#ffe066"]
 };
 const spotPal = $$("#spot .spot__item").map((el) => el.dataset.pal.split(","));
 function paint([bg, fg, ac], d = 0.9) {
@@ -150,7 +150,7 @@ function draw() {
   rope.setAttribute("d", d);
   const tension = attached ? Math.min(1, Math.max(0, Math.hypot(P[N - 1].x - ax, P[N - 1].y) / REST - 1) / 0.32) : 0;
   rope.style.strokeWidth = 1.6 - tension * 0.6;
-  rope.style.stroke = tension > 0.85 ? "#7c5cff" : "#141218";
+  rope.style.stroke = tension > 0.85 ? "#8b6cff" : "#f4f1ea";
   if (attached) {
     const a = P[N - 2], b = P[N - 1];
     const target = Math.atan2(b.x - a.x, b.y - a.y) * -57.3;

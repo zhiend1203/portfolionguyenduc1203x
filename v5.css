@@ -1,6 +1,6 @@
 /* ===== v5 "brune" theme: warm tactile palettes per page, rounded ultra-bold display type, hangtag intro, spotlights ===== */
 [data-theme="brune"] {
-  --bg: #f4f1ea; --fg: #141218; --acc: #7c5cff;
+  --bg: #0d0b14; --fg: #f4f1ea; --acc: #8b6cff;
   --mut: color-mix(in srgb, var(--fg) 58%, transparent);
   --line: color-mix(in srgb, var(--fg) 16%, transparent);
   --vio: var(--acc); --vio2: var(--acc);
@@ -40,7 +40,7 @@ body[data-theme="brune"] { background: var(--bg); color: var(--fg); }
 [data-theme="brune"] .progress span, [data-theme="brune"] #progress { background: var(--acc); }
 [data-theme="brune"] .cursor { mix-blend-mode: normal; }
 [data-theme="brune"] .cursor__dot, [data-theme="brune"] .cursor span { background: var(--acc) !important; border-color: var(--acc) !important; }
-[data-theme="brune"] .loader { background: #f4f1ea; color: #141218; }
+[data-theme="brune"] .loader { background: #0d0b14; color: #f4f1ea; }
 [data-theme="brune"] .loader__bar span { background: #7c5cff; }
 [data-theme="brune"] .modal { background: rgba(20, 12, 8, .85); }
 [data-theme="brune"] .allp { background: color-mix(in srgb, var(--bg) 94%, transparent); color: var(--fg); }
@@ -49,24 +49,24 @@ body[data-theme="brune"] { background: var(--bg); color: var(--fg); }
 [data-theme="brune"] .wcard__media { box-shadow: 0 24px 50px color-mix(in srgb, var(--fg) 18%, transparent); }
 
 /* ---------- hangtag intro ---------- */
-.tagi { position: fixed; inset: 0; z-index: 300; background: #f4f1ea; color: #141218; overflow: hidden; touch-action: none; user-select: none; perspective: 900px;
-  background-image: radial-gradient(circle at 50% 38%, rgba(124,92,255,.12), transparent 45%); }
+.tagi { position: fixed; inset: 0; z-index: 300; background: #0d0b14; color: #f4f1ea; overflow: hidden; touch-action: none; user-select: none; perspective: 900px;
+  background-image: radial-gradient(circle at 50% 40%, rgba(139,108,255,.22), transparent 50%); }
 body.tag-open { overflow: hidden; }
 .tagi__top { position: absolute; top: 26px; left: var(--pad); right: var(--pad); display: flex; justify-content: space-between; align-items: center; font: 500 12px var(--mono); letter-spacing: .14em; }
 .tagi__top b { font: 800 22px "Bricolage Grotesque", var(--sub); letter-spacing: -.02em; }
-.tagi__top b i { color: #7c5cff; font-style: normal; }
+.tagi__top b i { color: #8b6cff; font-style: normal; }
 .tagi__svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-.tagi__svg path { stroke: #141218; stroke-width: 1.6; stroke-linecap: round; transition: stroke .2s; }
+.tagi__svg path { stroke: #f4f1ea; stroke-width: 1.6; stroke-linecap: round; transition: stroke .2s; }
 .tagi__tag { position: absolute; left: 0; top: 0; width: clamp(170px, 13.5vw, 230px); padding: 26px 18px 18px; border-radius: 14px;
-  background: #141218; color: #f4f1ea; display: grid; justify-items: center; gap: 4px; cursor: grab; transform-origin: 50% 6px; will-change: transform;
-  box-shadow: var(--sh, 0px) 34px 50px rgba(20, 18, 24, .28), inset 0 0 0 1px rgba(255,255,255,.07);
+  background: #f4f1ea; color: #141218; display: grid; justify-items: center; gap: 4px; cursor: grab; transform-origin: 50% 6px; will-change: transform;
+  box-shadow: var(--sh, 0px) 34px 60px rgba(0, 0, 0, .55), 0 0 60px rgba(139,108,255,.18);
   clip-path: polygon(14% 0, 86% 0, 100% 9%, 100% 100%, 0 100%, 0 9%); }
-.tagi__tag::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 8px; background: #7c5cff; }
+.tagi__tag::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 8px; background: #8b6cff; }
 .tagi.is-grab .tagi__tag { cursor: grabbing; }
-.tagi__hole { position: absolute; top: 9px; width: 11px; height: 11px; border-radius: 50%; background: #f4f1ea; box-shadow: inset 0 1px 2px rgba(0,0,0,.5), 0 0 0 3px #2a2733; }
+.tagi__hole { position: absolute; top: 9px; width: 11px; height: 11px; border-radius: 50%; background: #0d0b14; box-shadow: inset 0 1px 2px rgba(0,0,0,.5), 0 0 0 3px #c9c3b6; }
 .tagi__tag img { width: 74%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; margin-top: 10px; pointer-events: none; }
 .tagi__tag b { font: 800 clamp(40px, 3.6vw, 60px)/.9 "Bricolage Grotesque", var(--sub); letter-spacing: -.04em; margin-top: 8px; }
-.tagi__tag em { font: italic 500 13px var(--sub); color: #b9a4ff; }
+.tagi__tag em { font: italic 500 13px var(--sub); color: #6a4cf5; }
 .tagi__tag small { font: 500 8px var(--mono); letter-spacing: .14em; opacity: .55; margin: 6px 0 8px; }
 .tagi__hint { position: absolute; left: 0; right: 0; bottom: 13vh; text-align: center; font: 500 12px var(--mono); letter-spacing: .3em; }
 .tagi__hint::after { content: ""; display: block; width: 1px; height: 28px; margin: 12px auto 0; background: currentColor; animation: tagHint 1.6s ease-in-out infinite; transform-origin: top; }
@@ -88,11 +88,11 @@ body.tag-open { overflow: hidden; }
 .spot__cta { padding: 15px 26px; border-radius: 99px; background: var(--acc); color: var(--bg); font: 700 15px var(--sub); transition: transform .3s; }
 .spot__cta:hover { transform: translateY(-3px) scale(1.03); }
 .spot__media { position: relative; height: 62vh; display: grid; place-items: center; transform-style: preserve-3d; }
-.spot__frame { width: min(100%, 720px); aspect-ratio: 16 / 10; border-radius: 22px; overflow: hidden; background: #000; border: 8px solid #fff;
-  box-shadow: 0 50px 80px color-mix(in srgb, var(--fg) 35%, transparent); position: relative; z-index: 1; }
+.spot__frame { width: min(100%, 720px); aspect-ratio: 16 / 10; border-radius: 22px; overflow: hidden; background: #000; border: 1px solid color-mix(in srgb, var(--fg) 18%, transparent);
+  box-shadow: 0 50px 90px rgba(0,0,0,.6), 0 0 80px color-mix(in srgb, var(--acc) 25%, transparent); position: relative; z-index: 1; }
 .spot__frame video { width: 100%; height: 100%; object-fit: cover; display: block; }
-.spot__float { position: absolute; width: 30%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 12px; border: 5px solid #fff;
-  box-shadow: 0 24px 40px color-mix(in srgb, var(--fg) 30%, transparent); z-index: 2; }
+.spot__float { position: absolute; width: 30%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 12px; border: 1px solid color-mix(in srgb, var(--fg) 18%, transparent);
+  box-shadow: 0 24px 40px rgba(0,0,0,.55); z-index: 2; }
 .spot__float.f1 { left: -6%; top: 2%; rotate: -9deg; }
 .spot__float.f2 { right: -4%; bottom: 0%; rotate: 8deg; }
 .spot__n { position: absolute; right: var(--pad); bottom: 7vh; font: 500 13px var(--mono); letter-spacing: .2em; }
@@ -130,3 +130,10 @@ body.tag-open { overflow: hidden; }
 [data-theme="brune"] .hero__title { font-size: clamp(56px, 8.4vw, 170px); }
 [data-theme="brune"] .hero__title, [data-theme="brune"] .hero__title *, [data-theme="brune"] .hero__sub, [data-theme="brune"] .eyebrow { text-shadow: none !important; background: none !important; }
 @media (max-width: 760px) { .spot__k { display: none; } .spot__frame { border-width: 5px; } }
+/* dark mode: soft glow of the page accent behind content */
+body[data-theme="brune"]::before { content: ""; position: fixed; inset: -20%; pointer-events: none; z-index: 0;
+  background: radial-gradient(40% 40% at 75% 30%, color-mix(in srgb, var(--acc) 18%, transparent), transparent 70%),
+              radial-gradient(35% 35% at 15% 85%, color-mix(in srgb, var(--acc) 10%, transparent), transparent 70%); }
+[data-theme="brune"] .marquee { background: var(--acc); color: #0d0b14; }
+[data-theme="brune"] .marquee__track { color: #0d0b14; }
+@media (max-width: 760px) { .spot__frame { border-width: 1px; } }
