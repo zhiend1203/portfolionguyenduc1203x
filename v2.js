@@ -68,7 +68,7 @@ function tf(t, rx = 0, extraY = 0) {
 let hov = 0, hovT = 0;
 // drag: offset in viewport fractions; only kept while the card is docked (Work page onward)
 const D = { x: 0, y: 0 }; let drag = null, dragMoved = false;
-const docked = () => typeof SECS !== "undefined" && scroller.y >= top(SECS[4]) - 4;
+const docked = () => typeof SECS !== "undefined" && scroller.y >= top(SECS[DOCK]) - 4;
 card.style.touchAction = "none";
 card.addEventListener("pointerdown", (e) => {
   if (e.target.closest("a") || !docked()) return;
@@ -377,7 +377,13 @@ const contactChars = $$("[data-contact]").flatMap(splitChars);
 /* ============================================================
    FULL-PAGE PAGER — 1 wheel notch / swipe = next page, page plays its animation
    ============================================================ */
-const SECS = ["#home", "#about", "#services", "#process", "#work", "#shorts", "#tools", "#contact"].map((q) => $(q));
+const SECS = ["#home", "#about", "#services", "#process", "#spot", "#work", "#shorts", "#tools", "#contact"].map((q) => $(q)).filter(Boolean);
+const IX = (q) => SECS.indexOf($(q));
+const SP = IX("#spot"), W = IX("#work"), SH = IX("#shorts"), TL = IX("#tools"), CT = IX("#contact");
+const DOCK = SP >= 0 ? SP : W;
+const SPOT_N = SP >= 0 ? $$("#spot .spot__item").length : 0;
+let spotI = 0;
+const emit = (name, detail) => document.dispatchEvent(new CustomEvent(name, { detail }));
 const top = (el) => el.offsetTop;
 let page = 0, busy = false, workX = 0, ready = false;
 const scroller = { y: 0 };
@@ -387,7 +393,7 @@ const words = splitWords($(".scrub-words"));
 // card keyframes by page scroll position
 let stops = [];
 function buildStops() {
-  stops = [[0, P.hero()], [top(SECS[1]), P.about()], [top(SECS[2]), P.services()], [top(SECS[3]), P.process()], [top(SECS[4]), P.out()]];
+  stops = [[0, P.hero()], [top(SECS[1]), P.about()], [top(SECS[2]), P.services()], [top(SECS[3]), P.process()], [top(SECS[DOCK]), P.out()]];
 }
 function cardFromScroll() {
   if (!ready) return;
@@ -448,15 +454,15 @@ function buildTimelines() {
       .fromTo(el.querySelector(".step__dot"), { scale: 0.6, backgroundColor: "#050507", boxShadow: "0 0 0px #8b5cf6" }, { scale: 1.25, backgroundColor: "#8b5cf6", boxShadow: "0 0 24px #8b5cf6", duration: 0.3, ease: "back.out(3)" }, at);
   });
   // 4 work
-  const wT = mk(4);
+  const wT = mk(W);
   wT.fromTo(".work__head > *", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: "power3.out" })
     .fromTo(".wcard__media", { clipPath: "inset(50% 50% 50% 50% round 16px)", scale: 0.85 }, { clipPath: "inset(0% 0% 0% 0% round 16px)", scale: 1, duration: 0.7, stagger: { each: 0.04, grid: "auto", from: "start" }, ease: "power3.inOut" }, 0.15)
     .fromTo(".wcard__meta", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.04 }, 0.4);
   // 5 shorts — deal like cards: stack (squash) → anticipation → arc out, overshoot → follow-through → idle float
-  const hT = mk(5), phones = $$(".phone"), mid = (phones.length - 1) / 2;
+  const hT = mk(SH), phones = $$(".phone"), mid = (phones.length - 1) / 2;
   const fx = (i, el) => (i - mid) * el.offsetWidth * 1.05;
   let floatTw;
-  flipIn(hT, SECS[5]);
+  flipIn(hT, SECS[SH]);
   hT.add(() => { floatTw && floatTw.kill(); }, 0);
   phones.forEach((ph, i) => {
     const at = 0.15 + i * 0.16;
@@ -479,11 +485,11 @@ function buildTimelines() {
     });
 
   // 6 tools
-  const tT = mk(6);
-  flipIn(tT, SECS[6]);
+  const tT = mk(TL);
+  flipIn(tT, SECS[TL]);
   tT.fromTo(".tools__hint", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.8);
   // 7 contact
-  mk(7).fromTo(contactChars, { yPercent: 110 }, { yPercent: 0, duration: 0.8, stagger: 0.035, ease: "power4.out" })
+  mk(CT).fromTo(contactChars, { yPercent: 110 }, { yPercent: 0, duration: 0.8, stagger: 0.035, ease: "power4.out" })
     .fromTo(".contact .kicker, .contact__sub, .contact__meta", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.08 }, 0.35)
     .fromTo("#reel", { clipPath: "inset(0% 0% 100% 0% round 22px)" }, { clipPath: "inset(0% 0% 0% 0% round 22px)", duration: 1, ease: "power4.inOut" }, 0.1)
     .fromTo(".cta", { scale: 0, rotate: -180 }, { scale: 1, rotate: 0, duration: 0.9, ease: "elastic.out(1, 0.5)" }, 0.6);
@@ -586,7 +592,7 @@ function setWork(x, dur = 0.9) {
 const navLinks = $$(".nav__links a");
 function setUI() {
   gsap.to("#progress", { scaleX: page / (SECS.length - 1), duration: 0.6 });
-  navLinks.forEach((a) => a.classList.toggle("is-active", $(a.getAttribute("href")) === SECS[page] || (a.getAttribute("href") === "#work" && (page === 4 || page === 5))));
+  navLinks.forEach((a) => a.classList.toggle("is-active", $(a.getAttribute("href")) === SECS[page] || (a.getAttribute("href") === "#work" && (page === W || page === SH))));
 }
 function goTo(i, dir = 1) {
   i = clamp(i, 0, SECS.length - 1);
@@ -595,11 +601,13 @@ function goTo(i, dir = 1) {
   const from = page;
   page = i;
   setUI();
-  if (i === 4) setWork(dir > 0 ? 0 : workMax(), 0);
+  if (i === W) setWork(dir > 0 ? 0 : workMax(), 0);
+  if (i === SP) { spotI = dir > 0 ? 0 : SPOT_N - 1; emit("duc:spot", { i: spotI, dir, enter: true }); }
   card.classList.remove("is-hover"); hovT = 0;
-  $$("#workTrack video").forEach((v) => { if (i === 4) { v.preload = "auto"; v.play().catch(() => {}); } else v.pause(); });
-  if (i === 7) gsap.delayedCall(0.5, REEL.start); else if (from === 7) REEL.stop();
-  if (balls) { if (i === 6) balls.drop(); else if (from === 6) gsap.delayedCall(0.9, balls.hide); }
+  $$("#workTrack video").forEach((v) => { if (i === W) { v.preload = "auto"; v.play().catch(() => {}); } else v.pause(); });
+  if (i === CT) gsap.delayedCall(0.5, REEL.start); else if (from === CT) REEL.stop();
+  if (balls) { if (i === TL) balls.drop(); else if (from === TL) gsap.delayedCall(0.9, balls.hide); }
+  emit("duc:page", { i, from, dir, id: SECS[i].id });
   BG.show(i, dir);
   const dist = Math.abs(i - from);
   gsap.to(scroller, {
@@ -611,7 +619,11 @@ function goTo(i, dir = 1) {
 }
 function step(dir) {
   if (busy || pagerPaused) return;
-  if (page === 4) {
+  if (page === SP) {
+    const n = spotI + dir;
+    if (n >= 0 && n < SPOT_N) { busy = true; spotI = n; emit("duc:spot", { i: n, dir }); return setTimeout(() => (busy = false), 900); }
+  }
+  if (page === W) {
     if (dir > 0 && workX < workMax() - 2) { busy = true; setWork(workX + workStep()); return setTimeout(() => (busy = false), 650); }
     if (dir < 0 && workX > 2) { busy = true; setWork(workX - workStep()); return setTimeout(() => (busy = false), 650); }
   }
@@ -630,6 +642,7 @@ function onWheel(e) {
   step(d > 0 ? 1 : -1);
 }
 let lastNav = 0, ty0 = null;
+window.DUC = { goTo: (i) => goTo(i, i > page ? 1 : -1), get page() { return page; }, pause: (b) => (pagerPaused = b), replayHero: () => T[0] && T[0].restart(), SECS };
 function startPager() {
   document.documentElement.classList.add("pager");
   buildStops();
@@ -660,7 +673,7 @@ function startPager() {
     buildStops();
     scroller.y = top(SECS[page]);
     window.scrollTo(0, scroller.y);
-    if (page === 4) setWork(workX, 0);
+    if (page === W) setWork(workX, 0);
   });
   // card back: playhead + frame follow page position
   gsap.ticker.add(() => {
@@ -686,7 +699,7 @@ function startPager() {
     const want = top(SECS[page]);
     if (Math.abs(window.scrollY - want) < 2) return;
     scroller.y = want; window.scrollTo(0, want);
-    if (page === 4) setWork(workX, 0);
+    if (page === W) setWork(workX, 0);
   });
 }
 

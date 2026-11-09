@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nguyen Minh Duc — 2D Animator</title>
+  <link rel="canonical" href="https://animation.gripe/" />
+  <meta property="og:title" content="Nguyen Minh Duc — Moho 2D Animator" />
+  <meta property="og:image" content="https://animation.gripe/assets/duc-card.jpg" />
+  <meta name="description" content="Nguyen Minh Duc — Moho 2D animator for faceless YouTube, storytelling, stickman videos and TVC commercials." />
+  <link rel="icon" href="assets/avatar.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
+  <link rel="stylesheet" href="v2.css?v=p5q" />
+  <link rel="stylesheet" href="v2fix.css?v=p5q" />
+  <link rel="stylesheet" href="v5.css?v=b1" />
+</head>
+<body class="is-loading" data-theme="brune">
+  <!-- LOADER -->
+
+  <!-- HANGTAG INTRO (brune style) -->
+  <div class="tagi" id="tagi">
+    <div class="tagi__top"><b>DUC<i>.</i>ANIM</b><span>MOHO · 2D · VIETNAM</span></div>
+    <svg class="tagi__svg"><line id="tagLine" x1="0" y1="0" x2="0" y2="0" /></svg>
+    <div class="tagi__tag" id="tagEl">
+      <span class="tagi__hole"></span>
+      <img src="assets/avatar.jpg" alt="" draggable="false" />
+      <b>duc</b>
+      <em>2D animator</em>
+      <small>MOHO · RIG · LIP-SYNC</small>
+    </div>
+    <p class="tagi__hint" id="tagHint">HOLD &amp; PULL THE STRING</p>
+    <button class="tagi__skip" id="tagSkip">or click to enter ↓</button>
+  </div>
+  <div class="loader" aria-hidden="true">
+    <div class="loader__count"><span id="loadNum">0</span>%</div>
+    <div class="loader__bar"><span id="loadBar"></span></div>
+    <p class="loader__hint">warming up the rig…</p>
+  </div>
+
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="glow glow--a" aria-hidden="true"></div>
+  <div class="glow glow--b" aria-hidden="true"></div>
+  <div class="pc-wrap" aria-hidden="true">
+    <div class="ghost"></div><div class="ghost"></div><div class="ghost"></div>
+    <div class="pcard" id="pcard">
+      <div class="pcard__face pcard__front">
+        <img src="assets/duc-card.jpg" alt="" draggable="false" />
+        <span class="pc-corner tl"></span><span class="pc-corner tr"></span><span class="pc-corner bl"></span><span class="pc-corner br"></span>
+        <div class="pc-top"><span class="rec">● REC</span><span id="tc">00:00:00:00</span></div>
+        <div class="pc-bot"><b>NGUYEN MINH DUC</b><span>2D ANIMATOR · MOHO</span>
+          <div class="pc-tags"><em>Character animation</em><em>Rigging</em><em>Lip-sync</em><em>TVC</em><em>Stickman</em></div>
+        </div>
+        <div class="glare"></div>
+      </div>
+      <div class="pcard__face pcard__back">
+        <div class="pb-head"><span>ID // ANIMATOR</span><span>VN</span></div>
+        <div class="pb-name">DUC</div>
+        <div class="pb-rows">
+          <div><span>Role</span><b>2D Animator</b></div>
+          <div><span>Tool</span><b>Moho Pro</b></div>
+          <div><span>Base</span><b>Hai Phong · UTC+7</b></div>
+          <div><span>Status</span><b class="on">● Available</b></div>
+        </div>
+        <div class="pb-more">
+          <div><span>Experience</span><b>5+ years</b></div>
+          <div><span>Projects</span><b>500+ YouTube</b></div>
+          <div><span>Focus</span><b>Character · Rig · Lip-sync</b></div>
+          <div><span>Hours</span><b>30+ / week</b></div>
+          <a class="pb-cta" href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener">Hire on Upwork ↗</a>
+          <div class="pb-links">
+            <a href="mailto:zhiend1203@gmail.com" title="zhiend1203@gmail.com"><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></i><span>Email</span></a>
+            <a href="tel:+84389730028" title="+84 389 730 028"><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></i><span>Phone</span></a>
+            <a href="https://www.facebook.com/nguyenduc1203/" target="_blank" rel="noopener" title="Facebook"><i class="ico ico--fb"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></i><span>Facebook</span></a>
+            <a href="https://discordapp.com/users/426777851493351440" target="_blank" rel="noopener" title="Discord"><i class="ico ico--dc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></i><span>Discord</span></a>
+          </div>
+        </div>
+        <div class="pb-tl"><i></i><i></i><i></i><i></i><i></i><span class="pb-ph"></span></div>
+        <div class="pb-foot"><span>frame</span><b id="frameNo">001</b></div>
+        <div class="glare"></div>
+      </div>
+    </div>
+  </div>
+  <div class="cursor" aria-hidden="true"><span></span></div>
+  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+  <header class="nav">
+    <a href="#home" class="nav__logo">DUC<span>.</span>ANIM</a>
+    <nav class="nav__links">
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <aside class="side side--left">
+    <a href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener" aria-label="Upwork" class="side__ico">Up</a>
+    <button class="side__ico" data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel" aria-label="Showreel">▶</button>
+    <span class="side__line"></span>
+  </aside>
+  <aside class="side side--right">
+    <button class="side__link" data-video="12wmU_DsiNMLx8iuridSdKDmmNmwdNfhh" data-title="Showreel">SHOWREEL ↗</button>
+  </aside>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="ghost-word" aria-hidden="true"><span>ANIMATION&nbsp;·&nbsp;ANIMATION&nbsp;·&nbsp;</span><span>ANIMATION&nbsp;·&nbsp;ANIMATION&nbsp;·&nbsp;</span></div>
+      <div class="hero__copy">
+        <p class="eyebrow" data-hero>Hi, I'm Nguyen Minh Duc — a</p>
+        <h1 class="hero__title">
+          <span class="line"><span class="split" data-hero-title>MOHO 2D</span></span>
+          <span class="line"><span class="split outline" data-hero-title>ANIMATOR</span></span>
+        </h1>
+        <p class="hero__sub" data-hero>Faceless YouTube · Storytelling · Stickman · TVC</p>
+        <div class="hq" data-hero>
+          <a class="hq__main magnetic" href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener"><i class="ico ico--up"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.561 13.158c-1.102 0-2.135-.467-3.074-1.227l.228-1.076.008-.042c.207-1.143.849-3.06 2.839-3.06 1.492 0 2.703 1.212 2.703 2.703-.001 1.489-1.212 2.702-2.704 2.702zm0-8.14c-2.539 0-4.51 1.649-5.31 4.366-1.22-1.834-2.148-4.036-2.687-5.892H7.828v7.112c-.002 1.406-1.141 2.546-2.547 2.548-1.405-.002-2.543-1.143-2.545-2.548V3.492H0v7.112c0 2.914 2.37 5.303 5.281 5.303 2.913 0 5.283-2.389 5.283-5.303v-1.19c.529 1.107 1.182 2.229 1.974 3.221l-1.673 7.873h2.797l1.213-5.71c1.063.679 2.285 1.109 3.686 1.109 3 0 5.439-2.452 5.439-5.45 0-3-2.439-5.439-5.439-5.439z"/></svg></i>Hire me on Upwork ↗</a>
+          <a class="hq__chip" href="mailto:zhiend1203@gmail.com"><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></i>zhiend1203@gmail.com</a>
+          <a class="hq__chip" href="tel:+84389730028"><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></i>+84 389 730 028</a>
+          <a class="hq__chip" href="https://www.facebook.com/nguyenduc1203/" target="_blank" rel="noopener"><i class="ico ico--fb"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></i>Facebook</a>
+          <a class="hq__chip" href="https://discordapp.com/users/426777851493351440" target="_blank" rel="noopener"><i class="ico ico--dc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></i>Discord</a>
+        </div>
+      </div>
+    <div class="marquee" aria-hidden="true">
+        <div class="marquee__track" id="marquee">
+          <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
+          <span>CHARACTER ANIMATION ✦ RIGGING ✦ LIP-SYNC ✦ STORYTELLING ✦ STICKMAN ✦ TVC ✦ SHORTS ✦&nbsp;</span>
+        </div>
+      </div>
+
+      <a href="#about" class="hero__scroll" data-hero><span class="mouse"><span></span></span> scroll</a>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about" id="about">
+      <div class="ghost-word" aria-hidden="true"><span>ABOUT&nbsp;·&nbsp;ABOUT&nbsp;·&nbsp;</span><span>ABOUT&nbsp;·&nbsp;ABOUT&nbsp;·&nbsp;</span></div>
+      <div class="about__box">
+        <p class="kicker"><span>01</span> About me</p>
+        <p class="about__text scrub-words">2D animator based in Hai Phong, Vietnam, with 5+ years in Moho. I build reusable character rigs so every new episode is faster and stays on-model — and I understand YouTube pacing: visuals that keep moving so viewers keep watching.</p>
+        <div class="stats">
+          <div class="stat"><b data-count="1000" data-suffix="+">0</b><span>Videos made</span></div>
+          <div class="stat"><b data-count="500" data-suffix="+">0</b><span>YouTube animation projects</span></div>
+          <div class="stat"><b data-count="5" data-suffix="+">0</b><span>Years in Moho</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES (desk scene) -->
+    <section class="services" id="services">
+      <div class="ghost-word" aria-hidden="true"><span>SERVICES&nbsp;·&nbsp;SERVICES&nbsp;·&nbsp;</span><span>SERVICES&nbsp;·&nbsp;SERVICES&nbsp;·&nbsp;</span></div>
+      <div class="services__head">
+        <p class="kicker"><span>02</span> Services</p>
+        <h2 class="big split-scrub">WHAT I DO</h2>
+      </div>
+      <div class="services__list">
+        <article class="svc">
+          <span class="svc__n">A</span>
+          <h3>Character Animation</h3>
+          <p>Acting, walk cycles, lip-sync and camera moves — animated from your script and voiceover.</p>
+          <div class="svc__tags"><span>Moho Pro</span><span>Lip-sync</span><span>Acting</span></div>
+        </article>
+        <article class="svc">
+          <span class="svc__n">B</span>
+          <h3>Rigging</h3>
+          <p>Reusable Moho rigs with smart bones, so every new episode is faster and stays on-model.</p>
+          <div class="svc__tags"><span>Smart bones</span><span>Switch layers</span></div>
+        </article>
+        <article class="svc">
+          <span class="svc__n">C</span>
+          <h3>Edit &amp; Composite</h3>
+          <p>Motion graphics, compositing and final edit ready for YouTube, Shorts or TV.</p>
+          <div class="svc__tags"><span>After Effects</span><span>Premiere</span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="process" id="process">
+      <div class="ghost-word" aria-hidden="true"><span>PROCESS&nbsp;·&nbsp;PROCESS&nbsp;·&nbsp;</span><span>PROCESS&nbsp;·&nbsp;PROCESS&nbsp;·&nbsp;</span></div>
+      <p class="kicker"><span>03</span> Process</p>
+      <h2 class="big split-scrub">HOW IT MOVES</h2>
+      <div class="timeline">
+        <svg class="timeline__svg" viewBox="0 0 4 100" preserveAspectRatio="none"><line x1="2" y1="0" x2="2" y2="100" /></svg>
+        <div class="step"><span class="step__dot"></span><span class="step__n">01</span><div><h3>Brief</h3><p>Send your script, voiceover and a reference style.</p></div></div>
+        <div class="step"><span class="step__dot"></span><span class="step__n">02</span><div><h3>Rig &amp; design</h3><p>Characters and scenes built as reusable Moho rigs.</p></div></div>
+        <div class="step"><span class="step__dot"></span><span class="step__n">03</span><div><h3>Animate</h3><p>Draft sent fast so you can give notes early.</p></div></div>
+        <div class="step"><span class="step__dot"></span><span class="step__n">04</span><div><h3>Deliver</h3><p>Revisions, then 1080p / 4K delivery.</p></div></div>
+      </div>
+    </section>
+
+    <!-- WORK (horizontal) -->
+
+    <!-- FEATURED SPOTLIGHTS (01/03) -->
+    <section class="spot" id="spot">
+      <p class="spot__k kicker"><span>04</span> Featured</p>
+      <div class="spot__item spot--a" data-pal="#cfe7ea,#0e3b45,#0f7c8c">
+        <div class="spot__txt">
+          <span class="spot__badge">TVC · 2D motion</span>
+          <h2 class="spot__t">Vietnam<br/>Airlines</h2>
+          <p class="spot__d">App launch commercial — character and UI animation that flows with the brand's rhythm, cut for TV and social.</p>
+          <div class="spot__pills"><span>Moho</span><span>After Effects</span><span>30s spot</span></div>
+          <button class="spot__cta" data-video="1Zyn5rLpNbgC6eucnQrICIgMlI9VYEdkJ" data-title="Vietnam Airlines">▶ Watch the spot</button>
+        </div>
+        <div class="spot__media">
+          <div class="spot__frame"><video muted loop playsinline preload="none" poster="media/p-vna.jpg" src="media/p-vna.mp4"></video></div>
+          <img class="spot__float f1" src="reel/vna-1.jpg" alt="" /><img class="spot__float f2" src="reel/vna-2.jpg" alt="" />
+        </div>
+        <span class="spot__n">01/03</span>
+      </div>
+      <div class="spot__item spot--b" data-pal="#f7d1b5,#5a2a14,#d9643a">
+        <div class="spot__media">
+          <div class="spot__frame"><video muted loop playsinline preload="none" poster="media/p-72.jpg" src="media/p-72.mp4"></video></div>
+          <img class="spot__float f1" src="media/p-73.jpg" alt="" /><img class="spot__float f2" src="media/p-79.jpg" alt="" />
+        </div>
+        <div class="spot__txt">
+          <span class="spot__badge">YouTube series · Moho</span>
+          <h2 class="spot__t">Rescue<br/>Pups</h2>
+          <p class="spot__d">Weekly kids' series — reusable dog rigs, lip-sync and acting so every new episode ships fast and stays on-model.</p>
+          <div class="spot__pills"><span>Character rig</span><span>Lip-sync</span><span>50+ episodes</span></div>
+          <button class="spot__cta" data-local="media/h-72.mp4" data-title="Rescue Pups Ep. 72">▶ Watch an episode</button>
+        </div>
+        <span class="spot__n">02/03</span>
+      </div>
+      <div class="spot__item spot--c" data-pal="#c2375f,#fff1f4,#ffd166">
+        <h2 class="spot__t spot__t--big">MECH BATTLE</h2>
+        <div class="spot__media">
+          <div class="spot__frame"><video muted loop playsinline preload="none" poster="media/p-1209.jpg" src="media/p-1209.mp4"></video></div>
+          <img class="spot__float f1" src="media/p-ghidora.jpg" alt="" /><img class="spot__float f2" src="media/p-boss2.jpg" alt="" />
+        </div>
+        <div class="spot__corner l"><span class="spot__badge">Tank / mech action</span><p class="spot__d">Heavy-metal battles with smart-bone rigs, impact frames and camera shake.</p></div>
+        <div class="spot__corner r"><div class="spot__pills"><span>Smart bones</span><span>FX</span><span>Action</span></div><button class="spot__cta" data-local="media/h-1209.mp4" data-title="Mech Battle 1209">▶ Watch the fight</button></div>
+        <span class="spot__n">03/03</span>
+      </div>
+      <div class="spot__dots"><i></i><i></i><i></i></div>
+    </section>
+
+    <section class="work" id="work">
+      <div class="ghost-word" aria-hidden="true"><span>WORK&nbsp;·&nbsp;WORK&nbsp;·&nbsp;</span><span>WORK&nbsp;·&nbsp;WORK&nbsp;·&nbsp;</span></div>
+      <div class="work__pin">
+        <div class="work__head">
+          <p class="kicker"><span>04</span> Selected work</p>
+          <h2 class="big">MY WORK</h2>
+          <p class="work__hint">keep scrolling →</p>
+        </div>
+        <div class="work__track" id="workTrack"></div>
+      </div>
+    </section>
+
+    <!-- SHORTS -->
+    <section class="shorts" id="shorts">
+      <div class="ghost-word" aria-hidden="true"><span>SHORTS&nbsp;·&nbsp;SHORTS&nbsp;·&nbsp;</span><span>SHORTS&nbsp;·&nbsp;SHORTS&nbsp;·&nbsp;</span></div>
+      <p class="kicker"><span>05</span> Vertical</p>
+      <h2 class="big split-scrub">SHORTS</h2>
+      <div class="fan" id="fan"></div>
+    </section>
+
+    <!-- TOOLS (physics balls) -->
+    <section class="tools" id="tools">
+      <div class="ghost-word" aria-hidden="true"><span>TOOLKIT&nbsp;·&nbsp;TOOLKIT&nbsp;·&nbsp;</span><span>TOOLKIT&nbsp;·&nbsp;TOOLKIT&nbsp;·&nbsp;</span></div>
+      <h2 class="big tools__title split-scrub">MY TOOLKIT</h2>
+      <p class="tools__hint">move your mouse through them</p>
+      <canvas id="balls"></canvas>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact" id="contact">
+      <div class="ghost-word" aria-hidden="true"><span>CONTACT&nbsp;·&nbsp;CONTACT&nbsp;·&nbsp;</span><span>CONTACT&nbsp;·&nbsp;CONTACT&nbsp;·&nbsp;</span></div>
+      <div class="reel" id="reel">
+        <div class="reel__stage" id="reelStage"></div>
+        <div class="reel__ui"><span class="reel__n" id="reelN">01 / 08</span><span class="reel__t" id="reelT"></span><span class="reel__play">▶ watch</span></div>
+        <span class="reel__bar"><i id="reelBar"></i></span>
+      </div>
+      <p class="kicker"><span>06</span> Contact</p>
+      <h2 class="contact__title">
+        <span class="line"><span class="split" data-contact>LET'S MAKE</span></span>
+        <span class="line"><span class="split outline" data-contact>IT MOVE</span></span>
+      </h2>
+      <p class="contact__sub">Have a script in mind? Send it over — I'll reply with a plan and a quote. Happy to start with a short paid test.</p>
+      <div class="cx__row">
+        <a class="cta magnetic" href="https://www.upwork.com/freelancers/~01a592f6d08bd9ef2b" target="_blank" rel="noopener"><span><i class="ico ico--up"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.561 13.158c-1.102 0-2.135-.467-3.074-1.227l.228-1.076.008-.042c.207-1.143.849-3.06 2.839-3.06 1.492 0 2.703 1.212 2.703 2.703-.001 1.489-1.212 2.702-2.704 2.702zm0-8.14c-2.539 0-4.51 1.649-5.31 4.366-1.22-1.834-2.148-4.036-2.687-5.892H7.828v7.112c-.002 1.406-1.141 2.546-2.547 2.548-1.405-.002-2.543-1.143-2.545-2.548V3.492H0v7.112c0 2.914 2.37 5.303 5.281 5.303 2.913 0 5.283-2.389 5.283-5.303v-1.19c.529 1.107 1.182 2.229 1.974 3.221l-1.673 7.873h2.797l1.213-5.71c1.063.679 2.285 1.109 3.686 1.109 3 0 5.439-2.452 5.439-5.45 0-3-2.439-5.439-5.439-5.439z"/></svg></i>Hire me on Upwork ↗</span></a>
+        <div class="cx__links">
+          <a class="cx__link" href="mailto:zhiend1203@gmail.com"><span>Email</span><b><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></i>zhiend1203@gmail.com</b><i>↗</i></a>
+          <a class="cx__link" href="tel:+84389730028"><span>Phone / Zalo</span><b><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></i>+84 389 730 028</b><i>↗</i></a>
+          <a class="cx__link" href="https://www.facebook.com/nguyenduc1203/" target="_blank" rel="noopener"><span>Facebook</span><b><i class="ico ico--fb"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></i>nguyenduc1203</b><i>↗</i></a>
+          <a class="cx__link" href="https://discordapp.com/users/426777851493351440" target="_blank" rel="noopener"><span>Discord</span><b><i class="ico ico--dc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></i>Message me</b><i>↗</i></a>
+        </div>
+      </div>
+      <div class="contact__meta">
+        <span>UTC+7 · Hai Phong, VN</span><span>Full-time · 30+ hrs/week</span><span>© <span id="year"></span> Nguyen Minh Duc</span>
+      </div>
+    </section>
+  </main>
+
+
+  <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal__bg" data-close></div>
+    <div class="modal__box">
+      <button class="modal__x" data-close aria-label="Close">✕</button>
+      <div class="modal__media" id="modalMedia"></div>
+      <p class="modal__title" id="modalTitle"></p>
+    </div>
+  </div>
+
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="vendor/lenis.min.js"></script>
+  <script src="projects.js?v=b1"></script>
+  <script type="module" src="v2.js?v=b1"></script>
+  <script type="module" src="v5.js?v=b1"></script>
+  <script>setTimeout(function(){if(document.body.classList.contains("is-loading")){document.body.classList.remove("is-loading");var l=document.querySelector(".loader");l&&l.remove();}},9000);</script>
+</body>
+</html>
