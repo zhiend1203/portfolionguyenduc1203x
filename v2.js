@@ -614,6 +614,7 @@ function goTo(i, dir = 1) {
   $$("#workTrack video").forEach((v) => { if (i === W) { v.preload = "auto"; v.play().catch(() => {}); } else v.pause(); });
   if (i === CT) gsap.delayedCall(0.5, REEL.start); else if (from === CT) REEL.stop();
   if (balls) { if (i === TL) balls.drop(); else if (from === TL) gsap.delayedCall(0.9, balls.hide); }
+  if (T[i]) T[i].progress(0).pause(); // hide the incoming page's content until its intro plays (no flash of the final state)
   emit("duc:page", { i, from, dir, id: SECS[i].id });
   BG.show(i, dir);
   const dist = Math.abs(i - from);
@@ -649,7 +650,7 @@ function onWheel(e) {
   step(d > 0 ? 1 : -1);
 }
 let lastNav = 0, ty0 = null;
-window.DUC = { goTo: (i) => goTo(i, i > page ? 1 : -1), get page() { return page; }, pause: (b) => (pagerPaused = b), replayHero: () => T[0] && T[0].restart(), SECS };
+window.DUC = { goTo: (i) => goTo(i, i > page ? 1 : -1), get page() { return page; }, pause: (b) => (pagerPaused = b), replayHero: () => T[0] && T[0].restart(), prepHero: () => T[0] && T[0].progress(0).pause(), SECS };
 function startPager() {
   document.documentElement.classList.add("pager");
   buildStops();

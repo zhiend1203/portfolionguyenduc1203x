@@ -191,10 +191,12 @@ function snap() {
   e.oy = e.y + 60; e.ox = e.x;
   tagi.classList.add("is-snap");
   gsap.to(".tagi__top, .tagi__hint, .tagi__skip", { opacity: 0, duration: 0.3 });
+  window.DUC?.prepHero(); // hero sits in its "before" state under the curtain
   gsap.to(tagi, { yPercent: -100, duration: 1.05, ease: "expo.inOut", delay: 0.55, onComplete: () => {
     gone = true; tagi.remove(); document.body.classList.remove("tag-open");
-    window.DUC?.pause(false); window.DUC?.replayHero();
+    window.DUC?.pause(false);
   } });
+  gsap.delayedCall(1.0, () => window.DUC?.replayHero()); // starts while the curtain is still lifting
 }
 $("#tagSkip").addEventListener("click", () => { P[N - 1].ox = P[N - 1].x; P[N - 1].y += 40; snap(); });
 tagi.addEventListener("wheel", (e) => { if (e.deltaY > 0 && !gone) snap(); }, { passive: true });
