@@ -198,3 +198,25 @@ function snap() {
 }
 $("#tagSkip").addEventListener("click", () => { P[N - 1].ox = P[N - 1].x; P[N - 1].y += 40; snap(); });
 tagi.addEventListener("wheel", (e) => { if (e.deltaY > 0 && !gone) snap(); }, { passive: true });
+
+/* ---------- whole site slides sideways ----------
+   v2 still drives a vertical scroll position (pager, card path). Each section is re-placed so that
+   distance d (px from viewport top) becomes a horizontal offset: pages pan left/right like a camera. */
+const secs = $$("main > section");
+root.classList.add("hpan");
+// main is pinned (fixed); a spacer keeps the document tall so v2's vertical scroll position still works
+const spacer = document.createElement("div");
+spacer.className = "hpan-spacer"; $("main").after(spacer);
+const sizeSpacer = () => { const last = secs[secs.length - 1]; spacer.style.height = last.offsetTop + last.offsetHeight + "px"; };
+sizeSpacer(); addEventListener("resize", sizeSpacer); window.visualViewport?.addEventListener("resize", sizeSpacer);
+gsap.ticker.add(() => {
+  const H = VH(), W = innerWidth, y = window.scrollY;
+  for (const s of secs) {
+    const d = s.offsetTop - y;
+    if (Math.abs(d) > H * 1.05) { if (s.__vis !== false) { s.style.visibility = "hidden"; s.__vis = false; } continue; }
+    if (s.__vis !== true) { s.style.visibility = "visible"; s.__vis = true; }
+    s.style.transform = `translate3d(${(d / H) * W}px, ${-s.offsetTop}px, 0)`;
+  }
+});
+// clicking any video card in a spotlight opens that project
+$$(".spot__item").forEach((it) => it.querySelector(".spot__media")?.addEventListener("click", () => it.querySelector(".spot__cta")?.click()));

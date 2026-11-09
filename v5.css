@@ -153,3 +153,15 @@ body[data-theme="brune"]::before { content: ""; position: fixed; inset: -20%; po
   .spot--c .spot__media { width: 84vw; margin-top: 2vh; }
 }
 .spot__t .sw { display: inline-block; white-space: nowrap; }
+/* horizontal paging */
+.hpan main > section { will-change: transform; backface-visibility: hidden; }
+/* spotlight cards burst open on hover */
+.spot__frame, .spot__float { transition: translate .7s cubic-bezier(.2,.9,.25,1.2), scale .7s cubic-bezier(.2,.9,.25,1.2), box-shadow .5s; }
+.spot__media:hover .spot__frame { scale: 1.07; }
+.spot__media:hover .spot__float.f1 { translate: -14% -22%; scale: 1.18; }
+.spot__media:hover .spot__float.f2 { translate: 14% 20%; scale: 1.18; }
+.spot__float:hover { scale: 1.45 !important; z-index: 4; box-shadow: 0 40px 70px rgba(0,0,0,.7), 0 0 0 2px var(--acc); }
+.spot__frame:hover { box-shadow: 0 60px 100px rgba(0,0,0,.7), 0 0 0 2px var(--acc), 0 0 90px color-mix(in srgb, var(--acc) 35%, transparent); }
+.spot__media { cursor: pointer; }
+.hpan main { position: fixed; inset: 0; z-index: 2; }
+.hpan-spacer { width: 1px; pointer-events: none; }
