@@ -122,3 +122,4 @@ a[href*="upwork.com"] { display: none !important; }
   animation: svcEdge 4.5s linear infinite; opacity: .7; }
 .svc:nth-child(2)::before { animation-delay: -1.5s; } .svc:nth-child(3)::before { animation-delay: -3s; }
 @keyframes svcEdge { to { background-position: -300% 0; } }
+.pcard .glare, .pcard .pc-glare, .pcard [class*="glare"] { pointer-events: none !important; }

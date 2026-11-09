@@ -207,16 +207,16 @@ root.classList.add("hpan");
 // main is pinned (fixed); a spacer keeps the document tall so v2's vertical scroll position still works
 const spacer = document.createElement("div");
 spacer.className = "hpan-spacer"; $("main").after(spacer);
-const sizeSpacer = () => { const last = secs[secs.length - 1]; spacer.style.height = last.offsetTop + last.offsetHeight + "px"; };
+const sizeSpacer = () => { spacer.style.height = secs.length * VH() + "px"; };
 sizeSpacer(); addEventListener("resize", sizeSpacer); window.visualViewport?.addEventListener("resize", sizeSpacer);
 gsap.ticker.add(() => {
-  const H = VH(), W = innerWidth, y = window.scrollY;
-  for (const s of secs) {
-    const d = s.offsetTop - y;
-    if (Math.abs(d) > H * 1.05) { if (s.__vis !== false) { s.style.visibility = "hidden"; s.__vis = false; } continue; }
+  const H = VH(), W = innerWidth, p = window.scrollY / H;
+  secs.forEach((s, i) => {
+    const d = i - p; // pages away from the current one
+    if (Math.abs(d) > 1.02) { if (s.__vis !== false) { s.style.visibility = "hidden"; s.__vis = false; } return; }
     if (s.__vis !== true) { s.style.visibility = "visible"; s.__vis = true; }
-    s.style.transform = `translate3d(${(d / H) * W}px, ${-s.offsetTop}px, 0)`;
-  }
+    s.style.transform = `translate3d(${d * W}px, 0, 0)`;
+  });
 });
 // clicking any video card in a spotlight opens that project
 $$(".spot__item").forEach((it) => it.querySelector(".spot__media")?.addEventListener("click", () => it.querySelector(".spot__cta")?.click()));

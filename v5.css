@@ -165,3 +165,4 @@ body[data-theme="brune"]::before { content: ""; position: fixed; inset: -20%; po
 .spot__media { cursor: pointer; }
 .hpan main { position: fixed; inset: 0; z-index: 2; }
 .hpan-spacer { width: 1px; pointer-events: none; }
+.hpan main > section { position: absolute !important; top: 0; left: 0; width: 100%; }

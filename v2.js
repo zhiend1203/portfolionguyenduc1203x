@@ -390,7 +390,8 @@ const DOCK = SP >= 0 ? SP : W;
 const SPOT_N = SP >= 0 ? $$("#spot .spot__item").length : 0;
 let spotI = 0;
 const emit = (name, detail) => document.dispatchEvent(new CustomEvent(name, { detail }));
-const top = (el) => el.offsetTop;
+// in horizontal-pan mode (v5) sections are stacked at the same spot, so derive their "scroll top" from their index
+const top = (el) => (document.documentElement.classList.contains("hpan") ? Math.max(0, SECS.indexOf(el)) * VH() : el.offsetTop);
 let page = 0, busy = false, workX = 0, ready = false;
 const scroller = { y: 0 };
 const titleChars = new Map($$(".split-scrub").map((el) => [el.closest("section"), splitChars(el)]));
