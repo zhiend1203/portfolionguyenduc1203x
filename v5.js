@@ -44,6 +44,11 @@ gsap.set(items, { autoAlpha: 0 });
 function showSpot(i, dir) {
   if (i === cur) return;
   const out = items[cur], inn = items[i];
+  [out, inn].forEach((it) => {
+    if (!it) return;
+    gsap.killTweensOf([it, ...it.querySelectorAll(".sc, .spot__badge, .spot__d, .spot__pills, .spot__pills span, .spot__cta, .spot__n, .spot__frame")]);
+    gsap.killTweensOf(it.querySelectorAll(".spot__float"), "y,opacity");
+  });
   paint(spotPal[i], 1);
   dots.forEach((d, k) => d.classList.toggle("on", k === i));
   if (out) {
@@ -52,24 +57,24 @@ function showSpot(i, dir) {
     gsap.to(out.querySelector(".spot__frame"), { y: -140 * dir, rotate: -8 * dir, opacity: 0, duration: 0.55, ease: "power3.in" });
     gsap.to(out.querySelectorAll(".spot__float"), { y: -220 * dir, opacity: 0, duration: 0.5, ease: "power3.in" });
     gsap.set(out, { autoAlpha: 0, delay: 0.6 });
-    out.querySelector("video")?.pause();
+    out.querySelectorAll("video").forEach((v) => v.pause());
   }
   const at = out ? 0.45 : 0.15;
   gsap.set(inn, { autoAlpha: 1, delay: at - 0.05 });
   gsap.fromTo(inn.querySelectorAll(".sc"), { yPercent: 110 * dir, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.025, ease: "expo.out", delay: at });
   gsap.fromTo(inn.querySelectorAll(".spot__badge, .spot__d, .spot__cta, .spot__n"), { y: 40 * dir, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.06, ease: "expo.out", delay: at + 0.15 });
+  gsap.set(inn.querySelectorAll(".spot__pills"), { y: 0, opacity: 1 });
   gsap.fromTo(inn.querySelectorAll(".spot__pills span"), { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, stagger: 0.06, ease: "back.out(2.5)", delay: at + 0.3 });
   gsap.fromTo(inn.querySelector(".spot__frame"), { y: 180 * dir, rotate: 10 * dir, opacity: 0, scale: 0.85 }, { y: 0, rotate: i === 1 ? 3 : -3, opacity: 1, scale: 1, duration: 1.1, ease: "expo.out", delay: at + 0.05 });
   gsap.fromTo(inn.querySelectorAll(".spot__float"), { y: 260 * dir, opacity: 0 }, { y: 0, opacity: 1, duration: 1.3, stagger: 0.1, ease: "expo.out", delay: at + 0.15 });
-  const v = inn.querySelector("video");
-  if (v) { v.preload = "auto"; v.play().catch(() => {}); }
+  inn.querySelectorAll("video").forEach((v) => { v.preload = "auto"; v.play().catch(() => {}); });
   cur = i;
 }
 document.addEventListener("duc:spot", (e) => showSpot(e.detail.i, e.detail.dir >= 0 ? 1 : -1));
 
 // floating props drift forever + frame follows the mouse a little
 $$(".spot__float").forEach((f, k) => {
-  gsap.to(f, { yPercent: k % 2 ? 12 : -12, rotate: (k % 2 ? 1 : -1) * 6, duration: 3 + (k % 3), repeat: -1, yoyo: true, ease: "sine.inOut" });
+  gsap.to(f, { xPercent: k % 2 ? 6 : -6, rotation: (k % 2 ? 1 : -1) * 6, duration: 3 + (k % 3), repeat: -1, yoyo: true, ease: "sine.inOut" });
 });
 addEventListener("pointermove", (e) => {
   if (!window.DUC || DUC.SECS[DUC.page]?.id !== "spot") return;
